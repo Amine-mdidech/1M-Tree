@@ -1,0 +1,14 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/Theme/Theme.uss" />
+    <ui:Style src="project://database/Assets/UI/TreeBoost/TreeBoost.uss" />
+    <ui:VisualElement name="boost-root" class="boost-root theme-scope">
+        <ui:VisualElement name="boost-card" class="boost-card">
+            <ui:VisualElement name="boost-header" class="boost-header">
+                <ui:Label name="tree-name-label" text="Oak" class="tree-name-label" />
+                <ui:Button name="close-button" text="X" class="boost-close-button" />
+            </ui:VisualElement>
+            <ui:Label name="remaining-time-label" text="" class="remaining-time-label" />
+            <ui:Button name="boost-button" text="Speed Up" class="boost-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

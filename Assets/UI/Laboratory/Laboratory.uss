@@ -1,0 +1,164 @@
+.lab-root {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(5, 10, 12, 0.85);
+    padding: var(--space-sm);
+    align-items: center;
+    justify-content: center;
+}
+
+.lab-frame {
+    width: 100%;
+    height: 100%;
+    max-width: 1200px;
+    -unity-background-scale-mode: scale-and-crop;
+    border-radius: var(--radius-lg);
+    border-top-width: var(--border-thick);
+    border-left-width: var(--border-thick);
+    border-right-width: var(--border-shadow);
+    border-bottom-width: var(--border-shadow);
+    border-top-color: var(--color-gold-light);
+    border-left-color: var(--color-gold-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    padding: var(--space-xs);
+    transition-property: opacity, scale;
+    transition-duration: 0.18s;
+    transition-timing-function: ease-out;
+}
+
+.lab-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--surface-lab-border);
+    border-radius: var(--radius-md);
+    border-width: var(--border-thin);
+    border-color: rgb(5, 35, 38);
+    padding: var(--space-xs) var(--space-sm);
+    margin-bottom: var(--space-xs);
+    flex-shrink: 0;
+}
+
+.lab-title {
+    font-size: var(--font-size-lg);
+    color: rgb(180, 240, 235);
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1;
+    -unity-text-outline-color: var(--color-ink);
+}
+
+.lab-close-button {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-pill);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-thick);
+    border-bottom-width: var(--border-thick);
+    border-top-color: var(--color-danger-light);
+    border-left-color: var(--color-danger-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    background-color: var(--color-danger);
+    color: var(--text-on-dark);
+    font-size: var(--font-size-sm);
+    -unity-font-style: bold;
+}
+
+.lab-close-button:active {
+    scale: 0.92 0.92;
+}
+
+.active-research-panel {
+    flex-grow: 1;
+    -unity-background-scale-mode: scale-and-crop;
+    border-radius: var(--radius-md);
+    border-width: var(--border-thin);
+    border-color: rgb(70, 130, 128);
+    padding: var(--space-md);
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-xs);
+}
+
+.active-research-label {
+    font-size: var(--font-size-md);
+    color: rgb(20, 45, 45);
+    -unity-font-style: bold;
+    margin-bottom: var(--space-sm);
+    -unity-text-align: middle-center;
+}
+
+.skip-button {
+    min-width: 150px;
+    min-height: 36px;
+    border-radius: var(--radius-pill);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-thick);
+    border-bottom-width: var(--border-thick);
+    border-top-color: var(--color-success-light);
+    border-left-color: var(--color-success-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    background-color: var(--color-success-dark);
+    color: var(--text-on-dark);
+    font-size: var(--font-size-md);
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1;
+    -unity-text-outline-color: var(--color-ink);
+}
+
+.skip-button:active {
+    scale: 0.94 0.94;
+}
+
+.tree-scroll {
+    flex-grow: 1;
+    -unity-background-scale-mode: scale-and-crop;
+    border-radius: var(--radius-md);
+    border-width: var(--border-thin);
+    border-color: rgb(70, 130, 128);
+    margin-bottom: var(--space-xs);
+}
+
+.tree-canvas {
+    position: relative;
+}
+
+.tree-node {
+    flex-direction: row;
+    align-items: center;
+    border-radius: var(--radius-md);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-shadow);
+    border-bottom-width: var(--border-shadow);
+    padding: var(--space-xs) var(--space-xs);
+}
+
+.tree-node:active {
+    scale: 0.95 0.95;
+}
+
+.tree-node-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-right: var(--space-xs);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.tree-node-label {
+    flex-grow: 1;
+    flex-shrink: 1;
+    color: var(--text-on-dark);
+    font-size: var(--font-size-xs);
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1;
+    -unity-text-outline-color: var(--color-ink);
+    white-space: normal;
+    -unity-text-align: middle-left;
+}
+

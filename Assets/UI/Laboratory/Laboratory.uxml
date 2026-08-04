@@ -1,0 +1,19 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/Theme/Theme.uss" />
+    <ui:Style src="project://database/Assets/UI/Laboratory/Laboratory.uss" />
+    <ui:VisualElement name="lab-root" class="lab-root theme-scope">
+        <ui:VisualElement name="lab-frame" class="lab-frame">
+            <ui:VisualElement name="lab-header" class="lab-header">
+                <ui:Label name="lab-title" text="Laboratory" class="lab-title" />
+                <ui:Button name="close-button" text="X" class="lab-close-button" />
+            </ui:VisualElement>
+            <ui:VisualElement name="active-research-panel" class="active-research-panel">
+                <ui:Label name="active-research-label" text="" class="active-research-label" />
+                <ui:Button name="skip-button" text="Skip" class="skip-button" />
+            </ui:VisualElement>
+            <ui:ScrollView name="tree-scroll" class="tree-scroll" mode="VerticalAndHorizontal">
+                <ui:VisualElement name="tree-canvas" class="tree-canvas" />
+            </ui:ScrollView>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9500eb92bcfdd452f85530ec9544240b, type: 3}
+  m_Name: BerryBush
+  m_EditorClassIdentifier: Assembly-CSharp::VegetationDefinition
+  id: berry_bush
+  displayName: Berry Bush
+  biomeId: temperate_forest
+  unlockedByDefault: 0
+  growthStages:
+  - stageName: Seedling
+    durationSeconds: 35
+  - stageName: Sapling
+    durationSeconds: 150
+  - stageName: Mature
+    durationSeconds: 450
+  plantSilhouette: 3
+  foliageColor: {r: 0.3, g: 0.55, b: 0.25, a: 1}
+  trunkColor: {r: 0.4, g: 0.28, b: 0.16, a: 1}

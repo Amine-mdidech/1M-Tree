@@ -1,0 +1,18 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/Theme/Theme.uss" />
+    <ui:Style src="project://database/Assets/UI/Hud/Hud.uss" />
+    <ui:VisualElement name="hud-root" class="hud-root theme-scope" picking-mode="Ignore">
+        <ui:VisualElement name="currency-badge" class="currency-badge" picking-mode="Ignore">
+            <ui:VisualElement name="gem-icon" class="gem-icon" picking-mode="Ignore" />
+            <ui:Label name="gem-count-label" text="0" class="gem-count-label" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:Button name="demo-button" class="icon-button demo-icon-button" />
+        <ui:VisualElement name="action-cluster" class="action-cluster">
+            <ui:Label name="vegetation-label" text="Oak" class="vegetation-label" picking-mode="Ignore" />
+            <ui:Button name="vegetation-button" class="icon-button" />
+            <ui:Button name="lab-button" class="icon-button" />
+            <ui:Button name="codex-button" class="icon-button" />
+            <ui:Button name="profile-button" class="icon-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

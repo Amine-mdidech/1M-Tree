@@ -1,0 +1,77 @@
+using UnityEngine;
+
+public class ScreenNavigator : MonoBehaviour
+{
+    [SerializeField] private HudUI hudUI;
+    [SerializeField] private CodexUI codexUI;
+    [SerializeField] private LaboratoryUI laboratoryUI;
+    [SerializeField] private ProfileUI profileUI;
+    [SerializeField] private DemoUI demoUI;
+
+    public void OpenCodex()
+    {
+        CloseOtherPanels(codexUI);
+        if (codexUI != null) codexUI.SetOpen(true);
+        SetHomeToolbarVisible(false);
+    }
+
+    public void OpenLab()
+    {
+        CloseOtherPanels(laboratoryUI);
+        if (laboratoryUI != null) laboratoryUI.SetOpen(true);
+        SetHomeToolbarVisible(false);
+    }
+
+    public void OpenProfile()
+    {
+        CloseOtherPanels(profileUI);
+        if (profileUI != null) profileUI.SetOpen(true);
+        SetHomeToolbarVisible(false);
+    }
+
+    public void OpenDemo()
+    {
+        CloseOtherPanels(demoUI);
+        if (demoUI != null) demoUI.SetOpen(true);
+        SetHomeToolbarVisible(false);
+    }
+
+    public void GoHome()
+    {
+        CloseOtherPanels(null);
+        SetHomeToolbarVisible(true);
+    }
+
+    // `except` is skipped so opening a panel never redundantly closes-then-reopens itself in the
+    // same call - the animated close schedules a delayed hide that must not fire after a reopen.
+    private void CloseOtherPanels(object except)
+    {
+        if (codexUI != null && !ReferenceEquals(codexUI, except))
+        {
+            codexUI.SetOpen(false);
+        }
+
+        if (laboratoryUI != null && !ReferenceEquals(laboratoryUI, except))
+        {
+            laboratoryUI.SetOpen(false);
+        }
+
+        if (profileUI != null && !ReferenceEquals(profileUI, except))
+        {
+            profileUI.SetOpen(false);
+        }
+
+        if (demoUI != null && !ReferenceEquals(demoUI, except))
+        {
+            demoUI.SetOpen(false);
+        }
+    }
+
+    private void SetHomeToolbarVisible(bool visible)
+    {
+        if (hudUI != null)
+        {
+            hudUI.SetToolbarVisible(visible);
+        }
+    }
+}
