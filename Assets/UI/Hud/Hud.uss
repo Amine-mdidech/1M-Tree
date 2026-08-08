@@ -63,6 +63,62 @@
     -unity-font-style: bold;
 }
 
+.xp-badge {
+    height: 32px;
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(24, 20, 18, 0.82);
+    -unity-background-scale-mode: stretch-to-fill;
+    border-radius: var(--radius-pill);
+    border-width: 1.5px;
+    border-color: rgba(255, 255, 255, 0.16);
+    padding: 0 var(--space-md) 0 var(--space-xs);
+    margin-left: var(--space-sm);
+}
+
+.xp-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: var(--space-xs);
+}
+
+.xp-level-label {
+    font-size: var(--font-size-xs);
+    color: var(--text-on-dark);
+    -unity-font-style: bold;
+    margin-right: var(--space-xs);
+    scale: 1 1;
+    transition-property: scale;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-out;
+}
+
+.xp-level-label--punch {
+    scale: 1.4 1.4;
+}
+
+.xp-bar-track {
+    width: 60px;
+    height: 6px;
+    border-radius: var(--radius-pill);
+    background-color: rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.xp-bar-fill {
+    height: 100%;
+    width: 0%;
+    background-color: rgb(140, 89, 217);
+    border-radius: var(--radius-pill);
+    transition-property: width;
+    transition-duration: 0.35s;
+    transition-timing-function: ease-out;
+}
+
+.xp-bar-fill--flash {
+    background-color: rgb(210, 180, 255);
+}
+
 .action-cluster {
     position: absolute;
     bottom: var(--space-xl);
