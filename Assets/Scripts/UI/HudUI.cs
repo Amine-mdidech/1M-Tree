@@ -22,6 +22,10 @@ public class HudUI : MonoBehaviour
     private Label vegetationLabel;
     private Label gemCountLabel;
     private int lastDisplayedGems = -1;
+    private VisualElement xpBarFill;
+    private Label xpLevelLabel;
+    private int lastDisplayedLevel = -1;
+    private int lastDisplayedXp = -1;
 
     private void Awake()
     {
@@ -71,17 +75,28 @@ public class HudUI : MonoBehaviour
         gemIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateGlyphSprite(64, PixelArtUtility.DrawGemGlyph));
         gemCountLabel = root.Q<Label>("gem-count-label");
 
+        VisualElement xpBadge = root.Q<VisualElement>("xp-badge");
+        xpBadge.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateTexturedPillBackground(140, 32, new Color(0.094f, 0.078f, 0.071f, 0.82f)));
+
+        VisualElement xpIcon = root.Q<VisualElement>("xp-icon");
+        xpIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateGlyphSprite(64, PixelArtUtility.DrawStarGlyph));
+
+        xpLevelLabel = root.Q<Label>("xp-level-label");
+        xpBarFill = root.Q<VisualElement>("xp-bar-fill");
+
         currencyBadge = root.Q<VisualElement>("currency-badge");
         currencyBadge.AddToClassList("currency-badge--enter");
         currencyBadge.schedule.Execute(() => currencyBadge.RemoveFromClassList("currency-badge--enter")).ExecuteLater(50);
 
         RefreshVegetationLabel();
         RefreshGemCount();
+        RefreshXp();
     }
 
     private void Update()
     {
         RefreshGemCount();
+        RefreshXp();
     }
 
     public void SetToolbarVisible(bool visible)
@@ -227,5 +242,46 @@ public class HudUI : MonoBehaviour
 
         floatingLabel.schedule.Execute(() => floatingLabel.AddToClassList("gem-float-label--animate")).ExecuteLater(10);
         floatingLabel.schedule.Execute(() => floatingLabel.RemoveFromHierarchy()).ExecuteLater(800);
+    }
+
+    private void RefreshXp()
+    {
+        if (xpBarFill == null || xpLevelLabel == null || PlayerLevel.Instance == null)
+        {
+            return;
+        }
+
+        int currentLevel = PlayerLevel.Instance.Level;
+        int currentXp = PlayerLevel.Instance.CurrentXp;
+        int xpToNextLevel = PlayerLevel.Instance.XpToNextLevel;
+
+        if (currentLevel == lastDisplayedLevel && currentXp == lastDisplayedXp)
+        {
+            return;
+        }
+
+        bool leveledUp = lastDisplayedLevel >= 0 && currentLevel > lastDisplayedLevel;
+
+        lastDisplayedLevel = currentLevel;
+        lastDisplayedXp = currentXp;
+
+        xpLevelLabel.text = $"Lv {currentLevel}";
+
+        float fillPercent = xpToNextLevel > 0 ? Mathf.Clamp01((float)currentXp / xpToNextLevel) * 100f : 0f;
+        xpBarFill.style.width = Length.Percent(fillPercent);
+
+        if (leveledUp)
+        {
+            AnimateLevelUp();
+        }
+    }
+
+    private void AnimateLevelUp()
+    {
+        xpBarFill.AddToClassList("xp-bar-fill--flash");
+        xpBarFill.schedule.Execute(() => xpBarFill.RemoveFromClassList("xp-bar-fill--flash")).ExecuteLater(300);
+
+        xpLevelLabel.AddToClassList("xp-level-label--punch");
+        xpLevelLabel.schedule.Execute(() => xpLevelLabel.RemoveFromClassList("xp-level-label--punch")).ExecuteLater(200);
     }
 }
