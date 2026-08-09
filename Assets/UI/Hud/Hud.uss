@@ -4,17 +4,24 @@
     height: 100%;
 }
 
-.currency-badge {
+.top-left-cluster {
     position: absolute;
     top: var(--space-xl);
     left: var(--space-xl);
     flex-direction: row;
     align-items: center;
+}
+
+.currency-badge {
+    height: 32px;
+    flex-direction: row;
+    align-items: center;
     background-color: rgba(24, 20, 18, 0.82);
+    -unity-background-scale-mode: stretch-to-fill;
     border-radius: var(--radius-pill);
     border-width: 1.5px;
     border-color: rgba(255, 255, 255, 0.16);
-    padding: var(--space-xs) var(--space-md) var(--space-xs) var(--space-xs);
+    padding: 0 var(--space-md) 0 var(--space-xs);
     opacity: 1;
     translate: 0 0;
     scale: 1 1;

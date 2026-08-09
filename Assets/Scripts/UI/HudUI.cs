@@ -17,6 +17,7 @@ public class HudUI : MonoBehaviour
     private UIDocument uiDocument;
     private VisualElement actionCluster;
     private VisualElement demoButtonElement;
+    private VisualElement topLeftCluster;
     private VisualElement currencyBadge;
     private Button vegetationButton;
     private Label vegetationLabel;
@@ -84,6 +85,7 @@ public class HudUI : MonoBehaviour
         xpLevelLabel = root.Q<Label>("xp-level-label");
         xpBarFill = root.Q<VisualElement>("xp-bar-fill");
 
+        topLeftCluster = root.Q<VisualElement>("top-left-cluster");
         currencyBadge = root.Q<VisualElement>("currency-badge");
         currencyBadge.AddToClassList("currency-badge--enter");
         currencyBadge.schedule.Execute(() => currencyBadge.RemoveFromClassList("currency-badge--enter")).ExecuteLater(50);
@@ -113,9 +115,9 @@ public class HudUI : MonoBehaviour
             demoButtonElement.style.display = display;
         }
 
-        if (currencyBadge != null)
+        if (topLeftCluster != null)
         {
-            currencyBadge.style.display = display;
+            topLeftCluster.style.display = display;
         }
     }
 

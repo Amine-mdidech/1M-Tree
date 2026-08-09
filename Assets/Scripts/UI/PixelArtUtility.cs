@@ -354,6 +354,55 @@ public static class PixelArtUtility
         return ToSprite(buffer.ToTexture());
     }
 
+    // Reusable material-grain pass: nudges each already-opaque pixel's brightness by a small random
+    // amount so flat fills read as a textured surface instead of a perfectly flat color swatch.
+    // Skips fully-transparent pixels so it never "dirties" empty canvas area around a shape.
+    private static void ApplyGrain(PixelBuffer buffer, int seed, float strength)
+    {
+        System.Random rng = new System.Random(seed);
+        for (int i = 0; i < buffer.Pixels.Length; i++)
+        {
+            Color pixel = buffer.Pixels[i];
+            if (pixel.a <= 0f)
+            {
+                continue;
+            }
+
+            float jitter = ((float)rng.NextDouble() - 0.5f) * strength;
+            buffer.Pixels[i] = new Color(
+                Mathf.Clamp01(pixel.r + jitter),
+                Mathf.Clamp01(pixel.g + jitter),
+                Mathf.Clamp01(pixel.b + jitter),
+                pixel.a);
+        }
+    }
+
+    // Small tileable-ish textured fill for compact flat-color HUD chrome (badges/pills) that isn't
+    // large enough to warrant the full wood/parchment/stone Perlin textures — a soft top-to-bottom
+    // gradient (reads as a rounded/lit surface instead of a flat swatch) plus the same grain pass.
+    public static Texture2D CreateTexturedPillBackground(int width, int height, Color baseColor)
+    {
+        PixelBuffer buffer = new PixelBuffer(width, height);
+
+        Color topColor = Color.Lerp(baseColor, Color.white, 0.12f);
+        Color bottomColor = baseColor * 0.82f;
+        bottomColor.a = baseColor.a;
+
+        for (int y = 0; y < height; y++)
+        {
+            float t = y / (float)Mathf.Max(1, height - 1);
+            Color rowColor = Color.Lerp(topColor, bottomColor, t);
+            for (int x = 0; x < width; x++)
+            {
+                buffer.Set(x, y, rowColor);
+            }
+        }
+
+        ApplyGrain(buffer, baseColor.GetHashCode(), 0.05f);
+
+        return buffer.ToTexture();
+    }
+
     public static void DrawBookGlyph(PixelBuffer canvas)
     {
         int size = canvas.Width;

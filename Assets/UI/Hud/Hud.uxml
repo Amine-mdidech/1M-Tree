@@ -2,15 +2,17 @@
     <ui:Style src="project://database/Assets/UI/Theme/Theme.uss" />
     <ui:Style src="project://database/Assets/UI/Hud/Hud.uss" />
     <ui:VisualElement name="hud-root" class="hud-root theme-scope" picking-mode="Ignore">
-        <ui:VisualElement name="currency-badge" class="currency-badge" picking-mode="Ignore">
-            <ui:VisualElement name="gem-icon" class="gem-icon" picking-mode="Ignore" />
-            <ui:Label name="gem-count-label" text="0" class="gem-count-label" picking-mode="Ignore" />
-        </ui:VisualElement>
-        <ui:VisualElement name="xp-badge" class="xp-badge" picking-mode="Ignore">
-            <ui:VisualElement name="xp-icon" class="xp-icon" picking-mode="Ignore" />
-            <ui:Label name="xp-level-label" text="Lv 1" class="xp-level-label" picking-mode="Ignore" />
-            <ui:VisualElement name="xp-bar-track" class="xp-bar-track" picking-mode="Ignore">
-                <ui:VisualElement name="xp-bar-fill" class="xp-bar-fill" picking-mode="Ignore" />
+        <ui:VisualElement name="top-left-cluster" class="top-left-cluster">
+            <ui:VisualElement name="currency-badge" class="currency-badge" picking-mode="Ignore">
+                <ui:VisualElement name="gem-icon" class="gem-icon" picking-mode="Ignore" />
+                <ui:Label name="gem-count-label" text="0" class="gem-count-label" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="xp-badge" class="xp-badge" picking-mode="Ignore">
+                <ui:VisualElement name="xp-icon" class="xp-icon" picking-mode="Ignore" />
+                <ui:Label name="xp-level-label" text="Lv 1" class="xp-level-label" picking-mode="Ignore" />
+                <ui:VisualElement name="xp-bar-track" class="xp-bar-track" picking-mode="Ignore">
+                    <ui:VisualElement name="xp-bar-fill" class="xp-bar-fill" picking-mode="Ignore" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:Button name="demo-button" class="icon-button demo-icon-button" />
