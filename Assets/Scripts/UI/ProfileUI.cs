@@ -17,6 +17,8 @@ public class ProfileUI : MonoBehaviour
     private UIDocument uiDocument;
     private VisualElement profileRoot;
     private VisualElement profileFrame;
+    private Label levelValueLabel;
+    private Label landValueLabel;
     private Label gemsValueLabel;
     private Label treesValueLabel;
     private Label speciesValueLabel;
@@ -44,6 +46,8 @@ public class ProfileUI : MonoBehaviour
         profileContent.style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateParchmentTexture(256, 256, new Color(0.94f, 0.87f, 0.72f)));
 
+        levelValueLabel = root.Q<Label>("level-value");
+        landValueLabel = root.Q<Label>("land-value");
         gemsValueLabel = root.Q<Label>("gems-value");
         treesValueLabel = root.Q<Label>("trees-value");
         speciesValueLabel = root.Q<Label>("species-value");
@@ -51,6 +55,10 @@ public class ProfileUI : MonoBehaviour
         milestonesValueLabel = root.Q<Label>("milestones-value");
         dailyCapValueLabel = root.Q<Label>("daily-cap-value");
 
+        root.Q<VisualElement>("level-icon").style.backgroundImage = new StyleBackground(
+            PixelArtUtility.CreateBadgedGlyphSprite(28, new Color(0.55f, 0.35f, 0.85f), PixelArtUtility.DrawStarGlyph));
+        root.Q<VisualElement>("land-icon").style.backgroundImage = new StyleBackground(
+            PixelArtUtility.CreateBadgedGlyphSprite(28, new Color(0.4f, 0.65f, 0.35f), PixelArtUtility.DrawTerritoryGlyph));
         root.Q<VisualElement>("gems-icon").style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateBadgedGlyphSprite(28, new Color(1f, 0.8f, 0.28f), PixelArtUtility.DrawGemGlyph));
         root.Q<VisualElement>("trees-icon").style.backgroundImage = new StyleBackground(
@@ -122,6 +130,16 @@ public class ProfileUI : MonoBehaviour
 
     private void Refresh()
     {
+        if (PlayerLevel.Instance != null)
+        {
+            levelValueLabel.text = PlayerLevel.Instance.Level.ToString();
+        }
+
+        if (LandManager.Instance != null)
+        {
+            landValueLabel.text = $"{LandManager.Instance.CurrentTierIndex + 1} / {LandManager.Instance.TierCount}";
+        }
+
         if (milestoneManager != null)
         {
             gemsValueLabel.text = milestoneManager.Gems.ToString();

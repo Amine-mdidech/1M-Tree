@@ -9,6 +9,7 @@ public class DemoUI : MonoBehaviour
     private const int GemGrant = 100;
 
     [SerializeField] private MilestoneManager milestoneManager;
+    [SerializeField] private PlayerLevel playerLevel;
     [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private TreePlanter treePlanter;
     [SerializeField] private ResearchManager researchManager;
@@ -46,6 +47,7 @@ public class DemoUI : MonoBehaviour
 
         root.Q<Button>("close-button").clicked += OnCloseButtonClicked;
         root.Q<Button>("add-gems-button").clicked += OnAddGemsClicked;
+        root.Q<Button>("level-up-button").clicked += OnLevelUpClicked;
         root.Q<Button>("unlock-species-button").clicked += OnUnlockSpeciesClicked;
         root.Q<Button>("unlock-vegetation-button").clicked += OnUnlockVegetationClicked;
         root.Q<Button>("finish-research-button").clicked += OnFinishResearchClicked;
@@ -124,6 +126,20 @@ public class DemoUI : MonoBehaviour
 
         milestoneManager.AddGems(GemGrant);
         SetStatus($"+{GemGrant} gems.");
+    }
+
+    private void OnLevelUpClicked()
+    {
+        if (playerLevel == null)
+        {
+            return;
+        }
+
+        // Top up exactly to the XP threshold instead of adding a big flat chunk, so this always
+        // triggers exactly one level-up regardless of how much XP is already banked.
+        int xpNeeded = playerLevel.XpToNextLevel - playerLevel.CurrentXp;
+        playerLevel.AddXp(xpNeeded);
+        SetStatus($"Leveled up to level {playerLevel.Level}.");
     }
 
     private void OnUnlockSpeciesClicked()
@@ -236,7 +252,9 @@ public class DemoUI : MonoBehaviour
             return;
         }
 
+        // DebugDeleteSave() now reloads the scene as its last step to reset every manager back to
+        // a fresh game - nothing after this call can safely touch `this` (or any other object from
+        // the scene being reloaded), so it must be the last thing this method does.
         saveManager.DebugDeleteSave();
-        SetStatus("Save deleted — restart Play mode for a fresh game.");
     }
 }

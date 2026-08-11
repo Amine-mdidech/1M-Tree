@@ -15,11 +15,25 @@ public class CameraPanController : MonoBehaviour
     [SerializeField] private float mapHalfWidth = 25f;
     [SerializeField] private float mapHalfHeight = 25f;
     [SerializeField] private float treeClickRadius = 0.6f;
+    [SerializeField] private float creatureClickRadius = 0.5f;
 
     private bool isPressed;
     private bool isDragging;
     private Vector2 pressScreenPosition;
     private Vector2 lastScreenPosition;
+
+    public float MapHalfWidth => mapHalfWidth;
+    public float MapHalfHeight => mapHalfHeight;
+    public Camera TargetCamera => targetCamera;
+    public Vector3 CameraWorldPosition => targetCamera.transform.position;
+    public float ViewportHalfWidth => targetCamera.orthographicSize * targetCamera.aspect;
+    public float ViewportHalfHeight => targetCamera.orthographicSize;
+
+    public void JumpToWorldPosition(Vector2 worldPosition)
+    {
+        Vector3 target = new Vector3(worldPosition.x, worldPosition.y, targetCamera.transform.position.z);
+        targetCamera.transform.position = ClampToMapBounds(target);
+    }
 
     private void Awake()
     {
@@ -100,17 +114,26 @@ public class CameraPanController : MonoBehaviour
 
             if (!handledByLab)
             {
-                PlantedTree tappedTree = FindTreeNear(worldPoint);
-                if (tappedTree != null)
+                CreatureVisual tappedCreature = FindCreatureNear(worldPoint);
+                if (tappedCreature != null)
                 {
-                    if (!tappedTree.IsMature && treeBoostUI != null)
-                    {
-                        treeBoostUI.Open(tappedTree);
-                    }
+                    AudioManager.Instance?.PlayTap();
+                    tappedCreature.ShowNamePopup();
                 }
-                else if (treePlanter != null)
+                else
                 {
-                    treePlanter.PlantTree(worldPoint);
+                    PlantedTree tappedTree = FindTreeNear(worldPoint);
+                    if (tappedTree != null)
+                    {
+                        if (!tappedTree.IsMature && treeBoostUI != null)
+                        {
+                            treeBoostUI.Open(tappedTree);
+                        }
+                    }
+                    else if (treePlanter != null)
+                    {
+                        treePlanter.PlantTree(worldPoint);
+                    }
                 }
             }
         }
@@ -130,6 +153,24 @@ public class CameraPanController : MonoBehaviour
             if (distance <= closestDistance)
             {
                 closest = tree;
+                closestDistance = distance;
+            }
+        }
+
+        return closest;
+    }
+
+    private CreatureVisual FindCreatureNear(Vector3 worldPosition)
+    {
+        CreatureVisual closest = null;
+        float closestDistance = creatureClickRadius;
+
+        foreach (CreatureVisual creature in CreatureVisual.ActiveCreatures)
+        {
+            float distance = Vector2.Distance(creature.transform.position, worldPosition);
+            if (distance <= closestDistance)
+            {
+                closest = creature;
                 closestDistance = distance;
             }
         }

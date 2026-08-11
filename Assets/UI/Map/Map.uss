@@ -1,0 +1,81 @@
+.map-root {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(6, 8, 14, 0.85);
+    padding: var(--space-sm);
+    align-items: center;
+    justify-content: center;
+}
+
+.map-frame {
+    width: 100%;
+    height: 100%;
+    -unity-background-scale-mode: scale-and-crop;
+    border-radius: var(--radius-lg);
+    border-top-width: var(--border-thick);
+    border-left-width: var(--border-thick);
+    border-right-width: var(--border-shadow);
+    border-bottom-width: var(--border-shadow);
+    border-top-color: var(--color-gold-light);
+    border-left-color: var(--color-gold-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    padding: var(--space-xs);
+    transition-property: opacity, scale;
+    transition-duration: 0.18s;
+    transition-timing-function: ease-out;
+    align-items: center;
+}
+
+.map-header {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(35, 45, 58);
+    border-radius: var(--radius-md);
+    border-width: var(--border-thin);
+    border-color: rgb(20, 26, 34);
+    padding: var(--space-xs) var(--space-sm);
+    margin-bottom: var(--space-xs);
+    flex-shrink: 0;
+}
+
+.map-title {
+    font-size: var(--font-size-lg);
+    color: rgb(230, 238, 245);
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1;
+    -unity-text-outline-color: var(--color-ink);
+}
+
+.map-close-button {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-pill);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-thick);
+    border-bottom-width: var(--border-thick);
+    border-top-color: var(--color-danger-light);
+    border-left-color: var(--color-danger-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    background-color: var(--color-danger);
+    color: var(--text-on-dark);
+    font-size: var(--font-size-sm);
+    -unity-font-style: bold;
+}
+
+.map-close-button:active {
+    scale: 0.92 0.92;
+}
+
+.map-view {
+    flex-grow: 1;
+    width: 100%;
+    border-radius: var(--radius-md);
+    border-width: var(--border-thin);
+    border-color: rgb(70, 90, 110);
+    -unity-background-scale-mode: scale-to-fit;
+}

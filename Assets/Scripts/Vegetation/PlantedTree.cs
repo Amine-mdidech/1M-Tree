@@ -10,11 +10,26 @@ public class PlantedTree : MonoBehaviour
     // they need "all planted trees" - a query that used to run on every tap and every save.
     public static readonly List<PlantedTree> ActiveTrees = new List<PlantedTree>();
 
+    // Just above GroundManager's rock props (-99) and far below every other sprite in the game, so
+    // the patch always reads as ground cover - under the tree/creatures, over the dirt and rocks.
+    private const int GroundPatchSortingOrder = -98;
+    private const int GroundPatchTextureSize = 64;
+    // Comfortably bigger than even a mature tree's own canopy sprite footprint (~1.15 world units
+    // across) - otherwise the patch's solid center sits entirely hidden behind the canopy and only
+    // a near-invisible feathered fringe pokes out past it.
+    private const float GroundPatchWorldDiameter = 2.6f;
+    private static readonly Color YoungPatchColor = new Color(0.55f, 0.78f, 0.35f, 0.85f);
+    // Deliberately no darker than the old half-mature midpoint - a fully dark, near-black green
+    // read as too heavy/muddy against the bright gamified dirt; this stays readably "grass" even
+    // at full maturity.
+    private static readonly Color MaturePatchColor = new Color(0.35f, 0.58f, 0.26f, 0.88f);
+
     [SerializeField] private VegetationDefinition vegetation;
     [SerializeField] private float elapsedSecondsInStage;
     [SerializeField] private int currentStageIndex;
 
     private SpriteRenderer spriteRenderer;
+    private SpriteRenderer groundPatchRenderer;
 
     public VegetationDefinition Vegetation => vegetation;
     public int CurrentStageIndex => currentStageIndex;
@@ -113,12 +128,24 @@ public class PlantedTree : MonoBehaviour
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        BuildGroundPatch();
 
         // Registered in Awake/OnDestroy rather than OnEnable/OnDisable: RefreshEnabledState()
         // below deliberately sets `enabled = false` once a tree matures (to stop paying for
         // per-frame Update calls), and enabled-toggling also fires OnDisable - registering there
         // would silently drop every mature tree from the registry the moment it finished growing.
         ActiveTrees.Add(this);
+    }
+
+    private void BuildGroundPatch()
+    {
+        GameObject patchGo = new GameObject("GroundPatch");
+        patchGo.transform.SetParent(transform, worldPositionStays: false);
+        patchGo.transform.localPosition = Vector3.zero;
+        patchGo.transform.localRotation = Quaternion.identity;
+
+        groundPatchRenderer = patchGo.AddComponent<SpriteRenderer>();
+        groundPatchRenderer.sortingOrder = GroundPatchSortingOrder;
     }
 
     private void OnDestroy()
@@ -136,7 +163,7 @@ public class PlantedTree : MonoBehaviour
         int stageCount = vegetation.growthStages.Length;
         float t = stageCount <= 1 ? 1f : (float)currentStageIndex / (stageCount - 1);
 
-        float scale = Mathf.Lerp(1f, 2f, t);
+        float scale = Mathf.Lerp(1.5f, 3f, t);
         transform.localScale = new Vector3(scale, scale, 1f);
         ScalePunch.Punch(transform, scale);
 
@@ -157,6 +184,36 @@ public class PlantedTree : MonoBehaviour
                 DestroyImmediate(oldSprite.texture);
                 DestroyImmediate(oldSprite);
             }
+        }
+
+        UpdateGroundPatch(t, scale);
+    }
+
+    // Patch color eases from bright young-growth green to dark mature green as the tree grows, the
+    // same t used for the tree's own foliage color above. World size is kept constant regardless of
+    // stage (a "small radius" per the design, not a growing canopy) by counter-scaling against the
+    // parent's own growth-stage scale - the same trick CreatureVisual's world-space name popup uses
+    // to stay a fixed size under a scaled-up/down parent.
+    private void UpdateGroundPatch(float t, float parentScale)
+    {
+        if (groundPatchRenderer == null)
+        {
+            return;
+        }
+
+        float inverseScale = parentScale != 0f ? 1f / parentScale : 1f;
+        groundPatchRenderer.transform.localScale = new Vector3(inverseScale, inverseScale, 1f);
+
+        Color patchColor = Color.Lerp(YoungPatchColor, MaturePatchColor, t);
+        float pixelsPerUnit = GroundPatchTextureSize / GroundPatchWorldDiameter;
+
+        Sprite oldPatchSprite = groundPatchRenderer.sprite;
+        groundPatchRenderer.sprite = PixelArtUtility.CreateGroundPatchSprite(GroundPatchTextureSize, patchColor, pixelsPerUnit);
+
+        if (oldPatchSprite != null)
+        {
+            DestroyImmediate(oldPatchSprite.texture);
+            DestroyImmediate(oldPatchSprite);
         }
     }
 }

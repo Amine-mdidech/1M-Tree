@@ -122,6 +122,7 @@ public class MilestoneManager : MonoBehaviour
 
         Debug.Log($"Milestone completed: {milestone.id} (+{milestone.rewardDailyCapBonus} daily cap, +{milestone.rewardGems} gems).");
         AudioManager.Instance?.PlayMilestone();
+        PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerMilestone);
         Handheld.Vibrate();
     }
 }

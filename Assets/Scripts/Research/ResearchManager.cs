@@ -164,6 +164,7 @@ public class ResearchManager : MonoBehaviour
             treePlanter.AddUnlockedVegetation(vegetation);
             Debug.Log($"Research complete: {vegetation.displayName} unlocked!");
             AudioManager.Instance?.PlayUnlock();
+            PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerUnlock);
             Handheld.Vibrate();
             return;
         }
@@ -178,6 +179,7 @@ public class ResearchManager : MonoBehaviour
         emergenceSystem.AddUnlockedSpecies(species);
         Debug.Log($"Research complete: {species.displayName} unlocked!");
         AudioManager.Instance?.PlayUnlock();
+        PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerUnlock);
         Handheld.Vibrate();
     }
 

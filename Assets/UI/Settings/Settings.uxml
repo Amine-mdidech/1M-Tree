@@ -1,0 +1,24 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/Theme/Theme.uss" />
+    <ui:Style src="project://database/Assets/UI/Settings/Settings.uss" />
+    <ui:VisualElement name="settings-root" class="settings-root theme-scope">
+        <ui:VisualElement name="settings-frame" class="settings-frame">
+            <ui:VisualElement name="settings-header" class="settings-header">
+                <ui:Label name="settings-title" text="Settings" class="settings-title" />
+                <ui:Button name="close-button" text="X" class="settings-close-button" />
+            </ui:VisualElement>
+            <ui:VisualElement name="settings-content" class="settings-content">
+                <ui:VisualElement class="sound-row">
+                    <ui:Label text="Music" class="sound-row-label" />
+                    <ui:Slider name="music-volume-slider" low-value="0" high-value="1" class="sound-row-slider" />
+                    <ui:Button name="music-mute-button" text="Mute" class="mute-button" />
+                </ui:VisualElement>
+                <ui:VisualElement class="sound-row">
+                    <ui:Label text="Sound Effects" class="sound-row-label" />
+                    <ui:Slider name="sfx-volume-slider" low-value="0" high-value="1" class="sound-row-slider" />
+                    <ui:Button name="sfx-mute-button" text="Mute" class="mute-button" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

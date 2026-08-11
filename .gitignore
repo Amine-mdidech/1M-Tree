@@ -32,5 +32,12 @@
 /.claude/settings.local.json
 /.claude/scheduled_tasks.lock
 
+# Local secrets (never commit API keys)
+/.env.local
+
+# Unity crash-recovery scene backups (auto-generated, not real work)
+/Assets/_Recovery/
+/Assets/_Recovery.meta
+
 # Crashlytics generated file
 crashlytics-build.properties

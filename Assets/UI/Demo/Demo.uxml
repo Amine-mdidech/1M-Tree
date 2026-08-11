@@ -9,6 +9,7 @@
             </ui:VisualElement>
             <ui:ScrollView name="demo-scroll" class="demo-scroll">
                 <ui:Button name="add-gems-button" text="+100 Gems" class="demo-button" />
+                <ui:Button name="level-up-button" text="Level Up" class="demo-button" />
                 <ui:Button name="unlock-species-button" text="Unlock All Species" class="demo-button" />
                 <ui:Button name="unlock-vegetation-button" text="Unlock All Plants" class="demo-button" />
                 <ui:Button name="finish-research-button" text="Finish Active Research" class="demo-button" />

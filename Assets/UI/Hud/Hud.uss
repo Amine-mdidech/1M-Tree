@@ -30,6 +30,13 @@
     transition-timing-function: ease-out-cubic, ease-out-cubic, ease-out;
 }
 
+.vegetation-cluster {
+    height: 32px;
+    margin-left: var(--space-sm);
+    flex-direction: row;
+    align-items: center;
+}
+
 .currency-badge--enter {
     opacity: 0;
     translate: -160px -120px;
@@ -132,11 +139,6 @@
     right: var(--space-xl);
     flex-direction: row;
     align-items: center;
-    background-color: rgba(24, 20, 18, 0.82);
-    border-radius: var(--radius-pill);
-    border-width: 1.5px;
-    border-color: rgba(255, 255, 255, 0.16);
-    padding: var(--space-xs) var(--space-sm);
 }
 
 .icon-button {
@@ -170,10 +172,126 @@
     padding: var(--space-xs);
 }
 
+.minimap-cluster {
+    position: absolute;
+    bottom: var(--space-xl);
+    left: var(--space-xl);
+    flex-direction: column;
+    align-items: center;
+}
+
+.minimap-view {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-md);
+    border-width: 2px;
+    border-color: rgba(255, 255, 255, 0.25);
+    background-color: rgba(10, 12, 8, 0.6);
+    -unity-background-scale-mode: stretch-to-fill;
+}
+
+.land-lock-popup-root {
+    display: none;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(6, 8, 14, 0.75);
+    align-items: center;
+    justify-content: center;
+}
+
+.land-lock-popup-frame {
+    width: 300px;
+    background-color: var(--color-ink);
+    border-radius: var(--radius-lg);
+    border-top-width: var(--border-thick);
+    border-left-width: var(--border-thick);
+    border-right-width: var(--border-shadow);
+    border-bottom-width: var(--border-shadow);
+    border-top-color: var(--color-gold-light);
+    border-left-color: var(--color-gold-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    padding: var(--space-lg);
+    align-items: center;
+}
+
+.land-lock-popup-title {
+    font-size: var(--font-size-lg);
+    color: var(--color-gold);
+    -unity-font-style: bold;
+    margin-bottom: var(--space-sm);
+}
+
+.land-lock-popup-message {
+    font-size: var(--font-size-sm);
+    color: var(--text-on-dark);
+    white-space: normal;
+    -unity-text-align: middle-center;
+    margin-bottom: var(--space-md);
+}
+
+.land-lock-popup-buttons {
+    flex-direction: row;
+}
+
+.land-lock-unlock-button {
+    margin-right: var(--space-sm);
+    height: 32px;
+    padding: 0 var(--space-md);
+    border-radius: var(--radius-md);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-thick);
+    border-bottom-width: var(--border-thick);
+    border-top-color: var(--color-success-light);
+    border-left-color: var(--color-success-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    background-color: var(--color-success);
+    color: var(--text-on-dark);
+    font-size: var(--font-size-sm);
+    -unity-font-style: bold;
+}
+
+.land-lock-unlock-button:active {
+    scale: 0.95 0.95;
+}
+
+.land-lock-unlock-button--locked {
+    border-top-color: var(--color-locked);
+    border-left-color: var(--color-locked);
+    background-color: var(--color-locked-dark);
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.land-lock-close-button {
+    height: 32px;
+    padding: 0 var(--space-md);
+    border-radius: var(--radius-md);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-thick);
+    border-bottom-width: var(--border-thick);
+    border-top-color: var(--color-neutral-light);
+    border-left-color: var(--color-neutral-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    background-color: var(--color-neutral);
+    color: var(--text-on-dark);
+    font-size: var(--font-size-sm);
+    -unity-font-style: bold;
+}
+
+.land-lock-close-button:active {
+    scale: 0.95 0.95;
+}
+
 .vegetation-label {
     margin-right: var(--space-xs);
     padding: 3px var(--space-sm);
     background-color: rgba(0, 0, 0, 0.2);
+    -unity-background-scale-mode: stretch-to-fill;
     border-radius: var(--radius-pill);
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.2);

@@ -50,7 +50,7 @@ public static class PixelArtUtility
         }
     }
 
-    private static void FillCircle(PixelBuffer buffer, Vector2 centerPixel, float radius, Color fill, Color border, int borderWidth)
+    public static void FillCircle(PixelBuffer buffer, Vector2 centerPixel, float radius, Color fill, Color border, int borderWidth)
     {
         int xMin = Mathf.Max(0, Mathf.FloorToInt(centerPixel.x - radius));
         int xMax = Mathf.Min(buffer.Width - 1, Mathf.CeilToInt(centerPixel.x + radius));
@@ -134,7 +134,7 @@ public static class PixelArtUtility
         return Mathf.Sqrt(qx * qx + qy * qy) - radius;
     }
 
-    private static void FillRect(PixelBuffer buffer, RectInt rect, Color color)
+    public static void FillRect(PixelBuffer buffer, RectInt rect, Color color)
     {
         int xMin = Mathf.Max(0, rect.xMin);
         int xMax = Mathf.Min(buffer.Width - 1, rect.xMax - 1);
@@ -309,6 +309,46 @@ public static class PixelArtUtility
         return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f), pixelsPerUnit);
     }
 
+    // A soft-edged ground decal (solid center, feathered falloff toward the rim) rather than a
+    // hard-edged FillCircle - a crisp circle would read as a sticker pasted on the dirt, while the
+    // feather lets it blend into the surrounding ground texture the way a real patch of growth
+    // would.
+    public static Sprite CreateGroundPatchSprite(int size, Color color, float pixelsPerUnit)
+    {
+        PixelBuffer buffer = new PixelBuffer(size, size);
+        Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
+        float radius = size * 0.5f;
+        const float solidFraction = 0.55f;
+
+        for (int y = 0; y < size; y++)
+        {
+            for (int x = 0; x < size; x++)
+            {
+                float t = Vector2.Distance(new Vector2(x + 0.5f, y + 0.5f), center) / radius;
+                float alpha;
+                if (t >= 1f)
+                {
+                    alpha = 0f;
+                }
+                else if (t < solidFraction)
+                {
+                    alpha = 1f;
+                }
+                else
+                {
+                    alpha = 1f - Mathf.SmoothStep(0f, 1f, (t - solidFraction) / (1f - solidFraction));
+                }
+
+                Color pixelColor = color;
+                pixelColor.a = alpha * color.a;
+                buffer.Set(x, y, pixelColor);
+            }
+        }
+
+        ApplyGrain(buffer, color.GetHashCode(), 0.05f);
+        return ToSprite(buffer.ToTexture(), pixelsPerUnit);
+    }
+
     public static Sprite CreateDotSprite(int size, Color color)
     {
         PixelBuffer buffer = new PixelBuffer(size, size);
@@ -349,6 +389,13 @@ public static class PixelArtUtility
         FillCircle(buffer, new Vector2(size * 0.52f, size * 0.46f), size * 0.46f, shadeColor, Color.clear, 0);
         FillCircle(buffer, new Vector2(size * 0.48f, size * 0.5f), size * 0.42f, badgeColor, Color.clear, 0);
         FillCircle(buffer, new Vector2(size * 0.34f, size * 0.36f), size * 0.14f, highlightColor, Color.clear, 0);
+
+        // Subtle per-pixel grain on top of the flat fill/shade/highlight discs above — a perfectly
+        // flat color reads as "1-dimensional"/plasticky; a little brightness jitter gives it a
+        // brushed-material feel instead, closer to how a real painted/anodized badge catches light
+        // unevenly. Seeded from the badge color so it's deterministic (same color -> same grain,
+        // no flicker on regeneration) while still varying visibly badge-to-badge.
+        ApplyGrain(buffer, badgeColor.GetHashCode(), 0.06f);
 
         drawGlyph?.Invoke(buffer);
         return ToSprite(buffer.ToTexture());
@@ -522,6 +569,49 @@ public static class PixelArtUtility
         FillRect(canvas, new RectInt((int)(size * 0.05f), (int)(size * 0.44f), (int)(size * 0.16f), (int)(size * 0.12f)), tool);
         FillRect(canvas, new RectInt((int)(size * 0.79f), (int)(size * 0.44f), (int)(size * 0.16f), (int)(size * 0.12f)), tool);
         FillCircle(canvas, new Vector2(size * 0.5f, size * 0.5f), size * 0.12f, accent, accent, 0);
+    }
+
+    public static void DrawSpeakerGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color body = new Color(0.92f, 0.92f, 0.95f);
+        Color wave = new Color(0.55f, 0.85f, 0.95f);
+
+        FillRect(canvas, new RectInt((int)(size * 0.14f), (int)(size * 0.38f), (int)(size * 0.16f), (int)(size * 0.24f)), body);
+        FillSpeakerCone(canvas, size, body);
+        FillCircle(canvas, new Vector2(size * 0.62f, size * 0.5f), size * 0.14f, Color.clear, wave, Mathf.Max(2, size / 24));
+        FillCircle(canvas, new Vector2(size * 0.62f, size * 0.5f), size * 0.26f, Color.clear, wave, Mathf.Max(2, size / 24));
+    }
+
+    private static void FillSpeakerCone(PixelBuffer canvas, int size, Color fill)
+    {
+        int xMin = (int)(size * 0.3f);
+        int xMax = (int)(size * 0.5f);
+        int centerY = (int)(size * 0.5f);
+        int halfHeightAtLeft = (int)(size * 0.12f);
+        int halfHeightAtRight = (int)(size * 0.28f);
+
+        for (int x = xMin; x <= xMax; x++)
+        {
+            float t = (x - xMin) / (float)Mathf.Max(1, xMax - xMin);
+            int halfHeight = Mathf.RoundToInt(Mathf.Lerp(halfHeightAtLeft, halfHeightAtRight, t));
+
+            for (int y = centerY - halfHeight; y <= centerY + halfHeight; y++)
+            {
+                canvas.Blend(x, y, fill);
+            }
+        }
+    }
+
+    public static void DrawTerritoryGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color fill = new Color(0.55f, 0.75f, 0.4f);
+        Color border = new Color(0.3f, 0.45f, 0.22f);
+
+        FillRect(canvas, new RectInt((int)(size * 0.18f), (int)(size * 0.18f), (int)(size * 0.64f), (int)(size * 0.64f)), fill);
+        FillRect(canvas, new RectInt((int)(size * 0.18f), (int)(size * 0.18f), (int)(size * 0.64f), Mathf.Max(2, size / 16)), border);
+        FillRect(canvas, new RectInt((int)(size * 0.18f), (int)(size * 0.18f), Mathf.Max(2, size / 16), (int)(size * 0.64f)), border);
     }
 
     public static Sprite CreateVegetationSprite(int size, VegetationDefinition.PlantSilhouette silhouette, Color foliageColor, Color trunkColor, int seed)
@@ -708,80 +798,226 @@ public static class PixelArtUtility
         DrawFoliageCluster(canvas, new Vector2(size * 0.5f, size * 0.66f), size * 0.3f, 5, foliageColor, rng);
     }
 
-    public static Sprite CreateHerbivoreSprite(int size, Color bodyColor)
+    public enum AnimalEarStyle { Round, Pointed, Long, Flappy }
+    public enum AnimalOrnamentStyle { None, ThinHorns, CurvedHorns, Antlers, Tusks }
+    public enum AnimalTailStyle { Nub, Bushy, Tuft, Long }
+    public enum AnimalPattern { None, Stripes, Spots }
+
+    // One flexible quadruped generator replaces what used to be several near-duplicate
+    // per-species/per-category methods (Gazelle, Wolf, generic herbivore, generic predator).
+    // Every species gets its own combination of traits instead of two shared silhouettes, and —
+    // since leg drawing now takes a walkPhase — every species gets a 2-frame walk cycle for free.
+    public struct QuadrupedTraits
+    {
+        public Color bodyColor;
+        public AnimalEarStyle earStyle;
+        public AnimalOrnamentStyle ornamentStyle;
+        public AnimalTailStyle tailStyle;
+        public bool hasMane;
+        public bool hasFangs;
+        public AnimalPattern pattern;
+        public Color patternColor;
+    }
+
+    public static Sprite CreateQuadrupedSprite(int size, QuadrupedTraits traits, int walkPhase)
     {
         PixelBuffer canvas = new PixelBuffer(size, size);
 
-        Color shadeColor = bodyColor * 0.65f;
+        Color bodyColor = traits.bodyColor;
+        Color shadeColor = bodyColor * 0.6f;
         shadeColor.a = 1f;
-        Color highlightColor = Color.Lerp(bodyColor, Color.white, 0.4f);
+        Color highlightColor = Color.Lerp(bodyColor, Color.white, 0.35f);
         Color legColor = bodyColor * 0.55f;
         legColor.a = 1f;
 
         FillEllipse(canvas, new Vector2(size * 0.5f, size * 0.1f), size * 0.34f, size * 0.08f, new Color(0f, 0f, 0f, 0.3f), Color.clear, 0);
 
-        FillRect(canvas, new RectInt((int)(size * 0.28f), (int)(size * 0.14f), (int)(size * 0.08f), (int)(size * 0.18f)), legColor);
-        FillRect(canvas, new RectInt((int)(size * 0.42f), (int)(size * 0.14f), (int)(size * 0.08f), (int)(size * 0.18f)), legColor);
-        FillRect(canvas, new RectInt((int)(size * 0.56f), (int)(size * 0.14f), (int)(size * 0.08f), (int)(size * 0.18f)), legColor);
-        FillRect(canvas, new RectInt((int)(size * 0.68f), (int)(size * 0.14f), (int)(size * 0.08f), (int)(size * 0.18f)), legColor);
+        DrawQuadrupedLegs(canvas, size, legColor, walkPhase);
+        DrawAnimalTail(canvas, size, traits.tailStyle, bodyColor, highlightColor);
 
-        FillCircle(canvas, new Vector2(size * 0.18f, size * 0.44f), size * 0.1f, bodyColor, Color.clear, 0);
+        FillEllipse(canvas, new Vector2(size * 0.5f, size * 0.4f), size * 0.3f, size * 0.19f, shadeColor, Color.clear, 0);
+        FillEllipse(canvas, new Vector2(size * 0.46f, size * 0.44f), size * 0.28f, size * 0.17f, bodyColor, Color.clear, 0);
+        FillEllipse(canvas, new Vector2(size * 0.34f, size * 0.5f), size * 0.11f, size * 0.07f, highlightColor, Color.clear, 0);
 
-        FillEllipse(canvas, new Vector2(size * 0.5f, size * 0.4f), size * 0.3f, size * 0.22f, shadeColor, Color.clear, 0);
-        FillEllipse(canvas, new Vector2(size * 0.46f, size * 0.44f), size * 0.28f, size * 0.2f, bodyColor, Color.clear, 0);
-        FillEllipse(canvas, new Vector2(size * 0.34f, size * 0.52f), size * 0.12f, size * 0.08f, highlightColor, Color.clear, 0);
+        if (traits.hasMane)
+        {
+            FillEllipse(canvas, new Vector2(size * 0.66f, size * 0.5f), size * 0.2f, size * 0.19f, shadeColor, Color.clear, 0);
+        }
 
-        FillCircle(canvas, new Vector2(size * 0.74f, size * 0.56f), size * 0.17f, bodyColor, Color.clear, 0);
-        FillCircle(canvas, new Vector2(size * 0.68f, size * 0.62f), size * 0.06f, highlightColor, Color.clear, 0);
+        FillCircle(canvas, new Vector2(size * 0.76f, size * 0.52f), size * 0.15f, bodyColor, Color.clear, 0);
+        FillCircle(canvas, new Vector2(size * 0.71f, size * 0.57f), size * 0.055f, highlightColor, Color.clear, 0);
 
-        FillTriangleUp(canvas, new RectInt((int)(size * 0.66f), (int)(size * 0.68f), (int)(size * 0.08f), (int)(size * 0.14f)), bodyColor);
-        FillTriangleUp(canvas, new RectInt((int)(size * 0.78f), (int)(size * 0.68f), (int)(size * 0.08f), (int)(size * 0.14f)), bodyColor);
+        DrawAnimalEars(canvas, size, traits.earStyle, bodyColor);
+        DrawAnimalOrnament(canvas, size, traits.ornamentStyle);
 
-        FillCircle(canvas, new Vector2(size * 0.87f, size * 0.52f), size * 0.06f, bodyColor, Color.clear, 0);
+        if (traits.hasFangs)
+        {
+            Color fangColor = new Color(0.96f, 0.94f, 0.88f);
+            FillTriangleDown(canvas, new RectInt((int)(size * 0.85f), (int)(size * 0.42f), (int)(size * 0.032f), (int)(size * 0.055f)), fangColor);
+            FillTriangleDown(canvas, new RectInt((int)(size * 0.9f), (int)(size * 0.42f), (int)(size * 0.032f), (int)(size * 0.055f)), fangColor);
+        }
+
+        FillCircle(canvas, new Vector2(size * 0.89f, size * 0.49f), size * 0.05f, bodyColor, Color.clear, 0);
+
+        if (traits.pattern != AnimalPattern.None)
+        {
+            DrawAnimalPattern(canvas, size, traits.pattern, traits.patternColor);
+        }
 
         Color eyeColor = new Color(0.1f, 0.1f, 0.1f);
-        FillCircle(canvas, new Vector2(size * 0.79f, size * 0.58f), size * 0.03f, eyeColor, eyeColor, 0);
+        FillCircle(canvas, new Vector2(size * 0.8f, size * 0.55f), size * 0.026f, eyeColor, eyeColor, 0);
 
         return ToSprite(canvas.ToTexture());
     }
 
-    public static Sprite CreatePredatorSprite(int size, Color bodyColor)
+    // walkPhase alternates which diagonal-ish leg pair reads as "lifted" (shorter, raised) each
+    // frame — a classic 2-frame chunky-pixel walk cycle without needing separate leg GameObjects.
+    private static void DrawQuadrupedLegs(PixelBuffer canvas, int size, Color legColor, int walkPhase)
+    {
+        float[] legX = { 0.28f, 0.42f, 0.58f, 0.72f };
+        float legWidth = size * 0.06f;
+        float legHeight = size * 0.2f;
+        float legTop = size * 0.12f;
+
+        for (int i = 0; i < legX.Length; i++)
+        {
+            bool lifted = (i % 2 == 0) == (walkPhase == 0);
+            float height = lifted ? legHeight * 0.68f : legHeight;
+            float top = lifted ? legTop + legHeight * 0.32f : legTop;
+            FillRect(canvas, new RectInt((int)(size * legX[i]), (int)top, (int)legWidth, (int)height), legColor);
+        }
+    }
+
+    private static void DrawAnimalTail(PixelBuffer canvas, int size, AnimalTailStyle style, Color bodyColor, Color highlightColor)
+    {
+        switch (style)
+        {
+            case AnimalTailStyle.Bushy:
+                FillTriangleDown(canvas, new RectInt((int)(size * 0.05f), (int)(size * 0.3f), (int)(size * 0.16f), (int)(size * 0.2f)), bodyColor);
+                FillCircle(canvas, new Vector2(size * 0.1f, size * 0.28f), size * 0.06f, highlightColor, Color.clear, 0);
+                break;
+            case AnimalTailStyle.Tuft:
+                FillRect(canvas, new RectInt((int)(size * 0.08f), (int)(size * 0.36f), (int)(size * 0.04f), (int)(size * 0.16f)), bodyColor);
+                FillCircle(canvas, new Vector2(size * 0.1f, size * 0.34f), size * 0.045f, bodyColor, Color.clear, 0);
+                break;
+            case AnimalTailStyle.Long:
+                FillRect(canvas, new RectInt((int)(size * 0.06f), (int)(size * 0.4f), (int)(size * 0.035f), (int)(size * 0.16f)), bodyColor);
+                break;
+            case AnimalTailStyle.Nub:
+            default:
+                FillTriangleDown(canvas, new RectInt((int)(size * 0.2f), (int)(size * 0.4f), (int)(size * 0.05f), (int)(size * 0.1f)), bodyColor);
+                break;
+        }
+    }
+
+    private static void DrawAnimalEars(PixelBuffer canvas, int size, AnimalEarStyle style, Color bodyColor)
+    {
+        switch (style)
+        {
+            case AnimalEarStyle.Long:
+                FillEllipse(canvas, new Vector2(size * 0.74f, size * 0.72f), size * 0.035f, size * 0.13f, bodyColor, Color.clear, 0);
+                FillEllipse(canvas, new Vector2(size * 0.83f, size * 0.72f), size * 0.035f, size * 0.13f, bodyColor, Color.clear, 0);
+                break;
+            case AnimalEarStyle.Pointed:
+                FillTriangleUp(canvas, new RectInt((int)(size * 0.7f), (int)(size * 0.62f), (int)(size * 0.06f), (int)(size * 0.13f)), bodyColor);
+                FillTriangleUp(canvas, new RectInt((int)(size * 0.8f), (int)(size * 0.62f), (int)(size * 0.06f), (int)(size * 0.13f)), bodyColor);
+                break;
+            case AnimalEarStyle.Flappy:
+                FillCircle(canvas, new Vector2(size * 0.68f, size * 0.52f), size * 0.09f, bodyColor, Color.clear, 0);
+                FillCircle(canvas, new Vector2(size * 0.84f, size * 0.52f), size * 0.09f, bodyColor, Color.clear, 0);
+                break;
+            case AnimalEarStyle.Round:
+            default:
+                FillCircle(canvas, new Vector2(size * 0.73f, size * 0.66f), size * 0.045f, bodyColor, Color.clear, 0);
+                FillCircle(canvas, new Vector2(size * 0.82f, size * 0.66f), size * 0.045f, bodyColor, Color.clear, 0);
+                break;
+        }
+    }
+
+    private static void DrawAnimalOrnament(PixelBuffer canvas, int size, AnimalOrnamentStyle style)
+    {
+        Color hornColor = new Color(0.35f, 0.3f, 0.22f);
+        Color tuskColor = new Color(0.94f, 0.92f, 0.85f);
+
+        switch (style)
+        {
+            case AnimalOrnamentStyle.ThinHorns:
+                FillRect(canvas, new RectInt((int)(size * 0.75f), (int)(size * 0.62f), (int)(size * 0.022f), (int)(size * 0.15f)), hornColor);
+                FillRect(canvas, new RectInt((int)(size * 0.81f), (int)(size * 0.62f), (int)(size * 0.022f), (int)(size * 0.15f)), hornColor);
+                break;
+            case AnimalOrnamentStyle.CurvedHorns:
+                FillRect(canvas, new RectInt((int)(size * 0.74f), (int)(size * 0.6f), (int)(size * 0.03f), (int)(size * 0.14f)), hornColor);
+                FillRect(canvas, new RectInt((int)(size * 0.71f), (int)(size * 0.56f), (int)(size * 0.05f), (int)(size * 0.05f)), hornColor);
+                FillRect(canvas, new RectInt((int)(size * 0.83f), (int)(size * 0.6f), (int)(size * 0.03f), (int)(size * 0.14f)), hornColor);
+                FillRect(canvas, new RectInt((int)(size * 0.83f), (int)(size * 0.56f), (int)(size * 0.05f), (int)(size * 0.05f)), hornColor);
+                break;
+            case AnimalOrnamentStyle.Antlers:
+                FillRect(canvas, new RectInt((int)(size * 0.75f), (int)(size * 0.63f), (int)(size * 0.02f), (int)(size * 0.16f)), hornColor);
+                FillRect(canvas, new RectInt((int)(size * 0.71f), (int)(size * 0.68f), (int)(size * 0.05f), (int)(size * 0.02f)), hornColor);
+                FillRect(canvas, new RectInt((int)(size * 0.82f), (int)(size * 0.63f), (int)(size * 0.02f), (int)(size * 0.16f)), hornColor);
+                FillRect(canvas, new RectInt((int)(size * 0.82f), (int)(size * 0.68f), (int)(size * 0.06f), (int)(size * 0.02f)), hornColor);
+                break;
+            case AnimalOrnamentStyle.Tusks:
+                FillRect(canvas, new RectInt((int)(size * 0.9f), (int)(size * 0.5f), (int)(size * 0.025f), (int)(size * 0.09f)), tuskColor);
+                FillRect(canvas, new RectInt((int)(size * 0.94f), (int)(size * 0.48f), (int)(size * 0.025f), (int)(size * 0.09f)), tuskColor);
+                break;
+            case AnimalOrnamentStyle.None:
+            default:
+                break;
+        }
+    }
+
+    private static void DrawAnimalPattern(PixelBuffer canvas, int size, AnimalPattern pattern, Color patternColor)
+    {
+        if (pattern == AnimalPattern.Stripes)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                float x = size * (0.3f + i * 0.08f);
+                FillRect(canvas, new RectInt((int)x, (int)(size * 0.3f), Mathf.Max(1, size / 32), (int)(size * 0.22f)), patternColor);
+            }
+        }
+        else if (pattern == AnimalPattern.Spots)
+        {
+            FillCircle(canvas, new Vector2(size * 0.4f, size * 0.36f), size * 0.035f, patternColor, Color.clear, 0);
+            FillCircle(canvas, new Vector2(size * 0.5f, size * 0.46f), size * 0.03f, patternColor, Color.clear, 0);
+            FillCircle(canvas, new Vector2(size * 0.6f, size * 0.35f), size * 0.032f, patternColor, Color.clear, 0);
+            FillCircle(canvas, new Vector2(size * 0.44f, size * 0.5f), size * 0.025f, patternColor, Color.clear, 0);
+        }
+    }
+
+    // Birds don't fit the quadruped template at all — separate silhouette, with wing-flap frames
+    // standing in for the walk cycle.
+    public static Sprite CreateBirdSprite(int size, Color bodyColor, int wingPhase)
     {
         PixelBuffer canvas = new PixelBuffer(size, size);
 
         Color shadeColor = bodyColor * 0.6f;
         shadeColor.a = 1f;
         Color highlightColor = Color.Lerp(bodyColor, Color.white, 0.35f);
-        Color legColor = bodyColor * 0.5f;
-        legColor.a = 1f;
-        Color fangColor = new Color(0.96f, 0.94f, 0.88f);
+        Color beakColor = new Color(0.85f, 0.6f, 0.15f);
 
-        FillEllipse(canvas, new Vector2(size * 0.5f, size * 0.1f), size * 0.36f, size * 0.08f, new Color(0f, 0f, 0f, 0.32f), Color.clear, 0);
+        FillEllipse(canvas, new Vector2(size * 0.5f, size * 0.1f), size * 0.3f, size * 0.06f, new Color(0f, 0f, 0f, 0.28f), Color.clear, 0);
 
-        FillRect(canvas, new RectInt((int)(size * 0.26f), (int)(size * 0.14f), (int)(size * 0.07f), (int)(size * 0.2f)), legColor);
-        FillRect(canvas, new RectInt((int)(size * 0.4f), (int)(size * 0.14f), (int)(size * 0.07f), (int)(size * 0.2f)), legColor);
-        FillRect(canvas, new RectInt((int)(size * 0.56f), (int)(size * 0.14f), (int)(size * 0.07f), (int)(size * 0.2f)), legColor);
-        FillRect(canvas, new RectInt((int)(size * 0.7f), (int)(size * 0.14f), (int)(size * 0.07f), (int)(size * 0.2f)), legColor);
+        FillRect(canvas, new RectInt((int)(size * 0.46f), (int)(size * 0.14f), (int)(size * 0.03f), (int)(size * 0.12f)), shadeColor);
+        FillRect(canvas, new RectInt((int)(size * 0.54f), (int)(size * 0.14f), (int)(size * 0.03f), (int)(size * 0.12f)), shadeColor);
 
-        DrawFrondLine(canvas, new Vector2(size * 0.18f, size * 0.4f), new Vector2(size * 0.06f, size * 0.58f), size * 0.06f, bodyColor);
+        float wingLift = wingPhase == 0 ? size * 0.14f : -size * 0.04f;
+        FillTriangleDown(canvas, new RectInt((int)(size * 0.28f), (int)(size * 0.34f - wingLift), (int)(size * 0.24f), (int)(size * 0.16f)), shadeColor);
 
-        FillEllipse(canvas, new Vector2(size * 0.52f, size * 0.4f), size * 0.32f, size * 0.19f, shadeColor, Color.clear, 0);
-        FillEllipse(canvas, new Vector2(size * 0.48f, size * 0.44f), size * 0.3f, size * 0.17f, bodyColor, Color.clear, 0);
-        FillEllipse(canvas, new Vector2(size * 0.36f, size * 0.5f), size * 0.12f, size * 0.07f, highlightColor, Color.clear, 0);
+        FillEllipse(canvas, new Vector2(size * 0.5f, size * 0.36f), size * 0.24f, size * 0.17f, shadeColor, Color.clear, 0);
+        FillEllipse(canvas, new Vector2(size * 0.5f, size * 0.4f), size * 0.22f, size * 0.15f, bodyColor, Color.clear, 0);
 
-        FillCircle(canvas, new Vector2(size * 0.78f, size * 0.54f), size * 0.16f, bodyColor, Color.clear, 0);
-        FillCircle(canvas, new Vector2(size * 0.72f, size * 0.6f), size * 0.055f, highlightColor, Color.clear, 0);
+        float otherWingLift = wingPhase == 1 ? size * 0.14f : -size * 0.04f;
+        FillTriangleDown(canvas, new RectInt((int)(size * 0.5f), (int)(size * 0.34f - otherWingLift), (int)(size * 0.24f), (int)(size * 0.16f)), bodyColor);
 
-        FillTriangleUp(canvas, new RectInt((int)(size * 0.7f), (int)(size * 0.66f), (int)(size * 0.07f), (int)(size * 0.16f)), bodyColor);
-        FillTriangleUp(canvas, new RectInt((int)(size * 0.82f), (int)(size * 0.66f), (int)(size * 0.07f), (int)(size * 0.16f)), bodyColor);
+        FillCircle(canvas, new Vector2(size * 0.5f, size * 0.62f), size * 0.14f, bodyColor, Color.clear, 0);
+        FillCircle(canvas, new Vector2(size * 0.45f, size * 0.66f), size * 0.05f, highlightColor, Color.clear, 0);
 
-        FillCircle(canvas, new Vector2(size * 0.9f, size * 0.5f), size * 0.055f, bodyColor, Color.clear, 0);
+        FillTriangleUp(canvas, new RectInt((int)(size * 0.46f), (int)(size * 0.72f), (int)(size * 0.08f), (int)(size * 0.09f)), beakColor);
 
-        FillTriangleDown(canvas, new RectInt((int)(size * 0.85f), (int)(size * 0.42f), (int)(size * 0.035f), (int)(size * 0.06f)), fangColor);
-        FillTriangleDown(canvas, new RectInt((int)(size * 0.9f), (int)(size * 0.42f), (int)(size * 0.035f), (int)(size * 0.06f)), fangColor);
-
-        Color eyeColor = new Color(0.08f, 0.08f, 0.08f);
-        FillCircle(canvas, new Vector2(size * 0.82f, size * 0.56f), size * 0.028f, eyeColor, eyeColor, 0);
+        Color eyeColor = new Color(0.1f, 0.1f, 0.1f);
+        FillCircle(canvas, new Vector2(size * 0.54f, size * 0.66f), size * 0.024f, eyeColor, eyeColor, 0);
 
         return ToSprite(canvas.ToTexture());
     }

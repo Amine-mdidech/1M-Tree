@@ -89,9 +89,24 @@ public class TreePlanter : MonoBehaviour
             return;
         }
 
+        if (LandManager.Instance != null && !LandManager.Instance.IsWithinOwnedLand(position))
+        {
+            Debug.Log("Can't plant a tree here — outside your owned land.");
+            AudioManager.Instance?.PlayError();
+            HudUI.Instance?.ShowLandLockedPopup();
+            return;
+        }
+
         if (laboratoryBuilding != null && laboratoryBuilding.IsWithinExclusionZone(position))
         {
             Debug.Log("Can't plant a tree here — too close to the Laboratory.");
+            AudioManager.Instance?.PlayError();
+            return;
+        }
+
+        if (RiverManager.Instance != null && RiverManager.Instance.IsBlocked(position))
+        {
+            Debug.Log("Can't plant a tree here — that's the river.");
             AudioManager.Instance?.PlayError();
             return;
         }
@@ -108,6 +123,7 @@ public class TreePlanter : MonoBehaviour
 
         EcosystemState.RegisterTreePlanted(vegetation.id);
         AudioManager.Instance?.PlayPlant();
+        PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerTreePlanted);
         VfxUtility.SpawnBurst(position, vegetation.foliageColor);
         Handheld.Vibrate();
     }
@@ -119,6 +135,7 @@ public class TreePlanter : MonoBehaviour
 
         SpriteRenderer spriteRenderer = go.AddComponent<SpriteRenderer>();
         spriteRenderer.sprite = treeSprite != null ? treeSprite : GetFallbackSprite();
+        spriteRenderer.sortingOrder = 2;
 
         return go.AddComponent<PlantedTree>();
     }

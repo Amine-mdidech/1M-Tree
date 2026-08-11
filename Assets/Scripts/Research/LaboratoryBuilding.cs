@@ -4,28 +4,31 @@ using UnityEngine;
 public class LaboratoryBuilding : MonoBehaviour
 {
     [SerializeField] private LaboratoryUI laboratoryUI;
-    [SerializeField] private float noPlantRadius = 3f;
-    [SerializeField] private float clickRadius = 1.2f;
+    // fal.ai-generated complex eco/scientific building (see Assets/Textures/Laboratory) — falls
+    // back to the small procedural icon if unassigned so the scene never renders empty.
+    [SerializeField] private Sprite buildingSprite;
+    [SerializeField] private float noPlantRadius = 3.2f;
+    [SerializeField] private float clickRadius = 2.6f;
 
-    private static Sprite labBuildingSprite;
+    private static Sprite proceduralFallbackSprite;
 
     private void Awake()
     {
         SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.sprite = GetLabBuildingSprite();
+        spriteRenderer.sprite = buildingSprite != null ? buildingSprite : GetProceduralFallbackSprite();
         spriteRenderer.color = Color.white;
         spriteRenderer.sortingOrder = 2;
     }
 
-    private static Sprite GetLabBuildingSprite()
+    private static Sprite GetProceduralFallbackSprite()
     {
-        if (labBuildingSprite != null)
+        if (proceduralFallbackSprite != null)
         {
-            return labBuildingSprite;
+            return proceduralFallbackSprite;
         }
 
-        labBuildingSprite = PixelArtUtility.CreateLabBuildingSprite(96);
-        return labBuildingSprite;
+        proceduralFallbackSprite = PixelArtUtility.CreateLabBuildingSprite(96);
+        return proceduralFallbackSprite;
     }
 
     public bool IsWithinExclusionZone(Vector3 worldPosition)

@@ -9,6 +9,16 @@
             </ui:VisualElement>
             <ui:VisualElement name="profile-content" class="profile-content">
                 <ui:VisualElement class="stat-card">
+                    <ui:VisualElement name="level-icon" class="stat-icon" />
+                    <ui:Label text="Level" class="stat-label" />
+                    <ui:Label name="level-value" text="1" class="stat-value" />
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-card">
+                    <ui:VisualElement name="land-icon" class="stat-icon" />
+                    <ui:Label text="Land Unlocked" class="stat-label" />
+                    <ui:Label name="land-value" text="1 / 1" class="stat-value" />
+                </ui:VisualElement>
+                <ui:VisualElement class="stat-card">
                     <ui:VisualElement name="gems-icon" class="stat-icon" />
                     <ui:Label text="Gems" class="stat-label" />
                     <ui:Label name="gems-value" text="0" class="stat-value" />

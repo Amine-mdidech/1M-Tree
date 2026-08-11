@@ -1,0 +1,13 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/Theme/Theme.uss" />
+    <ui:Style src="project://database/Assets/UI/Map/Map.uss" />
+    <ui:VisualElement name="map-root" class="map-root theme-scope">
+        <ui:VisualElement name="map-frame" class="map-frame">
+            <ui:VisualElement name="map-header" class="map-header">
+                <ui:Label text="Map" class="map-title" />
+                <ui:Button name="close-button" text="X" class="map-close-button" />
+            </ui:VisualElement>
+            <ui:VisualElement name="map-view" class="map-view" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

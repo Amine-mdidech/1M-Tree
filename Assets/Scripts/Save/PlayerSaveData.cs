@@ -34,6 +34,9 @@ public class PlayerSaveData
     public string lastGrantResetTimestamp;
     public string lastSessionTimestamp;
     public int gems;
+    public int level;
+    public int xp;
+    public int landTier;
     public List<PlantedTreeSaveData> plantedTrees = new List<PlantedTreeSaveData>();
     public List<SpeciesPopulationEntry> speciesPopulation = new List<SpeciesPopulationEntry>();
     public List<string> unlockedSpeciesIds = new List<string>();

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class SaveManager : MonoBehaviour
     [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private ResearchManager researchManager;
     [SerializeField] private TreePlanter treePlanter;
+    [SerializeField] private PlayerLevel playerLevel;
+    [SerializeField] private LandManager landManager;
     [SerializeField] private List<SpeciesDefinition> allSpecies = new List<SpeciesDefinition>();
 
     private string SavePath => Path.Combine(Application.persistentDataPath, "save.json");
@@ -55,6 +58,9 @@ public class SaveManager : MonoBehaviour
             lastGrantResetTimestamp = dailyGrant.LastGrantResetTimestamp,
             lastSessionTimestamp = DateTime.UtcNow.ToString("o"),
             gems = milestoneManager.Gems,
+            level = playerLevel.Level,
+            xp = playerLevel.CurrentXp,
+            landTier = landManager.CurrentTierIndex,
             unlockedSpeciesIds = emergenceSystem.GetUnlockedSpeciesIds(),
             unlockedVegetationIds = treePlanter.GetUnlockedVegetationIds(),
             completedMilestoneIds = new List<string>(milestoneManager.CompletedMilestoneIds)
@@ -106,6 +112,8 @@ public class SaveManager : MonoBehaviour
 
         dailyGrant.LoadState(data.treesPlantedToday, data.dailyTreeCap, data.lastGrantResetTimestamp);
         milestoneManager.LoadState(data.gems, data.completedMilestoneIds);
+        playerLevel.LoadState(data.level, data.xp);
+        landManager.LoadState(data.landTier);
 
         foreach (string speciesId in data.unlockedSpeciesIds)
         {
@@ -131,7 +139,14 @@ public class SaveManager : MonoBehaviour
             EcosystemState.SetSpeciesPopulation(entry.speciesId, entry.population);
         }
 
-        RestorePlantedTrees(data);
+        double offlineSeconds = RestorePlantedTrees(data);
+
+        // Catch up emergence ticks for the real-world time the app was closed, the same way
+        // RestorePlantedTrees just caught up tree growth - otherwise a session shorter than one
+        // tick interval (60s) could never see a new animal, and any time spent fully closed
+        // between sessions would be silently discarded instead of counting toward the next tick.
+        emergenceSystem.AdvanceTicks((float)offlineSeconds);
+        emergenceSystem.SpawnMissingCreatureVisuals();
 
         if (data.activeResearch != null)
         {
@@ -141,7 +156,7 @@ public class SaveManager : MonoBehaviour
         Debug.Log($"Game loaded from {SavePath}");
     }
 
-    private void RestorePlantedTrees(PlayerSaveData data)
+    private double RestorePlantedTrees(PlayerSaveData data)
     {
         foreach (PlantedTree existing in PlantedTree.ActiveTrees)
         {
@@ -174,6 +189,8 @@ public class SaveManager : MonoBehaviour
 
             EcosystemState.RegisterTreePlanted(vegetation.id);
         }
+
+        return offlineSeconds;
     }
 
     private static DateTime ParseOrNow(string iso)
@@ -215,5 +232,21 @@ public class SaveManager : MonoBehaviour
             File.Delete(SavePath);
             Debug.Log("Save file deleted.");
         }
+
+        // Deleting the file alone doesn't touch anything already loaded - every manager's fields,
+        // every planted tree/creature GameObject, and the static EcosystemState/ActiveTrees/
+        // ActiveCreatures registries would all still hold the old game. A scene reload is the only
+        // way to reset every MonoBehaviour's state at once without hand-maintaining a reset method
+        // per manager; the static registries don't get cleared by a scene reload on their own (they
+        // have no GameObject lifecycle tying them to scene teardown), so they're reset explicitly
+        // here first. hasLoadedThisSession is deliberately left true so OnApplicationQuit/Pause
+        // during the reload doesn't skip a save; SaveManager.Start() -> LoadGame() will find no
+        // file (just deleted) and correctly leave the reloaded scene's fresh defaults in place.
+        EcosystemState.ResetAll();
+        PlantedTree.ActiveTrees.Clear();
+        CreatureVisual.ActiveCreatures.Clear();
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(activeScene.buildIndex);
     }
 }

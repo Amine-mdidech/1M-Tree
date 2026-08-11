@@ -14,14 +14,30 @@
                     <ui:VisualElement name="xp-bar-fill" class="xp-bar-fill" picking-mode="Ignore" />
                 </ui:VisualElement>
             </ui:VisualElement>
+            <ui:VisualElement name="vegetation-cluster" class="vegetation-cluster">
+                <ui:Button name="vegetation-button" class="icon-button" />
+                <ui:Label name="vegetation-label" text="Oak" class="vegetation-label" picking-mode="Ignore" />
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:Button name="demo-button" class="icon-button demo-icon-button" />
         <ui:VisualElement name="action-cluster" class="action-cluster">
-            <ui:Label name="vegetation-label" text="Oak" class="vegetation-label" picking-mode="Ignore" />
-            <ui:Button name="vegetation-button" class="icon-button" />
             <ui:Button name="lab-button" class="icon-button" />
             <ui:Button name="codex-button" class="icon-button" />
             <ui:Button name="profile-button" class="icon-button" />
+            <ui:Button name="settings-button" class="icon-button" />
+        </ui:VisualElement>
+        <ui:VisualElement name="minimap-cluster" class="minimap-cluster">
+            <ui:VisualElement name="minimap-view" class="minimap-view" />
+        </ui:VisualElement>
+        <ui:VisualElement name="land-lock-popup-root" class="land-lock-popup-root">
+            <ui:VisualElement name="land-lock-popup-frame" class="land-lock-popup-frame">
+                <ui:Label text="Land Locked" class="land-lock-popup-title" />
+                <ui:Label name="land-lock-popup-message" text="" class="land-lock-popup-message" />
+                <ui:VisualElement class="land-lock-popup-buttons">
+                    <ui:Button name="land-lock-unlock-button" text="Unlock" class="land-lock-unlock-button" />
+                    <ui:Button name="land-lock-close-button" text="Close" class="land-lock-close-button" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

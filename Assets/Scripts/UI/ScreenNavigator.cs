@@ -7,6 +7,8 @@ public class ScreenNavigator : MonoBehaviour
     [SerializeField] private LaboratoryUI laboratoryUI;
     [SerializeField] private ProfileUI profileUI;
     [SerializeField] private DemoUI demoUI;
+    [SerializeField] private SettingsUI settingsUI;
+    [SerializeField] private MapUI mapUI;
 
     public void OpenCodex()
     {
@@ -26,6 +28,20 @@ public class ScreenNavigator : MonoBehaviour
     {
         CloseOtherPanels(profileUI);
         if (profileUI != null) profileUI.SetOpen(true);
+        SetHomeToolbarVisible(false);
+    }
+
+    public void OpenSettings()
+    {
+        CloseOtherPanels(settingsUI);
+        if (settingsUI != null) settingsUI.SetOpen(true);
+        SetHomeToolbarVisible(false);
+    }
+
+    public void OpenMap()
+    {
+        CloseOtherPanels(mapUI);
+        if (mapUI != null) mapUI.SetOpen(true);
         SetHomeToolbarVisible(false);
     }
 
@@ -64,6 +80,16 @@ public class ScreenNavigator : MonoBehaviour
         if (demoUI != null && !ReferenceEquals(demoUI, except))
         {
             demoUI.SetOpen(false);
+        }
+
+        if (settingsUI != null && !ReferenceEquals(settingsUI, except))
+        {
+            settingsUI.SetOpen(false);
+        }
+
+        if (mapUI != null && !ReferenceEquals(mapUI, except))
+        {
+            mapUI.SetOpen(false);
         }
     }
 

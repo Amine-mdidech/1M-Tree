@@ -4,12 +4,22 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager Instance { get; private set; }
 
+    private const string MusicVolumeKey = "audio.musicVolume";
+    private const string SfxVolumeKey = "audio.sfxVolume";
+    private const string MusicMutedKey = "audio.musicMuted";
+    private const string SfxMutedKey = "audio.sfxMuted";
+
     [SerializeField] private float sfxVolume = 0.6f;
     [SerializeField] private float musicVolume = 0.12f;
     [SerializeField] private AudioClip musicClipOverride;
 
     private AudioSource sfxSource;
     private AudioSource musicSource;
+
+    private float currentMusicVolume;
+    private float currentSfxVolume;
+    private bool musicMuted;
+    private bool sfxMuted;
 
     private AudioClip tapClip;
     private AudioClip plantClip;
@@ -19,6 +29,11 @@ public class AudioManager : MonoBehaviour
     private AudioClip errorClip;
     private AudioClip researchStartClip;
     private AudioClip ambientLoopClip;
+
+    public float MusicVolume => currentMusicVolume;
+    public float SfxVolume => currentSfxVolume;
+    public bool MusicMuted => musicMuted;
+    public bool SfxMuted => sfxMuted;
 
     private void Awake()
     {
@@ -30,6 +45,11 @@ public class AudioManager : MonoBehaviour
 
         Instance = this;
 
+        currentMusicVolume = PlayerPrefs.GetFloat(MusicVolumeKey, musicVolume);
+        currentSfxVolume = PlayerPrefs.GetFloat(SfxVolumeKey, sfxVolume);
+        musicMuted = PlayerPrefs.GetInt(MusicMutedKey, 0) == 1;
+        sfxMuted = PlayerPrefs.GetInt(SfxMutedKey, 0) == 1;
+
         sfxSource = gameObject.AddComponent<AudioSource>();
         musicSource = gameObject.AddComponent<AudioSource>();
 
@@ -39,7 +59,7 @@ public class AudioManager : MonoBehaviour
         // falls back to the procedural pad loop if nothing has been assigned yet.
         musicSource.clip = musicClipOverride != null ? musicClipOverride : ambientLoopClip;
         musicSource.loop = true;
-        musicSource.volume = musicVolume;
+        musicSource.volume = EffectiveMusicVolume();
         musicSource.Play();
     }
 
@@ -85,6 +105,57 @@ public class AudioManager : MonoBehaviour
         ambientLoopClip = AudioSynthUtility.CreateAmbientLoop("music_ambient_loop", 8f, 1f);
     }
 
+    public void SetMusicVolume(float volume)
+    {
+        currentMusicVolume = Mathf.Clamp01(volume);
+        if (currentMusicVolume > 0f)
+        {
+            musicMuted = false;
+        }
+
+        if (musicSource != null)
+        {
+            musicSource.volume = EffectiveMusicVolume();
+        }
+
+        PlayerPrefs.SetFloat(MusicVolumeKey, currentMusicVolume);
+        PlayerPrefs.SetInt(MusicMutedKey, musicMuted ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public void SetSfxVolume(float volume)
+    {
+        currentSfxVolume = Mathf.Clamp01(volume);
+        if (currentSfxVolume > 0f)
+        {
+            sfxMuted = false;
+        }
+
+        PlayerPrefs.SetFloat(SfxVolumeKey, currentSfxVolume);
+        PlayerPrefs.SetInt(SfxMutedKey, sfxMuted ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public void SetMusicMuted(bool muted)
+    {
+        musicMuted = muted;
+
+        if (musicSource != null)
+        {
+            musicSource.volume = EffectiveMusicVolume();
+        }
+
+        PlayerPrefs.SetInt(MusicMutedKey, musicMuted ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
+    public void SetSfxMuted(bool muted)
+    {
+        sfxMuted = muted;
+        PlayerPrefs.SetInt(SfxMutedKey, sfxMuted ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+
     public void PlayTap()
     {
         PlaySfx(tapClip);
@@ -127,6 +198,16 @@ public class AudioManager : MonoBehaviour
             return;
         }
 
-        sfxSource.PlayOneShot(clip, sfxVolume);
+        sfxSource.PlayOneShot(clip, EffectiveSfxVolume());
+    }
+
+    private float EffectiveMusicVolume()
+    {
+        return musicMuted ? 0f : currentMusicVolume;
+    }
+
+    private float EffectiveSfxVolume()
+    {
+        return sfxMuted ? 0f : currentSfxVolume;
     }
 }
