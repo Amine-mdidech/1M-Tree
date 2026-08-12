@@ -26,3 +26,5 @@ MonoBehaviour:
   plantSilhouette: 0
   foliageColor: {r: 0.25, g: 0.55, b: 0.22, a: 1}
   trunkColor: {r: 0.42, g: 0.28, b: 0.15, a: 1}
+  heroSprite: {fileID: 21300000, guid: cefba41b4e318459b9768330797c28de, type: 3}
+  heroSpriteMatureWorldDiameter: 2.4

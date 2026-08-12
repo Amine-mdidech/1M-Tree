@@ -7,7 +7,6 @@ public class LaboratoryBuilding : MonoBehaviour
     // fal.ai-generated complex eco/scientific building (see Assets/Textures/Laboratory) — falls
     // back to the small procedural icon if unassigned so the scene never renders empty.
     [SerializeField] private Sprite buildingSprite;
-    [SerializeField] private float noPlantRadius = 3.2f;
     [SerializeField] private float clickRadius = 2.6f;
 
     private static Sprite proceduralFallbackSprite;
@@ -31,14 +30,23 @@ public class LaboratoryBuilding : MonoBehaviour
         return proceduralFallbackSprite;
     }
 
+    // Blocks planting only on the building's own footprint, not a wider buffer zone around it -
+    // reuses the same clickRadius as the tap hit-test rather than a separate, larger radius.
     public bool IsWithinExclusionZone(Vector3 worldPosition)
     {
-        return Vector2.Distance(transform.position, worldPosition) < noPlantRadius;
+        return IsPointOnBuilding(worldPosition);
+    }
+
+    // Pure query, no side effects - lets callers check "would a tap here hit the building" without
+    // triggering TryHandleTap's UI toggle.
+    public bool IsPointOnBuilding(Vector3 worldPosition)
+    {
+        return Vector2.Distance(transform.position, worldPosition) <= clickRadius;
     }
 
     public bool TryHandleTap(Vector3 worldPosition)
     {
-        if (Vector2.Distance(transform.position, worldPosition) > clickRadius)
+        if (!IsPointOnBuilding(worldPosition))
         {
             return false;
         }

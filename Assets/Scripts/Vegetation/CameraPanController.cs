@@ -149,6 +149,15 @@ public class CameraPanController : MonoBehaviour
 
         foreach (PlantedTree tree in PlantedTree.ActiveTrees)
         {
+            // ActiveTrees can transiently hold a destroyed entry (Destroy()/DestroyImmediate()
+            // don't always invoke OnDestroy synchronously) - this is now called every frame a
+            // press is held for the placement preview, not just once per tap, so a stale entry
+            // here was throwing on every held press and aborting tap-to-plant entirely.
+            if (tree == null)
+            {
+                continue;
+            }
+
             float distance = Vector2.Distance(tree.transform.position, worldPosition);
             if (distance <= closestDistance)
             {
@@ -167,6 +176,11 @@ public class CameraPanController : MonoBehaviour
 
         foreach (CreatureVisual creature in CreatureVisual.ActiveCreatures)
         {
+            if (creature == null)
+            {
+                continue;
+            }
+
             float distance = Vector2.Distance(creature.transform.position, worldPosition);
             if (distance <= closestDistance)
             {

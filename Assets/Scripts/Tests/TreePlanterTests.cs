@@ -109,16 +109,62 @@ public class TreePlanterTests
     [Test]
     public void PlantTree_StopsAtDailyCap()
     {
+        // Spaced well past the minimum tree-to-tree distance so this loop exercises the daily cap
+        // specifically, not incidentally getting rejected by the spacing rule instead.
         for (int i = 0; i < 30; i++)
         {
-            planter.PlantTree(new Vector3(i, 0f, 0f));
+            planter.PlantTree(new Vector3(i * 10f, 0f, 0f));
         }
 
         int treesAtCap = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude).Length;
 
-        planter.PlantTree(new Vector3(100f, 0f, 0f));
+        planter.PlantTree(new Vector3(1000f, 0f, 0f));
 
         int treesAfterOverCap = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude).Length;
         Assert.AreEqual(treesAtCap, treesAfterOverCap);
+    }
+
+    [Test]
+    public void PlantTree_TooCloseToExistingTree_IsRejected()
+    {
+        planter.PlantTree(Vector3.zero);
+
+        planter.PlantTree(new Vector3(0.1f, 0f, 0f));
+
+        int treeCount = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude).Length;
+        Assert.AreEqual(1, treeCount);
+    }
+
+    [Test]
+    public void PlantTree_FarEnoughFromExistingTree_Succeeds()
+    {
+        planter.PlantTree(Vector3.zero);
+
+        planter.PlantTree(new Vector3(10f, 0f, 0f));
+
+        int treeCount = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude).Length;
+        Assert.AreEqual(2, treeCount);
+    }
+
+    [Test]
+    public void CanPlantAt_TooCloseToExistingTree_ReturnsFalse()
+    {
+        planter.PlantTree(Vector3.zero);
+
+        Assert.IsFalse(planter.CanPlantAt(new Vector3(0.1f, 0f, 0f)));
+    }
+
+    [Test]
+    public void CanPlantAt_FarFromExistingTree_ReturnsTrue()
+    {
+        planter.PlantTree(Vector3.zero);
+
+        Assert.IsTrue(planter.CanPlantAt(new Vector3(10f, 0f, 0f)));
+    }
+
+    [Test]
+    public void CanPlantAt_NoTreesPlantedYet_ReturnsTrue()
+    {
+        Assert.IsTrue(planter.CanPlantAt(Vector3.zero));
     }
 }

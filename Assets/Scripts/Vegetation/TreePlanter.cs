@@ -4,6 +4,12 @@ using UnityEngine.InputSystem;
 
 public class TreePlanter : MonoBehaviour
 {
+    // Not shown anywhere as a number (there's no UI indicator for it, by design). Chosen to
+    // comfortably clear the biggest tree's own footprint (the oak hero sprite's mature diameter is
+    // 2.4, radius 1.2) so two full-grown trees never visibly overlap trunks/canopies once both
+    // mature.
+    private const float MinTreeSpacing = 1.3f;
+
     [SerializeField] private List<VegetationDefinition> plantableVegetation = new List<VegetationDefinition>();
     [SerializeField] private List<VegetationDefinition> unlockedVegetation = new List<VegetationDefinition>();
     [SerializeField] private int currentVegetationIndex;
@@ -111,6 +117,20 @@ public class TreePlanter : MonoBehaviour
             return;
         }
 
+        if (RiverManager.Instance != null && RiverManager.Instance.IsWithinSandBank(position))
+        {
+            Debug.Log("Can't plant a tree here — that's the sand bank.");
+            AudioManager.Instance?.PlayError();
+            return;
+        }
+
+        if (IsTooCloseToExistingTree(position))
+        {
+            Debug.Log("Can't plant a tree here — too close to another tree.");
+            AudioManager.Instance?.PlayError();
+            return;
+        }
+
         if (!dailyGrant.TryConsumeTreePlant())
         {
             Debug.Log($"Daily tree cap reached ({dailyGrant.TreesPlantedToday}/{dailyGrant.DailyTreeCap}). Come back after the next grant reset.");
@@ -126,6 +146,66 @@ public class TreePlanter : MonoBehaviour
         PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerTreePlanted);
         VfxUtility.SpawnBurst(position, vegetation.foliageColor);
         Handheld.Vibrate();
+    }
+
+    private bool IsTooCloseToExistingTree(Vector3 position)
+    {
+        foreach (PlantedTree tree in PlantedTree.ActiveTrees)
+        {
+            // Guards against a destroyed-but-not-yet-unregistered entry (OnDestroy isn't always
+            // synchronous with DestroyImmediate outside a running Player/PlayMode loop, e.g. in
+            // EditMode tests) - Unity's overridden null check catches this safely before touching
+            // transform on an object that no longer exists.
+            if (tree == null)
+            {
+                continue;
+            }
+
+            if (Vector2.Distance(tree.transform.position, position) < MinTreeSpacing)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // Pure query mirroring every rejection check PlantTree performs (minus its side effects -
+    // logging, sound, the land-locked popup) - lets callers check plantability without duplicating
+    // the rule set and risking the two drifting apart.
+    public bool CanPlantAt(Vector3 position)
+    {
+        if (LandManager.Instance != null && !LandManager.Instance.IsWithinOwnedLand(position))
+        {
+            return false;
+        }
+
+        if (laboratoryBuilding != null && laboratoryBuilding.IsWithinExclusionZone(position))
+        {
+            return false;
+        }
+
+        if (RiverManager.Instance != null && RiverManager.Instance.IsBlocked(position))
+        {
+            return false;
+        }
+
+        if (RiverManager.Instance != null && RiverManager.Instance.IsWithinSandBank(position))
+        {
+            return false;
+        }
+
+        if (IsTooCloseToExistingTree(position))
+        {
+            return false;
+        }
+
+        if (dailyGrant != null && !dailyGrant.CanPlantTree)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public PlantedTree SpawnRestoredTree(VegetationDefinition vegetation, Vector3 position)

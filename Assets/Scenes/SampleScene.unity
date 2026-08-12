@@ -530,7 +530,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LaboratoryBuilding
   laboratoryUI: {fileID: 184606783}
   buildingSprite: {fileID: 21300000, guid: f9ee785c521845e49888781d88790489, type: 3}
-  noPlantRadius: 3.2
   clickRadius: 2.6
 --- !u!212 &337284887
 SpriteRenderer:
@@ -1694,6 +1693,8 @@ MonoBehaviour:
   sfxVolume: 0.6
   musicVolume: 0.12
   musicClipOverride: {fileID: 8300000, guid: 746e386a418fd4ba89ac57c0b106a3b2, type: 3}
+  guitarIntroClip: {fileID: 8300000, guid: 73d132fca3a654879814812abbbb4dc6, type: 3}
+  birdsFillerClip: {fileID: 8300000, guid: b29cf291781664529b57eece393c1a66, type: 3}
 --- !u!4 &1644131832
 Transform:
   m_ObjectHideFlags: 0

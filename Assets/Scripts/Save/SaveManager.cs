@@ -73,6 +73,14 @@ public class SaveManager : MonoBehaviour
 
         foreach (PlantedTree tree in PlantedTree.ActiveTrees)
         {
+            // ActiveTrees can transiently hold a destroyed entry (Destroy()/DestroyImmediate()
+            // don't always invoke OnDestroy synchronously) - skip it rather than saving garbage
+            // or throwing mid-save.
+            if (tree == null)
+            {
+                continue;
+            }
+
             data.plantedTrees.Add(new PlantedTreeSaveData
             {
                 vegetationId = tree.Vegetation.id,

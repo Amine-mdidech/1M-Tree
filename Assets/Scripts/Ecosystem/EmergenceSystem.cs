@@ -358,7 +358,21 @@ public class EmergenceSystem : MonoBehaviour
             return Vector3.zero;
         }
 
-        return availableTrees[Random.Range(0, availableTrees.Count)].transform.position;
+        // Retry a bounded number of times rather than indexing once: ActiveTrees can transiently
+        // hold a destroyed entry (Destroy()/DestroyImmediate() don't always invoke OnDestroy
+        // synchronously), and a random pick landing on one would otherwise throw and abort the
+        // whole emergence tick.
+        const int maxAttempts = 8;
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            PlantedTree candidate = availableTrees[Random.Range(0, availableTrees.Count)];
+            if (candidate != null)
+            {
+                return candidate.transform.position;
+            }
+        }
+
+        return Vector3.zero;
     }
 
     private static Color GetSpeciesColor(SpeciesDefinition species)

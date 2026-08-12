@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -9,12 +11,36 @@ public class AudioManager : MonoBehaviour
     private const string MusicMutedKey = "audio.musicMuted";
     private const string SfxMutedKey = "audio.sfxMuted";
 
+    // Each track in the playlist gets this much total time in the spotlight before the next
+    // crossfade begins; the last MusicCrossfadeSeconds of that window overlaps with the next
+    // track's fade-in rather than cutting abruptly.
+    private const float MusicSegmentSeconds = 120f;
+    private const float MusicCrossfadeSeconds = 2f;
+
+    // The hand-off from the bird filler into the third ("wholesome") track gets its own slower,
+    // gentler treatment: a longer blend, then birds linger at a quiet sustained level for a while
+    // longer (rather than disappearing right as the next track starts) before finally fading out
+    // - so the wholesome track's opening is still accompanied by birdsong instead of a clean cut.
+    private const float BirdsToMainBlendSeconds = 6f;
+    private const float BirdsToMainTailSeconds = 6f;
+    private const float BirdsToMainTailVolumeFraction = 0.35f;
+
     [SerializeField] private float sfxVolume = 0.6f;
     [SerializeField] private float musicVolume = 0.12f;
     [SerializeField] private AudioClip musicClipOverride;
+    // fal.ai-generated tracks (see docs/art-design-document.md's sibling audio pipeline), cycled
+    // forever as guitar -> birds -> ambience -> birds -> guitar -> birds -> ... (built below in
+    // BuildMusicPlaylist as a repeating [guitar, birds, ambience, birds] sequence) - a symmetric
+    // back-and-forth between all three rather than a hard cut straight back to guitar every lap.
+    [SerializeField] private AudioClip guitarIntroClip;
+    [SerializeField] private AudioClip birdsFillerClip;
 
     private AudioSource sfxSource;
-    private AudioSource musicSource;
+    // Two sources so a crossfade can have both the outgoing and incoming track playing
+    // simultaneously for MusicCrossfadeSeconds - a single AudioSource can't overlap itself.
+    private AudioSource musicSourceA;
+    private AudioSource musicSourceB;
+    private List<AudioClip> musicPlaylist;
 
     private float currentMusicVolume;
     private float currentSfxVolume;
@@ -51,16 +77,17 @@ public class AudioManager : MonoBehaviour
         sfxMuted = PlayerPrefs.GetInt(SfxMutedKey, 0) == 1;
 
         sfxSource = gameObject.AddComponent<AudioSource>();
-        musicSource = gameObject.AddComponent<AudioSource>();
+        musicSourceA = gameObject.AddComponent<AudioSource>();
+        musicSourceB = gameObject.AddComponent<AudioSource>();
+        // Each track is shorter than a 2-minute segment, so it loops in place to fill its slot
+        // rather than falling silent partway through.
+        musicSourceA.loop = true;
+        musicSourceB.loop = true;
 
         BuildClips();
+        BuildMusicPlaylist();
 
-        // musicClipOverride is a real generated track (see docs/audio.md) wired in the Inspector;
-        // falls back to the procedural pad loop if nothing has been assigned yet.
-        musicSource.clip = musicClipOverride != null ? musicClipOverride : ambientLoopClip;
-        musicSource.loop = true;
-        musicSource.volume = EffectiveMusicVolume();
-        musicSource.Play();
+        StartCoroutine(RunMusicPlaylist());
     }
 
     private void OnDestroy()
@@ -69,6 +96,142 @@ public class AudioManager : MonoBehaviour
         {
             Instance = null;
         }
+    }
+
+    // musicClipOverride is a real generated track (see docs/audio.md) wired in the Inspector;
+    // falls back to the procedural pad loop if nothing has been assigned yet.
+    private AudioClip MainLoopClip => musicClipOverride != null ? musicClipOverride : ambientLoopClip;
+
+    private void BuildMusicPlaylist()
+    {
+        musicPlaylist = new List<AudioClip>();
+
+        if (guitarIntroClip != null)
+        {
+            musicPlaylist.Add(guitarIntroClip);
+        }
+
+        if (birdsFillerClip != null)
+        {
+            musicPlaylist.Add(birdsFillerClip);
+        }
+
+        if (MainLoopClip != null)
+        {
+            musicPlaylist.Add(MainLoopClip);
+        }
+
+        if (birdsFillerClip != null)
+        {
+            musicPlaylist.Add(birdsFillerClip);
+        }
+
+        // Nothing configured beyond the fallback ambience - just the one track, no playlist to
+        // cycle through.
+        if (musicPlaylist.Count == 0 && MainLoopClip != null)
+        {
+            musicPlaylist.Add(MainLoopClip);
+        }
+    }
+
+    private IEnumerator RunMusicPlaylist()
+    {
+        if (musicPlaylist.Count == 0)
+        {
+            yield break;
+        }
+
+        AudioSource current = musicSourceA;
+        AudioSource next = musicSourceB;
+        int index = 0;
+
+        current.clip = musicPlaylist[index];
+        current.volume = EffectiveMusicVolume();
+        current.Play();
+
+        if (musicPlaylist.Count == 1)
+        {
+            yield break;
+        }
+
+        while (true)
+        {
+            AudioClip outgoingClip = current.clip;
+            int nextIndex = (index + 1) % musicPlaylist.Count;
+            AudioClip incomingClip = musicPlaylist[nextIndex];
+            bool isBirdsIntoMain = outgoingClip == birdsFillerClip && incomingClip == MainLoopClip;
+            float blendSeconds = isBirdsIntoMain ? BirdsToMainBlendSeconds : MusicCrossfadeSeconds;
+
+            yield return new WaitForSeconds(Mathf.Max(0f, MusicSegmentSeconds - blendSeconds));
+
+            index = nextIndex;
+            next.clip = incomingClip;
+            next.volume = 0f;
+            next.Play();
+
+            if (isBirdsIntoMain)
+            {
+                yield return StartCoroutine(CrossfadeBirdsIntoMain(current, next));
+            }
+            else
+            {
+                yield return StartCoroutine(CrossfadeLinear(current, next, blendSeconds));
+            }
+
+            current.Stop();
+            current.volume = EffectiveMusicVolume();
+
+            (current, next) = (next, current);
+        }
+    }
+
+    private IEnumerator CrossfadeLinear(AudioSource outgoing, AudioSource incoming, float duration)
+    {
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            // Reads EffectiveMusicVolume() every frame rather than caching it, so a volume change
+            // or mute toggle mid-crossfade is picked up immediately instead of the fade finishing
+            // at a stale level.
+            outgoing.volume = (1f - t) * EffectiveMusicVolume();
+            incoming.volume = t * EffectiveMusicVolume();
+            yield return null;
+        }
+
+        outgoing.volume = 0f;
+        incoming.volume = EffectiveMusicVolume();
+    }
+
+    // Two phases: first a slow smoothstep blend where birds only dips to a quiet sustain level
+    // (not silence) while the wholesome track rises to full - both audible together right as it
+    // begins - then birds lingers at that quiet level for a further tail before finally fading out.
+    private IEnumerator CrossfadeBirdsIntoMain(AudioSource birds, AudioSource main)
+    {
+        float elapsed = 0f;
+        while (elapsed < BirdsToMainBlendSeconds)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / BirdsToMainBlendSeconds);
+            float smoothT = t * t * (3f - 2f * t);
+            birds.volume = Mathf.Lerp(1f, BirdsToMainTailVolumeFraction, smoothT) * EffectiveMusicVolume();
+            main.volume = smoothT * EffectiveMusicVolume();
+            yield return null;
+        }
+
+        elapsed = 0f;
+        while (elapsed < BirdsToMainTailSeconds)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / BirdsToMainTailSeconds);
+            birds.volume = Mathf.Lerp(BirdsToMainTailVolumeFraction, 0f, t) * EffectiveMusicVolume();
+            main.volume = EffectiveMusicVolume();
+            yield return null;
+        }
+
+        birds.volume = 0f;
+        main.volume = EffectiveMusicVolume();
     }
 
     private void BuildClips()
@@ -113,10 +276,7 @@ public class AudioManager : MonoBehaviour
             musicMuted = false;
         }
 
-        if (musicSource != null)
-        {
-            musicSource.volume = EffectiveMusicVolume();
-        }
+        ApplyMusicVolumeToSources();
 
         PlayerPrefs.SetFloat(MusicVolumeKey, currentMusicVolume);
         PlayerPrefs.SetInt(MusicMutedKey, musicMuted ? 1 : 0);
@@ -140,13 +300,26 @@ public class AudioManager : MonoBehaviour
     {
         musicMuted = muted;
 
-        if (musicSource != null)
-        {
-            musicSource.volume = EffectiveMusicVolume();
-        }
+        ApplyMusicVolumeToSources();
 
         PlayerPrefs.SetInt(MusicMutedKey, musicMuted ? 1 : 0);
         PlayerPrefs.Save();
+    }
+
+    // A source that isn't currently playing just ignores the new volume, and a source mid-crossfade
+    // gets overwritten with the correct blended ratio on the coroutine's very next frame - so it's
+    // safe to just push the flat effective volume onto both without tracking which one is "live".
+    private void ApplyMusicVolumeToSources()
+    {
+        if (musicSourceA != null)
+        {
+            musicSourceA.volume = EffectiveMusicVolume();
+        }
+
+        if (musicSourceB != null)
+        {
+            musicSourceB.volume = EffectiveMusicVolume();
+        }
     }
 
     public void SetSfxMuted(bool muted)

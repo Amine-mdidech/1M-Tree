@@ -211,7 +211,9 @@ public class DemoUI : MonoBehaviour
         // on ActiveTrees staying unmodified mid-loop as this debug action evolves.
         foreach (PlantedTree tree in new List<PlantedTree>(PlantedTree.ActiveTrees))
         {
-            if (tree.IsMature)
+            // ActiveTrees can transiently hold a destroyed entry (Destroy()/DestroyImmediate()
+            // don't always invoke OnDestroy synchronously) - skip it rather than throwing.
+            if (tree == null || tree.IsMature)
             {
                 continue;
             }

@@ -134,6 +134,15 @@ public class RiverManager : MonoBehaviour
         return DistanceToRiver(worldPosition) <= halfWidth;
     }
 
+    // Wider than IsBlocked - covers the water AND the sand bank ribbon around it (halfWidth to
+    // halfWidth+sandBankWidth). Deliberately a separate method rather than widening IsBlocked
+    // itself: animal pathing (CreatureVisual) should still be free to wander onto the sand, only
+    // tree planting needs to treat the sand as off-limits too.
+    public bool IsWithinSandBank(Vector3 worldPosition)
+    {
+        return DistanceToRiver(worldPosition) <= halfWidth + sandBankWidth;
+    }
+
     public float DistanceToRiver(Vector3 worldPosition)
     {
         Vector2 point = new Vector2(worldPosition.x, worldPosition.y);
