@@ -15,7 +15,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="vegetation-cluster" class="vegetation-cluster">
-                <ui:Button name="vegetation-button" class="icon-button" />
+                <ui:Button name="vegetation-button" class="icon-button vegetation-icon-button" />
                 <ui:Label name="vegetation-label" text="Oak" class="vegetation-label" picking-mode="Ignore" />
             </ui:VisualElement>
         </ui:VisualElement>

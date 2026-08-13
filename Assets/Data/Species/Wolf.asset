@@ -20,9 +20,9 @@ MonoBehaviour:
   baseEmergenceWeight: 0.6
   treesPerIndividualCap: 0
   preySpeciesIds:
-  - gazelle
-  preyThreshold: 15
-  preyToPredatorRatio: 8
+  - deer
+  preyThreshold: 5
+  preyToPredatorRatio: 5
   researchDurationSeconds: 0
   documentaryTitle: Wolf
   documentaryText: Documentary text coming soon.

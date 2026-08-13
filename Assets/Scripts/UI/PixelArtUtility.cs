@@ -485,6 +485,21 @@ public static class PixelArtUtility
         FillCircle(canvas, new Vector2(size * 0.4f, size * 0.32f), size * 0.14f, canopyLight, canopyLight, 0);
     }
 
+    // Trunk at the bottom, two tapering triangular tiers stacked above it - a right-side-up pine
+    // silhouette (canvas Y=0 is the bottom, per PixelBuffer/Texture2D convention), unlike
+    // DrawLeafGlyph above whose trunk sits in the upper half and canopy in the lower half.
+    public static void DrawPineGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color trunk = new Color(0.45f, 0.3f, 0.15f);
+        Color canopy = new Color(0.22f, 0.5f, 0.28f);
+        Color canopyLight = new Color(0.35f, 0.65f, 0.38f);
+
+        FillRect(canvas, new RectInt((int)(size * 0.46f), (int)(size * 0.08f), (int)(size * 0.08f), (int)(size * 0.2f)), trunk);
+        FillTriangleUp(canvas, new RectInt((int)(size * 0.16f), (int)(size * 0.22f), (int)(size * 0.68f), (int)(size * 0.32f)), canopy);
+        FillTriangleUp(canvas, new RectInt((int)(size * 0.28f), (int)(size * 0.48f), (int)(size * 0.44f), (int)(size * 0.3f)), canopyLight);
+    }
+
     public static void DrawGemGlyph(PixelBuffer canvas)
     {
         int size = canvas.Width;

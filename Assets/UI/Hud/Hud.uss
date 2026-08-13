@@ -18,7 +18,7 @@
     align-items: center;
     background-color: rgba(24, 20, 18, 0.82);
     -unity-background-scale-mode: stretch-to-fill;
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-sm);
     border-width: 1.5px;
     border-color: rgba(255, 255, 255, 0.16);
     padding: 0 var(--space-md) 0 var(--space-xs);
@@ -83,7 +83,7 @@
     align-items: center;
     background-color: rgba(24, 20, 18, 0.82);
     -unity-background-scale-mode: stretch-to-fill;
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-sm);
     border-width: 1.5px;
     border-color: rgba(255, 255, 255, 0.16);
     padding: 0 var(--space-md) 0 var(--space-xs);
@@ -292,10 +292,17 @@
     padding: 3px var(--space-sm);
     background-color: rgba(0, 0, 0, 0.2);
     -unity-background-scale-mode: stretch-to-fill;
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-sm);
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.2);
     color: var(--text-on-dark);
     font-size: var(--font-size-xs);
     -unity-font-style: bold;
+}
+
+/* Overrides .icon-button's pill radius for this one icon specifically - the other buttons sharing
+   that class (lab/codex/profile/settings/demo) are unaffected, since they weren't part of this
+   "make the top-left cluster rectangular" request. */
+.vegetation-icon-button {
+    border-radius: var(--radius-sm);
 }

@@ -21,9 +21,21 @@ public class AudioManager : MonoBehaviour
     // gentler treatment: a longer blend, then birds linger at a quiet sustained level for a while
     // longer (rather than disappearing right as the next track starts) before finally fading out
     // - so the wholesome track's opening is still accompanied by birdsong instead of a clean cut.
+    // Kept low (not the more audible 35% an earlier version used): birds and the wholesome track
+    // play SIMULTANEOUSLY for the whole blend+tail, and their volumes are deliberately kept
+    // complementary (see CrossfadeBirdsIntoMain) so the combined loudness never exceeds a single
+    // track's normal volume - but a higher sustain fraction still reads as "loud" simply because
+    // it's competing with the other track's full volume for so long.
     private const float BirdsToMainBlendSeconds = 6f;
     private const float BirdsToMainTailSeconds = 6f;
-    private const float BirdsToMainTailVolumeFraction = 0.35f;
+    private const float BirdsToMainTailVolumeFraction = 0.15f;
+
+    // Per-clip trim on top of the file-level loudness matching, so the relative balance between
+    // tracks can be tuned by editing a constant instead of re-processing the source WAV files each
+    // time. Birds' chirps read as louder than their measured level suggests (sharp transients grab
+    // the ear); the wholesome track is the one meant to carry the loop, so it gets a boost.
+    private const float BirdsVolumeMultiplier = 0.5f;
+    private const float MainLoopVolumeMultiplier = 1.4f;
 
     [SerializeField] private float sfxVolume = 0.6f;
     [SerializeField] private float musicVolume = 0.12f;
@@ -102,6 +114,21 @@ public class AudioManager : MonoBehaviour
     // falls back to the procedural pad loop if nothing has been assigned yet.
     private AudioClip MainLoopClip => musicClipOverride != null ? musicClipOverride : ambientLoopClip;
 
+    private float ClipVolumeMultiplier(AudioClip clip)
+    {
+        if (clip == birdsFillerClip)
+        {
+            return BirdsVolumeMultiplier;
+        }
+
+        if (clip == MainLoopClip)
+        {
+            return MainLoopVolumeMultiplier;
+        }
+
+        return 1f;
+    }
+
     private void BuildMusicPlaylist()
     {
         musicPlaylist = new List<AudioClip>();
@@ -146,7 +173,7 @@ public class AudioManager : MonoBehaviour
         int index = 0;
 
         current.clip = musicPlaylist[index];
-        current.volume = EffectiveMusicVolume();
+        current.volume = EffectiveMusicVolume() * ClipVolumeMultiplier(current.clip);
         current.Play();
 
         if (musicPlaylist.Count == 1)
@@ -179,7 +206,7 @@ public class AudioManager : MonoBehaviour
             }
 
             current.Stop();
-            current.volume = EffectiveMusicVolume();
+            current.volume = EffectiveMusicVolume() * ClipVolumeMultiplier(current.clip);
 
             (current, next) = (next, current);
         }
@@ -187,6 +214,9 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator CrossfadeLinear(AudioSource outgoing, AudioSource incoming, float duration)
     {
+        float outgoingMultiplier = ClipVolumeMultiplier(outgoing.clip);
+        float incomingMultiplier = ClipVolumeMultiplier(incoming.clip);
+
         float elapsed = 0f;
         while (elapsed < duration)
         {
@@ -195,28 +225,40 @@ public class AudioManager : MonoBehaviour
             // Reads EffectiveMusicVolume() every frame rather than caching it, so a volume change
             // or mute toggle mid-crossfade is picked up immediately instead of the fade finishing
             // at a stale level.
-            outgoing.volume = (1f - t) * EffectiveMusicVolume();
-            incoming.volume = t * EffectiveMusicVolume();
+            float effectiveVolume = EffectiveMusicVolume();
+            outgoing.volume = (1f - t) * effectiveVolume * outgoingMultiplier;
+            incoming.volume = t * effectiveVolume * incomingMultiplier;
             yield return null;
         }
 
         outgoing.volume = 0f;
-        incoming.volume = EffectiveMusicVolume();
+        incoming.volume = EffectiveMusicVolume() * incomingMultiplier;
     }
 
     // Two phases: first a slow smoothstep blend where birds only dips to a quiet sustain level
-    // (not silence) while the wholesome track rises to full - both audible together right as it
-    // begins - then birds lingers at that quiet level for a further tail before finally fading out.
+    // (not silence) while the wholesome track rises to fill in the rest - both audible together
+    // right as it begins - then birds lingers at that quiet level for a further tail before
+    // finally fading out, with the wholesome track filling back in to full as it does.
+    //
+    // birds+main are kept complementary at every instant (both endpoints of each phase sum to
+    // 1.0, driven by the same interpolation parameter) so their COMBINED volume is always exactly
+    // 1.0x - never louder than either track playing alone. An earlier version let main ramp to a
+    // full 1.0 while birds was still at a real volume, so the two would briefly play loudly
+    // together and the overlap itself read as "too loud", independent of either track's own level.
     private IEnumerator CrossfadeBirdsIntoMain(AudioSource birds, AudioSource main)
     {
+        // birds+main summing to exactly 1.0 (see the class comment above) still holds before the
+        // per-clip multipliers are applied - each side gets its own trim afterward, same as every
+        // other volume assignment in this file.
         float elapsed = 0f;
         while (elapsed < BirdsToMainBlendSeconds)
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / BirdsToMainBlendSeconds);
             float smoothT = t * t * (3f - 2f * t);
-            birds.volume = Mathf.Lerp(1f, BirdsToMainTailVolumeFraction, smoothT) * EffectiveMusicVolume();
-            main.volume = smoothT * EffectiveMusicVolume();
+            float effectiveVolume = EffectiveMusicVolume();
+            birds.volume = Mathf.Lerp(1f, BirdsToMainTailVolumeFraction, smoothT) * effectiveVolume * BirdsVolumeMultiplier;
+            main.volume = Mathf.Lerp(0f, 1f - BirdsToMainTailVolumeFraction, smoothT) * effectiveVolume * MainLoopVolumeMultiplier;
             yield return null;
         }
 
@@ -225,13 +267,14 @@ public class AudioManager : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = Mathf.Clamp01(elapsed / BirdsToMainTailSeconds);
-            birds.volume = Mathf.Lerp(BirdsToMainTailVolumeFraction, 0f, t) * EffectiveMusicVolume();
-            main.volume = EffectiveMusicVolume();
+            float effectiveVolume = EffectiveMusicVolume();
+            birds.volume = Mathf.Lerp(BirdsToMainTailVolumeFraction, 0f, t) * effectiveVolume * BirdsVolumeMultiplier;
+            main.volume = Mathf.Lerp(1f - BirdsToMainTailVolumeFraction, 1f, t) * effectiveVolume * MainLoopVolumeMultiplier;
             yield return null;
         }
 
         birds.volume = 0f;
-        main.volume = EffectiveMusicVolume();
+        main.volume = EffectiveMusicVolume() * MainLoopVolumeMultiplier;
     }
 
     private void BuildClips()
@@ -313,12 +356,12 @@ public class AudioManager : MonoBehaviour
     {
         if (musicSourceA != null)
         {
-            musicSourceA.volume = EffectiveMusicVolume();
+            musicSourceA.volume = EffectiveMusicVolume() * ClipVolumeMultiplier(musicSourceA.clip);
         }
 
         if (musicSourceB != null)
         {
-            musicSourceB.volume = EffectiveMusicVolume();
+            musicSourceB.volume = EffectiveMusicVolume() * ClipVolumeMultiplier(musicSourceB.clip);
         }
     }
 

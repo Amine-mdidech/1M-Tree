@@ -87,7 +87,7 @@ public class HudUI : MonoBehaviour
 
         vegetationButton = root.Q<Button>("vegetation-button");
         vegetationButton.clicked += OnVegetationButtonClicked;
-        vegetationButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.55f, 0.38f, 0.22f), PixelArtUtility.DrawLeafGlyph));
+        vegetationButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.55f, 0.38f, 0.22f), PixelArtUtility.DrawPineGlyph));
 
         Button profileButton = root.Q<Button>("profile-button");
         profileButton.clicked += OnProfileButtonClicked;
