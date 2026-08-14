@@ -42,6 +42,7 @@ public class CreatureVisual : MonoBehaviour
     private int currentFrameIndex;
     private float walkAnimationTimer;
     private Vector3 previousPosition;
+    private bool awakeStateReady;
 
     private GameObject namePopupRoot;
     private TextMesh namePopupTextMesh;
@@ -52,6 +53,8 @@ public class CreatureVisual : MonoBehaviour
 
     public void Initialize(SpeciesDefinition speciesDefinition, Vector3 home, float radius, Sprite[] frames)
     {
+        EnsureAwakeState();
+
         species = speciesDefinition;
         homePosition = home;
         wanderRadius = radius;
@@ -62,6 +65,22 @@ public class CreatureVisual : MonoBehaviour
 
     private void Awake()
     {
+        EnsureAwakeState();
+    }
+
+    // Mirrors PlantedTree.EnsureAwakeState: AddComponent doesn't synchronously invoke Awake outside
+    // a running Player/PlayMode loop - editor-driven code and EditMode tests can call Initialize
+    // before Awake has run at all, leaving spriteRenderer null and this creature missing from
+    // ActiveCreatures. Calling this from both paths, guarded by awakeStateReady, makes setup correct
+    // regardless of which one runs first.
+    private void EnsureAwakeState()
+    {
+        if (awakeStateReady)
+        {
+            return;
+        }
+
+        awakeStateReady = true;
         spriteRenderer = GetComponent<SpriteRenderer>();
         ActiveCreatures.Add(this);
     }
