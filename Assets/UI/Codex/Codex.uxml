@@ -7,13 +7,13 @@
                 <ui:Label name="codex-title" text="Codex" class="codex-title" />
                 <ui:Button name="close-button" text="X" class="codex-close-button" />
             </ui:VisualElement>
-            <ui:VisualElement name="book-page" class="book-page">
+            <ui:ScrollView name="book-page" class="book-page">
                 <ui:Label name="page-category" text="" class="page-category" />
                 <ui:Label name="page-name" text="" class="page-name" />
                 <ui:Label name="page-subtitle" text="" class="page-subtitle" />
                 <ui:Label name="page-body" text="" class="page-body" />
                 <ui:Label name="page-conditions" text="" class="page-conditions" />
-            </ui:VisualElement>
+            </ui:ScrollView>
             <ui:VisualElement name="book-nav" class="book-nav">
                 <ui:Button name="prev-button" text="&lt; Prev" class="nav-button" />
                 <ui:Label name="page-indicator" text="1 / 1" class="page-indicator" />

@@ -29,6 +29,7 @@ public class CodexUI : MonoBehaviour
     private UIDocument uiDocument;
     private VisualElement codexRoot;
     private VisualElement codexFrame;
+    private ScrollView bookPageScroll;
     private Label pageCategoryLabel;
     private Label pageNameLabel;
     private Label pageSubtitleLabel;
@@ -55,9 +56,11 @@ public class CodexUI : MonoBehaviour
         codexFrame.style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateWoodGrainTexture(256, 256, new Color(0.55f, 0.35f, 0.16f)));
 
-        VisualElement bookPage = root.Q<VisualElement>("book-page");
-        bookPage.style.backgroundImage = new StyleBackground(
+        bookPageScroll = root.Q<ScrollView>("book-page");
+        bookPageScroll.style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateParchmentTexture(256, 256, new Color(0.93f, 0.87f, 0.72f)));
+        bookPageScroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+        bookPageScroll.verticalScrollerVisibility = ScrollerVisibility.Hidden;
 
         pageCategoryLabel = root.Q<Label>("page-category");
         pageNameLabel = root.Q<Label>("page-name");
@@ -146,6 +149,11 @@ public class CodexUI : MonoBehaviour
 
     private void RenderCurrentPage()
     {
+        if (bookPageScroll != null)
+        {
+            bookPageScroll.scrollOffset = Vector2.zero;
+        }
+
         if (pages.Count == 0)
         {
             pageCategoryLabel.text = "";
