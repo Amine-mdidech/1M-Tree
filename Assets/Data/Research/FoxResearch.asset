@@ -15,7 +15,6 @@ MonoBehaviour:
   id: fox_research
   unlocksSpeciesId: fox
   unlocksVegetationId: 
-  prerequisiteProjectIds:
-  - rabbit_research
+  prerequisiteProjectIds: []
   baseDurationSeconds: 360
   gemSkipCostPerRemainingMinute: 2

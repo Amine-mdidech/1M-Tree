@@ -15,7 +15,6 @@ MonoBehaviour:
   id: pine_research
   unlocksSpeciesId: 
   unlocksVegetationId: pine
-  prerequisiteProjectIds:
-  - berry_bush_research
+  prerequisiteProjectIds: []
   baseDurationSeconds: 180
   gemSkipCostPerRemainingMinute: 2

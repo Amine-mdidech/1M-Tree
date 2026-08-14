@@ -19,8 +19,7 @@ MonoBehaviour:
   requiredVegetationIds: []
   baseEmergenceWeight: 0.7
   preySpeciesIds:
-  - rabbit
-  - hare
+  - squirrel
   preyThreshold: 10
   preyToPredatorRatio: 4
   researchDurationSeconds: 360

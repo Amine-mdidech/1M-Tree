@@ -20,7 +20,7 @@ MonoBehaviour:
   baseEmergenceWeight: 0.6
   treesPerIndividualCap: 0
   preySpeciesIds:
-  - deer
+  - gazelle
   preyThreshold: 5
   preyToPredatorRatio: 5
   researchDurationSeconds: 0
