@@ -802,6 +802,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CameraPanController
   targetCamera: {fileID: 519420031}
   treePlanter: {fileID: 34543761}
+  emergenceSystem: {fileID: 1589978606}
   laboratoryBuilding: {fileID: 337284886}
   treeBoostUI: {fileID: 905178289}
   blockingUIDocuments:
@@ -1386,13 +1387,16 @@ MonoBehaviour:
   demoUI: {fileID: 3828345}
   settingsUI: {fileID: 219540831}
   treePlanter: {fileID: 34543761}
+  emergenceSystem: {fileID: 1589978606}
   milestoneManager: {fileID: 150096813}
   cameraPanController: {fileID: 519420033}
   laboratoryBuilding: {fileID: 337284886}
   mapUI: {fileID: 185969798}
   currencyIconSprite: {fileID: 21300000, guid: c3ba5e216af65486fbfb3c240ad0ecef, type: 3}
   xpIconSprite: {fileID: 21300000, guid: f18c9ea4e3eac426c950c3ac9742bc55, type: 3}
-  vegetationIconSprite: {fileID: 21300000, guid: 8d8342c564452463d9989f460117d43a, type: 3}
+  plantIconSprite: {fileID: 21300000, guid: 8d8342c564452463d9989f460117d43a, type: 3}
+  herbivoreIconSprite: {fileID: 21300000, guid: 2a0df7a6a37594100a374d016b468c38, type: 3}
+  predatorIconSprite: {fileID: 21300000, guid: 4958a604845b04798b5b078484e64867, type: 3}
 --- !u!114 &853456667
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1584,8 +1588,9 @@ MonoBehaviour:
   unlockedPredatorSpecies:
   - {fileID: 11400000, guid: 91e28778e4cdd4ffbaca49ab5ff2a6ab, type: 2}
   populations: []
-  tickIntervalSeconds: 60
   creatureWanderRadius: 2
+  currentHerbivoreIndex: 0
+  currentPredatorIndex: 0
 --- !u!4 &1589978607
 Transform:
   m_ObjectHideFlags: 0

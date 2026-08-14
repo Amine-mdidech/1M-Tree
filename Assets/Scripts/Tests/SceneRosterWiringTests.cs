@@ -153,4 +153,22 @@ public class SceneRosterWiringTests
         Assert.IsNotNull(saveManager);
         CollectionAssert.AreEquivalent(new[] { "gazelle", "squirrel", "wolf", "fox" }, GetIds(saveManager, "allSpecies"));
     }
+
+    [Test]
+    public void CameraPanController_EmergenceSystem_IsWired()
+    {
+        CameraPanController cameraPanController = FindComponent<CameraPanController>();
+        Assert.IsNotNull(cameraPanController);
+        Assert.IsNotNull(GetPrivateField(cameraPanController, "emergenceSystem"));
+    }
+
+    [Test]
+    public void HudUI_PickerIconSprites_AreWired()
+    {
+        HudUI hud = FindComponent<HudUI>();
+        Assert.IsNotNull(hud);
+        Assert.IsNotNull(GetPrivateField(hud, "plantIconSprite"));
+        Assert.IsNotNull(GetPrivateField(hud, "herbivoreIconSprite"));
+        Assert.IsNotNull(GetPrivateField(hud, "predatorIconSprite"));
+    }
 }
