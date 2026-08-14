@@ -267,6 +267,110 @@ public class EmergenceSystemTests
         Assert.AreEqual(1, EcosystemState.GetSpeciesPopulation("test_predator"));
     }
 
+    [Test]
+    public void TryReleaseSpeciesAt_Succeeds_IncrementsPopulationAtGivenPosition()
+    {
+        herbivore.treesPerIndividualCap = 1;
+        EcosystemState.RegisterTreePlanted("oak");
+        Vector3 targetPosition = new Vector3(3f, 4f, 0f);
+
+        bool released = system.TryReleaseSpeciesAt(herbivore, targetPosition);
+
+        Assert.IsTrue(released);
+        Assert.AreEqual(1, EcosystemState.GetSpeciesPopulation("test_herbivore"));
+
+        CreatureVisual creature = null;
+        foreach (CreatureVisual candidate in CreatureVisual.ActiveCreatures)
+        {
+            if (candidate.SpeciesId == "test_herbivore")
+            {
+                creature = candidate;
+                break;
+            }
+        }
+
+        Assert.IsNotNull(creature, "expected a spawned creature for test_herbivore");
+        Assert.AreEqual(targetPosition, creature.transform.position);
+    }
+
+    [Test]
+    public void TryReleaseSpeciesAt_UnmetCriteria_ReturnsFalseAndDoesNotChangePopulation()
+    {
+        herbivore.treesPerIndividualCap = 10;
+        EcosystemState.RegisterTreePlanted("oak"); // capacity = 1/10 = 0
+
+        bool released = system.TryReleaseSpeciesAt(herbivore, Vector3.zero);
+
+        Assert.IsFalse(released);
+        Assert.AreEqual(0, EcosystemState.GetSpeciesPopulation("test_herbivore"));
+    }
+
+    [Test]
+    public void TryReleaseSpeciesAt_NullSpecies_ReturnsFalse()
+    {
+        Assert.IsFalse(system.TryReleaseSpeciesAt(null, Vector3.zero));
+    }
+
+    [Test]
+    public void CurrentReleasableSpecies_Herbivore_DefaultsToFirstUnlocked()
+    {
+        system.AddUnlockedSpecies(herbivore);
+
+        Assert.AreEqual(herbivore, system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore));
+    }
+
+    [Test]
+    public void CurrentReleasableSpecies_Predator_DefaultsToFirstUnlocked()
+    {
+        system.AddUnlockedSpecies(predator);
+
+        Assert.AreEqual(predator, system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Predator));
+    }
+
+    [Test]
+    public void CurrentReleasableSpecies_EmptyCategory_ReturnsNull()
+    {
+        Assert.IsNull(system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore));
+    }
+
+    [Test]
+    public void CycleReleasableSpecies_Herbivore_WrapsAcrossTwoSpecies()
+    {
+        SpeciesDefinition herbivore2 = ScriptableObject.CreateInstance<SpeciesDefinition>();
+        herbivore2.id = "test_herbivore2";
+        herbivore2.category = SpeciesDefinition.SpeciesCategory.Herbivore;
+
+        system.AddUnlockedSpecies(herbivore);
+        system.AddUnlockedSpecies(herbivore2);
+
+        system.CycleReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore);
+        Assert.AreEqual(herbivore2, system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore));
+
+        system.CycleReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore);
+        Assert.AreEqual(herbivore, system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore));
+
+        Object.DestroyImmediate(herbivore2);
+    }
+
+    [Test]
+    public void CycleReleasableSpecies_PredatorIndexIndependentOfHerbivoreIndex()
+    {
+        SpeciesDefinition predator2 = ScriptableObject.CreateInstance<SpeciesDefinition>();
+        predator2.id = "test_predator2";
+        predator2.category = SpeciesDefinition.SpeciesCategory.Predator;
+
+        system.AddUnlockedSpecies(herbivore);
+        system.AddUnlockedSpecies(predator);
+        system.AddUnlockedSpecies(predator2);
+
+        system.CycleReleasableSpecies(SpeciesDefinition.SpeciesCategory.Predator);
+
+        Assert.AreEqual(herbivore, system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore));
+        Assert.AreEqual(predator2, system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Predator));
+
+        Object.DestroyImmediate(predator2);
+    }
+
     private static int CountActiveCreaturesForSpecies(string speciesId)
     {
         int count = 0;

@@ -14,6 +14,8 @@ public class EmergenceSystem : MonoBehaviour
     [SerializeField] private List<SpeciesDefinition> unlockedPredatorSpecies = new List<SpeciesDefinition>();
     [SerializeField] private List<SpeciesRuntimeState> populations = new List<SpeciesRuntimeState>();
     [SerializeField] private float creatureWanderRadius = 2f;
+    [SerializeField] private int currentHerbivoreIndex;
+    [SerializeField] private int currentPredatorIndex;
 
     // Index 0 / 1 = the two walk-cycle frames for that species, swapped by CreatureVisual while moving.
     private static readonly Dictionary<string, Sprite[]> creatureFramesBySpeciesId =
@@ -148,10 +150,104 @@ public class EmergenceSystem : MonoBehaviour
             return false;
         }
 
-        SpawnIndividual(species, PlantedTree.ActiveTrees);
+        SpawnIndividual(species, GetRandomTreePosition(PlantedTree.ActiveTrees));
         AudioManager.Instance?.PlayPlant();
         PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerAnimalReleased);
         return true;
+    }
+
+    // Position-aware counterpart of TryReleaseSpecies for the HUD's tap-to-place picker: releases
+    // at the tapped world position instead of a random tree, with the same land/river rejection
+    // feedback PlantTree gives. Deliberately skips the Lab-exclusion-zone and tree-spacing checks
+    // PlantTree has - neither applies to animals.
+    public bool TryReleaseSpeciesAt(SpeciesDefinition species, Vector3 position)
+    {
+        if (species == null)
+        {
+            return false;
+        }
+
+        if (LandManager.Instance != null && !LandManager.Instance.IsWithinOwnedLand(position))
+        {
+            Debug.Log("Can't release here — outside your owned land.");
+            AudioManager.Instance?.PlayError();
+            HudUI.Instance?.ShowLandLockedPopup();
+            return false;
+        }
+
+        if (RiverManager.Instance != null && RiverManager.Instance.IsBlocked(position))
+        {
+            Debug.Log("Can't release here — that's the river.");
+            AudioManager.Instance?.PlayError();
+            return false;
+        }
+
+        if (RiverManager.Instance != null && RiverManager.Instance.IsWithinSandBank(position))
+        {
+            Debug.Log("Can't release here — that's the sand bank.");
+            AudioManager.Instance?.PlayError();
+            return false;
+        }
+
+        if (!CanRelease(species))
+        {
+            Debug.Log($"Can't release {species.displayName} yet — criteria not met.");
+            AudioManager.Instance?.PlayError();
+            return false;
+        }
+
+        SpawnIndividual(species, position);
+        AudioManager.Instance?.PlayPlant();
+        PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerAnimalReleased);
+        return true;
+    }
+
+    // Mirrors TreePlanter.CurrentVegetation/CycleVegetation for animal species, split per category
+    // (Predator vs. everything else) so switching category and back restores the prior pick there,
+    // rather than always resetting to index 0. Any non-Predator category maps to the non-predator
+    // list, matching AddUnlockedSpecies's existing category split.
+    public SpeciesDefinition CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory category)
+    {
+        List<SpeciesDefinition> list = ListForCategory(category);
+        if (list.Count == 0)
+        {
+            return null;
+        }
+
+        int index = IndexForCategory(category);
+        return list[index % list.Count];
+    }
+
+    public void CycleReleasableSpecies(SpeciesDefinition.SpeciesCategory category)
+    {
+        List<SpeciesDefinition> list = ListForCategory(category);
+        if (list.Count == 0)
+        {
+            return;
+        }
+
+        if (category == SpeciesDefinition.SpeciesCategory.Predator)
+        {
+            currentPredatorIndex = (currentPredatorIndex + 1) % list.Count;
+        }
+        else
+        {
+            currentHerbivoreIndex = (currentHerbivoreIndex + 1) % list.Count;
+        }
+    }
+
+    private List<SpeciesDefinition> ListForCategory(SpeciesDefinition.SpeciesCategory category)
+    {
+        return category == SpeciesDefinition.SpeciesCategory.Predator
+            ? unlockedPredatorSpecies
+            : unlockedNonPredatorSpecies;
+    }
+
+    private int IndexForCategory(SpeciesDefinition.SpeciesCategory category)
+    {
+        return category == SpeciesDefinition.SpeciesCategory.Predator
+            ? currentPredatorIndex
+            : currentHerbivoreIndex;
     }
 
     private static bool IsVegetationSatisfied(SpeciesDefinition species)
@@ -172,7 +268,7 @@ public class EmergenceSystem : MonoBehaviour
         return true;
     }
 
-    private void SpawnIndividual(SpeciesDefinition species, IReadOnlyList<PlantedTree> availableTrees)
+    private void SpawnIndividual(SpeciesDefinition species, Vector3 position)
     {
         EcosystemState.AddSpeciesIndividual(species.id);
         int newPopulation = EcosystemState.GetSpeciesPopulation(species.id);
@@ -188,7 +284,7 @@ public class EmergenceSystem : MonoBehaviour
 
         Debug.Log($"{species.displayName} emerged! Population is now {newPopulation}.");
 
-        SpawnCreatureVisual(species, availableTrees);
+        SpawnCreatureVisual(species, position);
     }
 
     private SpeciesRuntimeState FindRuntimeState(SpeciesDefinition species)
@@ -204,10 +300,8 @@ public class EmergenceSystem : MonoBehaviour
         return null;
     }
 
-    private void SpawnCreatureVisual(SpeciesDefinition species, IReadOnlyList<PlantedTree> availableTrees, bool playSpawnEffects = true)
+    private void SpawnCreatureVisual(SpeciesDefinition species, Vector3 spawnPosition, bool playSpawnEffects = true)
     {
-        Vector3 spawnPosition = GetRandomTreePosition(availableTrees);
-
         GameObject go = new GameObject($"Creature_{species.id}");
         go.transform.position = spawnPosition;
 
@@ -257,7 +351,7 @@ public class EmergenceSystem : MonoBehaviour
 
             for (int i = existingVisualCount; i < targetPopulation; i++)
             {
-                SpawnCreatureVisual(species, availableTrees, playSpawnEffects: false);
+                SpawnCreatureVisual(species, GetRandomTreePosition(availableTrees), playSpawnEffects: false);
             }
         }
     }
