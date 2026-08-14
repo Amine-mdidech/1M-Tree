@@ -228,6 +228,11 @@ public class LaboratoryUI : MonoBehaviour
 
     private void BuildTree()
     {
+        if (researchManager == null)
+        {
+            return;
+        }
+
         treeCanvas.Clear();
         treeCanvas.Add(connectorView);
 
