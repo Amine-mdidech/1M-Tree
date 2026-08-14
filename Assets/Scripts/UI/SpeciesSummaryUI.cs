@@ -43,6 +43,10 @@ public class SpeciesSummaryUI : MonoBehaviour
         summaryRoot = root.Q<VisualElement>("species-summary-root");
         summaryFrame = root.Q<VisualElement>("species-summary-frame");
 
+        ScrollView summaryScroll = root.Q<ScrollView>("species-summary-scroll");
+        summaryScroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+        summaryScroll.verticalScrollerVisibility = ScrollerVisibility.Hidden;
+
         root.Q<Button>("close-button").clicked += OnCloseButtonClicked;
 
         treesHeaderButton = root.Q<Button>("trees-header-button");
