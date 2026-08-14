@@ -4,6 +4,13 @@ using UnityEngine.UIElements;
 [RequireComponent(typeof(UIDocument))]
 public class HudUI : MonoBehaviour
 {
+    public enum PickerCategory
+    {
+        Plant,
+        Herbivore,
+        Predator
+    }
+
     private const int IconSize = 64;
 
     [SerializeField] private ScreenNavigator screenNavigator;
@@ -13,6 +20,7 @@ public class HudUI : MonoBehaviour
     [SerializeField] private DemoUI demoUI;
     [SerializeField] private SettingsUI settingsUI;
     [SerializeField] private TreePlanter treePlanter;
+    [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private MilestoneManager milestoneManager;
     [SerializeField] private CameraPanController cameraPanController;
     [SerializeField] private LaboratoryBuilding laboratoryBuilding;
@@ -22,13 +30,17 @@ public class HudUI : MonoBehaviour
     // static single-purpose glyphs that never need runtime recoloring, unlike most HUD chrome.
     [SerializeField] private Sprite currencyIconSprite;
     [SerializeField] private Sprite xpIconSprite;
-    [SerializeField] private Sprite vegetationIconSprite;
+    [SerializeField] private Sprite plantIconSprite;
+    [SerializeField] private Sprite herbivoreIconSprite;
+    [SerializeField] private Sprite predatorIconSprite;
 
     private const int MinimapSize = 42;
     private const float MinimapRefreshInterval = 0.5f;
     private const float MinimapTapMaxDragDistance = 5f;
 
     public static HudUI Instance { get; private set; }
+
+    public PickerCategory CurrentPickerCategory => currentPickerCategory;
 
     private UIDocument uiDocument;
     private VisualElement actionCluster;
@@ -44,8 +56,9 @@ public class HudUI : MonoBehaviour
     private VisualElement moveTreeBannerRoot;
     private Label moveTreeBannerLabel;
     private Button moveTreeCancelButton;
-    private Button vegetationButton;
-    private Label vegetationLabel;
+    private Button pickerButton;
+    private Button pickerLabel;
+    private PickerCategory currentPickerCategory = PickerCategory.Plant;
     private Label gemCountLabel;
     private int lastDisplayedGems = -1;
     private VisualElement xpBarFill;
@@ -94,9 +107,8 @@ public class HudUI : MonoBehaviour
         labButton.clicked += OnLabButtonClicked;
         labButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.12f, 0.64f, 0.68f), PixelArtUtility.DrawFlaskGlyph));
 
-        vegetationButton = root.Q<Button>("vegetation-button");
-        vegetationButton.clicked += OnVegetationButtonClicked;
-        vegetationButton.style.backgroundImage = new StyleBackground(vegetationIconSprite);
+        pickerButton = root.Q<Button>("picker-button");
+        pickerButton.clicked += OnPickerButtonClicked;
 
         Button profileButton = root.Q<Button>("profile-button");
         profileButton.clicked += OnProfileButtonClicked;
@@ -110,12 +122,13 @@ public class HudUI : MonoBehaviour
         demoButton.clicked += OnDemoButtonClicked;
         demoButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.42f, 0.45f, 0.5f), PixelArtUtility.DrawGearGlyph));
 
-        vegetationLabel = root.Q<Label>("vegetation-label");
+        pickerLabel = root.Q<Button>("picker-label");
+        pickerLabel.clicked += OnPickerLabelClicked;
         // Flat rgba fills read as "1-dimensional" — layer a subtle gradient+grain texture behind
         // the existing translucent tint instead (stretch-to-fill in USS handles the elements'
         // content-driven widths; the effect is subtle enough that mild horizontal stretch doesn't
         // read as distorted).
-        vegetationLabel.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateTexturedPillBackground(96, 24, new Color(0.08f, 0.08f, 0.08f, 0.2f)));
+        pickerLabel.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateTexturedPillBackground(96, 24, new Color(0.08f, 0.08f, 0.08f, 0.2f)));
 
         // Warm brass base (not the plain dark ink used elsewhere) - the badge frame's material,
         // per the "AAA" pass: see docs/art-design-document.md's HUD token icon note.
@@ -159,7 +172,8 @@ public class HudUI : MonoBehaviour
         moveTreeCancelButton = root.Q<Button>("move-tree-cancel-button");
         moveTreeCancelButton.clicked += OnMoveTreeCancelButtonClicked;
 
-        RefreshVegetationLabel();
+        RefreshPickerIcon();
+        RefreshPickerLabel();
         RefreshGemCount();
         RefreshXp();
         minimapRefreshTimer = 0f;
@@ -273,27 +287,97 @@ public class HudUI : MonoBehaviour
         }
     }
 
-    private void OnVegetationButtonClicked()
+    private void OnPickerButtonClicked()
     {
         AudioManager.Instance?.PlayTap();
 
-        if (treePlanter == null)
+        currentPickerCategory = currentPickerCategory switch
         {
-            return;
-        }
+            PickerCategory.Plant => PickerCategory.Herbivore,
+            PickerCategory.Herbivore => PickerCategory.Predator,
+            _ => PickerCategory.Plant
+        };
 
-        treePlanter.CycleVegetation();
-        RefreshVegetationLabel();
+        RefreshPickerIcon();
+        RefreshPickerLabel();
     }
 
-    private void RefreshVegetationLabel()
+    private void OnPickerLabelClicked()
     {
-        if (vegetationLabel == null || treePlanter == null || treePlanter.CurrentVegetation == null)
+        AudioManager.Instance?.PlayTap();
+
+        if (currentPickerCategory == PickerCategory.Plant)
+        {
+            treePlanter?.CycleVegetation();
+        }
+        else if (emergenceSystem != null)
+        {
+            SpeciesDefinition.SpeciesCategory category = currentPickerCategory == PickerCategory.Predator
+                ? SpeciesDefinition.SpeciesCategory.Predator
+                : SpeciesDefinition.SpeciesCategory.Herbivore;
+            emergenceSystem.CycleReleasableSpecies(category);
+        }
+
+        RefreshPickerLabel();
+    }
+
+    private void RefreshPickerIcon()
+    {
+        if (pickerButton == null)
         {
             return;
         }
 
-        vegetationLabel.text = treePlanter.CurrentVegetation.displayName;
+        Sprite icon = currentPickerCategory switch
+        {
+            PickerCategory.Herbivore => herbivoreIconSprite,
+            PickerCategory.Predator => predatorIconSprite,
+            _ => plantIconSprite
+        };
+
+        pickerButton.style.backgroundImage = new StyleBackground(icon);
+    }
+
+    private void RefreshPickerLabel()
+    {
+        if (pickerLabel == null)
+        {
+            return;
+        }
+
+        if (currentPickerCategory == PickerCategory.Plant)
+        {
+            if (treePlanter != null && treePlanter.CurrentVegetation != null)
+            {
+                pickerLabel.text = treePlanter.CurrentVegetation.displayName;
+            }
+
+            return;
+        }
+
+        SpeciesDefinition species = CurrentPickerSpecies();
+        if (species != null)
+        {
+            pickerLabel.text = species.displayName;
+        }
+    }
+
+    // Resolves whatever the picker is currently offering for the active category, so
+    // CameraPanController's tap handler doesn't need to know about TreePlanter/EmergenceSystem
+    // internals - Plant has no "species" (VegetationDefinition isn't a SpeciesDefinition), so this
+    // only ever returns non-null for Herbivore/Predator.
+    public SpeciesDefinition CurrentPickerSpecies()
+    {
+        if (currentPickerCategory == PickerCategory.Plant || emergenceSystem == null)
+        {
+            return null;
+        }
+
+        SpeciesDefinition.SpeciesCategory category = currentPickerCategory == PickerCategory.Predator
+            ? SpeciesDefinition.SpeciesCategory.Predator
+            : SpeciesDefinition.SpeciesCategory.Herbivore;
+
+        return emergenceSystem.CurrentReleasableSpecies(category);
     }
 
     private void RefreshGemCount()
