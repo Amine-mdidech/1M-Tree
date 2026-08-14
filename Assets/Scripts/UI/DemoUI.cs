@@ -52,7 +52,10 @@ public class DemoUI : MonoBehaviour
         root.Q<Button>("unlock-vegetation-button").clicked += OnUnlockVegetationClicked;
         root.Q<Button>("finish-research-button").clicked += OnFinishResearchClicked;
         root.Q<Button>("mature-trees-button").clicked += OnMatureTreesClicked;
-        root.Q<Button>("force-tick-button").clicked += OnForceTickClicked;
+        root.Q<Button>("release-gazelle-button").clicked += () => OnReleaseSpeciesClicked("gazelle");
+        root.Q<Button>("release-squirrel-button").clicked += () => OnReleaseSpeciesClicked("squirrel");
+        root.Q<Button>("release-wolf-button").clicked += () => OnReleaseSpeciesClicked("wolf");
+        root.Q<Button>("release-fox-button").clicked += () => OnReleaseSpeciesClicked("fox");
         root.Q<Button>("plant-batch-button").clicked += OnPlantBatchClicked;
         root.Q<Button>("reset-save-button").clicked += OnResetSaveClicked;
 
@@ -225,15 +228,37 @@ public class DemoUI : MonoBehaviour
         SetStatus($"Matured {maturedCount} trees.");
     }
 
-    private void OnForceTickClicked()
+    private void OnReleaseSpeciesClicked(string speciesId)
     {
         if (emergenceSystem == null)
         {
             return;
         }
 
-        emergenceSystem.ForceEmergenceTick();
-        SetStatus("Forced an emergence tick.");
+        SpeciesDefinition species = FindSpeciesById(speciesId);
+        if (species == null)
+        {
+            SetStatus($"No species definition wired for '{speciesId}'.");
+            return;
+        }
+
+        bool released = emergenceSystem.TryReleaseSpecies(species);
+        SetStatus(released
+            ? $"Released a {species.displayName}."
+            : $"Can't release {species.displayName} yet - criteria not met.");
+    }
+
+    private SpeciesDefinition FindSpeciesById(string speciesId)
+    {
+        foreach (SpeciesDefinition species in allSpecies)
+        {
+            if (species != null && species.id == speciesId)
+            {
+                return species;
+            }
+        }
+
+        return null;
     }
 
     private void OnPlantBatchClicked()
