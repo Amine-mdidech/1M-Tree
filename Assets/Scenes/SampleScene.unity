@@ -157,33 +157,12 @@ MonoBehaviour:
   saveManager: {fileID: 839233315}
   allSpecies:
   - {fileID: 11400000, guid: 2036f63c3f1af497f85e21e1f315fec6, type: 2}
+  - {fileID: 11400000, guid: 9d40678badc0949a186d38083e725934, type: 2}
   - {fileID: 11400000, guid: 91e28778e4cdd4ffbaca49ab5ff2a6ab, type: 2}
-  - {fileID: 11400000, guid: fc759f7b2c82c44efabe128cbde5bd7d, type: 2}
-  - {fileID: 11400000, guid: 17da98b8e5d7b489faae0de7f7625512, type: 2}
-  - {fileID: 11400000, guid: c243b545704474e4b8ca780e6c671c29, type: 2}
-  - {fileID: 11400000, guid: 7efd50e7913ac4f8596520e718b7f26e, type: 2}
-  - {fileID: 11400000, guid: 28568a322d1154304bd7ffefbbbe9285, type: 2}
-  - {fileID: 11400000, guid: 38a09c16022a943d59b0af34060b84ff, type: 2}
-  - {fileID: 11400000, guid: aae1fae575787419eb83ed434885c6ae, type: 2}
-  - {fileID: 11400000, guid: 83f36870e80274bd9954f7d526aea08f, type: 2}
-  - {fileID: 11400000, guid: 755d4500099a347bc91f30f48f01d3b4, type: 2}
-  - {fileID: 11400000, guid: 8e46d1864d46b41bfbfaecb05c76d55d, type: 2}
-  - {fileID: 11400000, guid: 89469889e15e24e348cd06a68a0b9950, type: 2}
-  - {fileID: 11400000, guid: 0925c88d33cc840b480ea10e26ce06b2, type: 2}
   - {fileID: 11400000, guid: 3c98b0a1d978f4d3a9b72168d37b4226, type: 2}
-  - {fileID: 11400000, guid: 32af0f1f7d86f45af9dfabea1de0c7cb, type: 2}
   allVegetation:
   - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
   - {fileID: 11400000, guid: cb3e4882552f24c069c2e17e5c3d588b, type: 2}
-  - {fileID: 11400000, guid: 99827028f460b461da67addcfc5e81fc, type: 2}
-  - {fileID: 11400000, guid: f1c20f49f4ab44a998add7a7f9c971bc, type: 2}
-  - {fileID: 11400000, guid: 07d27379f379e4f67835f7855eba2ea3, type: 2}
-  - {fileID: 11400000, guid: cf620f78aa1904730bfde960701fae43, type: 2}
-  - {fileID: 11400000, guid: 0430a7bd873584f54aa2794e3afb5388, type: 2}
-  - {fileID: 11400000, guid: 567b58892c043419d8dd8e11a2dea8ad, type: 2}
-  - {fileID: 11400000, guid: 2940dc7263d614b189fb860030fe46a0, type: 2}
-  - {fileID: 11400000, guid: e6083bd59b1c243ddb4f9b2006a79d19, type: 2}
-  - {fileID: 11400000, guid: 34d212816a49443a89e63f54fa34116a, type: 2}
   screenNavigator: {fileID: 2005323408}
 --- !u!114 &3828346
 MonoBehaviour:
@@ -255,15 +234,6 @@ MonoBehaviour:
   plantableVegetation:
   - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
   - {fileID: 11400000, guid: cb3e4882552f24c069c2e17e5c3d588b, type: 2}
-  - {fileID: 11400000, guid: 99827028f460b461da67addcfc5e81fc, type: 2}
-  - {fileID: 11400000, guid: f1c20f49f4ab44a998add7a7f9c971bc, type: 2}
-  - {fileID: 11400000, guid: 07d27379f379e4f67835f7855eba2ea3, type: 2}
-  - {fileID: 11400000, guid: cf620f78aa1904730bfde960701fae43, type: 2}
-  - {fileID: 11400000, guid: 0430a7bd873584f54aa2794e3afb5388, type: 2}
-  - {fileID: 11400000, guid: 567b58892c043419d8dd8e11a2dea8ad, type: 2}
-  - {fileID: 11400000, guid: 2940dc7263d614b189fb860030fe46a0, type: 2}
-  - {fileID: 11400000, guid: e6083bd59b1c243ddb4f9b2006a79d19, type: 2}
-  - {fileID: 11400000, guid: 34d212816a49443a89e63f54fa34116a, type: 2}
   unlockedVegetation:
   - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
   currentVegetationIndex: 0
@@ -1026,33 +996,12 @@ MonoBehaviour:
   dailyGrant: {fileID: 796134812}
   allSpecies:
   - {fileID: 11400000, guid: 2036f63c3f1af497f85e21e1f315fec6, type: 2}
+  - {fileID: 11400000, guid: 9d40678badc0949a186d38083e725934, type: 2}
   - {fileID: 11400000, guid: 91e28778e4cdd4ffbaca49ab5ff2a6ab, type: 2}
-  - {fileID: 11400000, guid: fc759f7b2c82c44efabe128cbde5bd7d, type: 2}
-  - {fileID: 11400000, guid: 17da98b8e5d7b489faae0de7f7625512, type: 2}
-  - {fileID: 11400000, guid: c243b545704474e4b8ca780e6c671c29, type: 2}
-  - {fileID: 11400000, guid: 7efd50e7913ac4f8596520e718b7f26e, type: 2}
-  - {fileID: 11400000, guid: 28568a322d1154304bd7ffefbbbe9285, type: 2}
-  - {fileID: 11400000, guid: 38a09c16022a943d59b0af34060b84ff, type: 2}
-  - {fileID: 11400000, guid: aae1fae575787419eb83ed434885c6ae, type: 2}
-  - {fileID: 11400000, guid: 83f36870e80274bd9954f7d526aea08f, type: 2}
-  - {fileID: 11400000, guid: 755d4500099a347bc91f30f48f01d3b4, type: 2}
-  - {fileID: 11400000, guid: 8e46d1864d46b41bfbfaecb05c76d55d, type: 2}
-  - {fileID: 11400000, guid: 89469889e15e24e348cd06a68a0b9950, type: 2}
-  - {fileID: 11400000, guid: 0925c88d33cc840b480ea10e26ce06b2, type: 2}
   - {fileID: 11400000, guid: 3c98b0a1d978f4d3a9b72168d37b4226, type: 2}
-  - {fileID: 11400000, guid: 32af0f1f7d86f45af9dfabea1de0c7cb, type: 2}
   allVegetation:
   - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
   - {fileID: 11400000, guid: cb3e4882552f24c069c2e17e5c3d588b, type: 2}
-  - {fileID: 11400000, guid: 99827028f460b461da67addcfc5e81fc, type: 2}
-  - {fileID: 11400000, guid: f1c20f49f4ab44a998add7a7f9c971bc, type: 2}
-  - {fileID: 11400000, guid: 07d27379f379e4f67835f7855eba2ea3, type: 2}
-  - {fileID: 11400000, guid: cf620f78aa1904730bfde960701fae43, type: 2}
-  - {fileID: 11400000, guid: 0430a7bd873584f54aa2794e3afb5388, type: 2}
-  - {fileID: 11400000, guid: 567b58892c043419d8dd8e11a2dea8ad, type: 2}
-  - {fileID: 11400000, guid: 2940dc7263d614b189fb860030fe46a0, type: 2}
-  - {fileID: 11400000, guid: e6083bd59b1c243ddb4f9b2006a79d19, type: 2}
-  - {fileID: 11400000, guid: 34d212816a49443a89e63f54fa34116a, type: 2}
   screenNavigator: {fileID: 2005323408}
 --- !u!114 &576196792
 MonoBehaviour:
@@ -1382,21 +1331,9 @@ MonoBehaviour:
   landManager: {fileID: 309116044}
   allSpecies:
   - {fileID: 11400000, guid: 2036f63c3f1af497f85e21e1f315fec6, type: 2}
+  - {fileID: 11400000, guid: 9d40678badc0949a186d38083e725934, type: 2}
   - {fileID: 11400000, guid: 91e28778e4cdd4ffbaca49ab5ff2a6ab, type: 2}
-  - {fileID: 11400000, guid: fc759f7b2c82c44efabe128cbde5bd7d, type: 2}
-  - {fileID: 11400000, guid: 17da98b8e5d7b489faae0de7f7625512, type: 2}
-  - {fileID: 11400000, guid: c243b545704474e4b8ca780e6c671c29, type: 2}
-  - {fileID: 11400000, guid: 7efd50e7913ac4f8596520e718b7f26e, type: 2}
-  - {fileID: 11400000, guid: 28568a322d1154304bd7ffefbbbe9285, type: 2}
-  - {fileID: 11400000, guid: 38a09c16022a943d59b0af34060b84ff, type: 2}
-  - {fileID: 11400000, guid: aae1fae575787419eb83ed434885c6ae, type: 2}
-  - {fileID: 11400000, guid: 83f36870e80274bd9954f7d526aea08f, type: 2}
-  - {fileID: 11400000, guid: 755d4500099a347bc91f30f48f01d3b4, type: 2}
-  - {fileID: 11400000, guid: 8e46d1864d46b41bfbfaecb05c76d55d, type: 2}
-  - {fileID: 11400000, guid: 89469889e15e24e348cd06a68a0b9950, type: 2}
-  - {fileID: 11400000, guid: 0925c88d33cc840b480ea10e26ce06b2, type: 2}
   - {fileID: 11400000, guid: 3c98b0a1d978f4d3a9b72168d37b4226, type: 2}
-  - {fileID: 11400000, guid: 32af0f1f7d86f45af9dfabea1de0c7cb, type: 2}
 --- !u!4 &839233316
 Transform:
   m_ObjectHideFlags: 0
@@ -1852,33 +1789,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CodexUI
   allSpecies:
   - {fileID: 11400000, guid: 2036f63c3f1af497f85e21e1f315fec6, type: 2}
+  - {fileID: 11400000, guid: 9d40678badc0949a186d38083e725934, type: 2}
   - {fileID: 11400000, guid: 91e28778e4cdd4ffbaca49ab5ff2a6ab, type: 2}
-  - {fileID: 11400000, guid: fc759f7b2c82c44efabe128cbde5bd7d, type: 2}
-  - {fileID: 11400000, guid: 17da98b8e5d7b489faae0de7f7625512, type: 2}
-  - {fileID: 11400000, guid: c243b545704474e4b8ca780e6c671c29, type: 2}
-  - {fileID: 11400000, guid: 7efd50e7913ac4f8596520e718b7f26e, type: 2}
-  - {fileID: 11400000, guid: 28568a322d1154304bd7ffefbbbe9285, type: 2}
-  - {fileID: 11400000, guid: 38a09c16022a943d59b0af34060b84ff, type: 2}
-  - {fileID: 11400000, guid: aae1fae575787419eb83ed434885c6ae, type: 2}
-  - {fileID: 11400000, guid: 83f36870e80274bd9954f7d526aea08f, type: 2}
-  - {fileID: 11400000, guid: 755d4500099a347bc91f30f48f01d3b4, type: 2}
-  - {fileID: 11400000, guid: 8e46d1864d46b41bfbfaecb05c76d55d, type: 2}
-  - {fileID: 11400000, guid: 89469889e15e24e348cd06a68a0b9950, type: 2}
-  - {fileID: 11400000, guid: 0925c88d33cc840b480ea10e26ce06b2, type: 2}
   - {fileID: 11400000, guid: 3c98b0a1d978f4d3a9b72168d37b4226, type: 2}
-  - {fileID: 11400000, guid: 32af0f1f7d86f45af9dfabea1de0c7cb, type: 2}
   allVegetation:
   - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
   - {fileID: 11400000, guid: cb3e4882552f24c069c2e17e5c3d588b, type: 2}
-  - {fileID: 11400000, guid: 99827028f460b461da67addcfc5e81fc, type: 2}
-  - {fileID: 11400000, guid: f1c20f49f4ab44a998add7a7f9c971bc, type: 2}
-  - {fileID: 11400000, guid: 07d27379f379e4f67835f7855eba2ea3, type: 2}
-  - {fileID: 11400000, guid: cf620f78aa1904730bfde960701fae43, type: 2}
-  - {fileID: 11400000, guid: 0430a7bd873584f54aa2794e3afb5388, type: 2}
-  - {fileID: 11400000, guid: 567b58892c043419d8dd8e11a2dea8ad, type: 2}
-  - {fileID: 11400000, guid: 2940dc7263d614b189fb860030fe46a0, type: 2}
-  - {fileID: 11400000, guid: e6083bd59b1c243ddb4f9b2006a79d19, type: 2}
-  - {fileID: 11400000, guid: 34d212816a49443a89e63f54fa34116a, type: 2}
   emergenceSystem: {fileID: 1589978606}
   treePlanter: {fileID: 34543761}
   screenNavigator: {fileID: 2005323408}
@@ -1950,45 +1866,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ResearchManager
   availableResearchProjects:
-  - {fileID: 11400000, guid: 83817eacd5fc146a090aa88149c6d018, type: 2}
-  - {fileID: 11400000, guid: 6a975cb31bbbb41d3b94d1a86c93610b, type: 2}
-  - {fileID: 11400000, guid: 08d9e136824c74bc9b5e22a0021ce3a5, type: 2}
-  - {fileID: 11400000, guid: 265cb50f98dda43c48f06f1d5eec3dc2, type: 2}
-  - {fileID: 11400000, guid: c816c2ce798e4410e95703e424367bc9, type: 2}
-  - {fileID: 11400000, guid: ab3b23200f54c40779177bd6f7add914, type: 2}
-  - {fileID: 11400000, guid: 7e63c5d91c26e46e1afea5bfe9025b9c, type: 2}
-  - {fileID: 11400000, guid: 6412bb3addffb44b787f76044bbc569a, type: 2}
-  - {fileID: 11400000, guid: f386130c35ba445c3a85d0cccde2ca51, type: 2}
-  - {fileID: 11400000, guid: 47f1aa63cd99d4218a8da4ce30c4b9ce, type: 2}
-  - {fileID: 11400000, guid: 267bbc32763344d2bb87629bb41502db, type: 2}
-  - {fileID: 11400000, guid: 870b43c1441494b81bcb86c7e3a1da0a, type: 2}
-  - {fileID: 11400000, guid: 9b67bee27b70842399ef16ab03ca39da, type: 2}
-  - {fileID: 11400000, guid: 96c61cab2684146e6807d2b68108f503, type: 2}
   - {fileID: 11400000, guid: 17e30becef4044c0b911c79781db3761, type: 2}
-  - {fileID: 11400000, guid: 259f8b33012b0432a8dfe51411019b39, type: 2}
-  - {fileID: 11400000, guid: c4d8f5df571c0436b9bbf794392d057a, type: 2}
-  - {fileID: 11400000, guid: f197df40c76ea47faaed67d3e9a06a52, type: 2}
-  - {fileID: 11400000, guid: 7aa1d6ec5b4634ba398ff143fe7b59a8, type: 2}
-  - {fileID: 11400000, guid: 3239814d662ff42afb0c3188c50ecf96, type: 2}
-  - {fileID: 11400000, guid: 163f9960e283d4a92912ceda9d219e4f, type: 2}
-  - {fileID: 11400000, guid: 8c22be6ef9b3345fb9c8c6e598c68302, type: 2}
-  - {fileID: 11400000, guid: 4a9032bf45c0c47a7b00f71136754b42, type: 2}
-  - {fileID: 11400000, guid: becac2575052e46efacc93b8a6719ea6, type: 2}
+  - {fileID: 11400000, guid: 1966bcf9cefd24bd1b1a468d04ac8f6b, type: 2}
+  - {fileID: 11400000, guid: 9b67bee27b70842399ef16ab03ca39da, type: 2}
   unlockableSpecies:
-  - {fileID: 11400000, guid: fc759f7b2c82c44efabe128cbde5bd7d, type: 2}
-  - {fileID: 11400000, guid: 17da98b8e5d7b489faae0de7f7625512, type: 2}
-  - {fileID: 11400000, guid: c243b545704474e4b8ca780e6c671c29, type: 2}
-  - {fileID: 11400000, guid: 7efd50e7913ac4f8596520e718b7f26e, type: 2}
-  - {fileID: 11400000, guid: 28568a322d1154304bd7ffefbbbe9285, type: 2}
-  - {fileID: 11400000, guid: 38a09c16022a943d59b0af34060b84ff, type: 2}
-  - {fileID: 11400000, guid: aae1fae575787419eb83ed434885c6ae, type: 2}
-  - {fileID: 11400000, guid: 83f36870e80274bd9954f7d526aea08f, type: 2}
-  - {fileID: 11400000, guid: 755d4500099a347bc91f30f48f01d3b4, type: 2}
-  - {fileID: 11400000, guid: 8e46d1864d46b41bfbfaecb05c76d55d, type: 2}
-  - {fileID: 11400000, guid: 89469889e15e24e348cd06a68a0b9950, type: 2}
-  - {fileID: 11400000, guid: 0925c88d33cc840b480ea10e26ce06b2, type: 2}
+  - {fileID: 11400000, guid: 9d40678badc0949a186d38083e725934, type: 2}
   - {fileID: 11400000, guid: 3c98b0a1d978f4d3a9b72168d37b4226, type: 2}
-  - {fileID: 11400000, guid: 32af0f1f7d86f45af9dfabea1de0c7cb, type: 2}
   emergenceSystem: {fileID: 1589978606}
   milestoneManager: {fileID: 150096813}
   treePlanter: {fileID: 34543761}
