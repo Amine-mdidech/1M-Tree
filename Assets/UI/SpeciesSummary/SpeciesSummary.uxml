@@ -1,0 +1,33 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/Theme/Theme.uss" />
+    <ui:Style src="project://database/Assets/UI/SpeciesSummary/SpeciesSummary.uss" />
+    <ui:VisualElement name="species-summary-root" class="species-summary-root theme-scope">
+        <ui:VisualElement name="species-summary-frame" class="species-summary-frame">
+            <ui:VisualElement name="species-summary-header" class="species-summary-header">
+                <ui:Label name="species-summary-title" text="Species" class="species-summary-title" />
+                <ui:Button name="close-button" text="X" class="species-summary-close-button" />
+            </ui:VisualElement>
+            <ui:ScrollView name="species-summary-scroll" class="species-summary-scroll">
+                <ui:VisualElement name="trees-section" class="summary-section">
+                    <ui:Button name="trees-header-button" text="Trees (0)" class="summary-section-header" />
+                    <ui:VisualElement name="trees-row-list" class="summary-row-list" />
+                </ui:VisualElement>
+                <ui:VisualElement name="herbivores-section" class="summary-section">
+                    <ui:Button name="herbivores-header-button" text="Herbivores (0)" class="summary-section-header" />
+                    <ui:VisualElement name="herbivores-row-list" class="summary-row-list" />
+                </ui:VisualElement>
+                <ui:VisualElement name="predators-section" class="summary-section">
+                    <ui:Button name="predators-header-button" text="Predators (0)" class="summary-section-header" />
+                    <ui:VisualElement name="predators-row-list" class="summary-row-list" />
+                </ui:VisualElement>
+            </ui:ScrollView>
+        </ui:VisualElement>
+        <ui:VisualElement name="criteria-popup-root" class="criteria-popup-root">
+            <ui:VisualElement name="criteria-popup-frame" class="criteria-popup-frame">
+                <ui:Label name="criteria-popup-title" text="" class="criteria-popup-title" />
+                <ui:Label name="criteria-popup-message" text="" class="criteria-popup-message" />
+                <ui:Button name="criteria-popup-close-button" text="Close" class="criteria-popup-close-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

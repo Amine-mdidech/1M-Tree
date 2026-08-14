@@ -55,6 +55,9 @@
     --surface-demo: rgb(90, 95, 100);
     --surface-demo-inner: rgb(225, 227, 229);
     --surface-demo-border: rgb(35, 37, 40);
+    --surface-summary: rgb(120, 130, 90);
+    --surface-summary-inner: rgb(232, 232, 210);
+    --surface-summary-border: rgb(50, 55, 35);
 
     /* --- Text colors --- */
     --text-on-dark: rgb(255, 255, 255);
