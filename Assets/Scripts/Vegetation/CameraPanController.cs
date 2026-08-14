@@ -9,6 +9,7 @@ public class CameraPanController : MonoBehaviour
 
     [SerializeField] private Camera targetCamera;
     [SerializeField] private TreePlanter treePlanter;
+    [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private LaboratoryBuilding laboratoryBuilding;
     [SerializeField] private TreeBoostUI treeBoostUI;
     [SerializeField] private List<UIDocument> blockingUIDocuments = new List<UIDocument>();
@@ -172,9 +173,9 @@ public class CameraPanController : MonoBehaviour
                         {
                             treeBoostUI?.Open(tappedTree);
                         }
-                        else if (treePlanter != null)
+                        else
                         {
-                            treePlanter.PlantTree(worldPoint);
+                            HandleEmptyGroundTap(worldPoint);
                         }
                     }
                 }
@@ -183,6 +184,28 @@ public class CameraPanController : MonoBehaviour
 
         isPressed = false;
         isDragging = false;
+    }
+
+    // Routes an empty-ground tap based on the HUD's active picker category: Plant places a tree
+    // (unchanged behavior); Herbivore/Predator releases whatever species the picker is currently
+    // offering for that category at the tapped position.
+    private void HandleEmptyGroundTap(Vector3 worldPoint)
+    {
+        HudUI.PickerCategory category = HudUI.Instance != null
+            ? HudUI.Instance.CurrentPickerCategory
+            : HudUI.PickerCategory.Plant;
+
+        if (category == HudUI.PickerCategory.Plant)
+        {
+            treePlanter?.PlantTree(worldPoint);
+            return;
+        }
+
+        SpeciesDefinition species = HudUI.Instance?.CurrentPickerSpecies();
+        if (species != null)
+        {
+            emergenceSystem?.TryReleaseSpeciesAt(species, worldPoint);
+        }
     }
 
     // A tap on the tree currently being moved cancels the move (a quick way to back out without
