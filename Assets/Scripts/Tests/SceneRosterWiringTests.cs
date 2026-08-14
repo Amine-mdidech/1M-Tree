@@ -171,4 +171,36 @@ public class SceneRosterWiringTests
         Assert.IsNotNull(GetPrivateField(hud, "herbivoreIconSprite"));
         Assert.IsNotNull(GetPrivateField(hud, "predatorIconSprite"));
     }
+
+    [Test]
+    public void SpeciesSummaryUI_AllSpecies_MatchesRoster()
+    {
+        SpeciesSummaryUI summaryUI = FindComponent<SpeciesSummaryUI>();
+        Assert.IsNotNull(summaryUI);
+        CollectionAssert.AreEquivalent(new[] { "gazelle", "squirrel", "wolf", "fox" }, GetIds(summaryUI, "allSpecies"));
+    }
+
+    [Test]
+    public void SpeciesSummaryUI_AllVegetation_MatchesRoster()
+    {
+        SpeciesSummaryUI summaryUI = FindComponent<SpeciesSummaryUI>();
+        Assert.IsNotNull(summaryUI);
+        CollectionAssert.AreEquivalent(new[] { "oak", "pine" }, GetIds(summaryUI, "allVegetation"));
+    }
+
+    [Test]
+    public void ScreenNavigator_SpeciesSummaryUI_IsWired()
+    {
+        ScreenNavigator navigator = FindComponent<ScreenNavigator>();
+        Assert.IsNotNull(navigator);
+        Assert.IsNotNull(GetPrivateField(navigator, "speciesSummaryUI"));
+    }
+
+    [Test]
+    public void HudUI_SpeciesSummaryUI_IsWired()
+    {
+        HudUI hud = FindComponent<HudUI>();
+        Assert.IsNotNull(hud);
+        Assert.IsNotNull(GetPrivateField(hud, "speciesSummaryUI"));
+    }
 }

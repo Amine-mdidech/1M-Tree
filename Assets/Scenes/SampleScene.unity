@@ -1384,6 +1384,7 @@ MonoBehaviour:
   codexUI: {fileID: 2109674190}
   laboratoryUI: {fileID: 184606783}
   profileUI: {fileID: 576196791}
+  speciesSummaryUI: {fileID: 1085389039}
   demoUI: {fileID: 3828345}
   settingsUI: {fileID: 219540831}
   treePlanter: {fileID: 34543761}
@@ -1554,6 +1555,83 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1085389038
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1085389041}
+  - component: {fileID: 1085389040}
+  - component: {fileID: 1085389039}
+  m_Layer: 0
+  m_Name: SpeciesSummaryUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1085389039
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085389038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bf42e72afdea4939bb8408c48c11f94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Grove.Runtime::SpeciesSummaryUI
+  allSpecies:
+  - {fileID: 11400000, guid: 2036f63c3f1af497f85e21e1f315fec6, type: 2}
+  - {fileID: 11400000, guid: 9d40678badc0949a186d38083e725934, type: 2}
+  - {fileID: 11400000, guid: 91e28778e4cdd4ffbaca49ab5ff2a6ab, type: 2}
+  - {fileID: 11400000, guid: 3c98b0a1d978f4d3a9b72168d37b4226, type: 2}
+  allVegetation:
+  - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
+  - {fileID: 11400000, guid: cb3e4882552f24c069c2e17e5c3d588b, type: 2}
+  screenNavigator: {fileID: 2005323408}
+--- !u!114 &1085389040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085389038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 090ddb2f7f8274c7ea4fa8af241c5fa6, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 8c613c483ab47452ba0c1b02c1067a7c, type: 3}
+  m_SortingOrder: 1
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &1085389041
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085389038}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1589978605
 GameObject:
   m_ObjectHideFlags: 0
@@ -1747,6 +1825,7 @@ MonoBehaviour:
   demoUI: {fileID: 3828345}
   settingsUI: {fileID: 219540831}
   mapUI: {fileID: 185969798}
+  speciesSummaryUI: {fileID: 1085389039}
 --- !u!4 &2005323409
 Transform:
   m_ObjectHideFlags: 0
@@ -1926,3 +2005,4 @@ SceneRoots:
   - {fileID: 399713683}
   - {fileID: 709656798}
   - {fileID: 1647342583}
+  - {fileID: 1085389041}
