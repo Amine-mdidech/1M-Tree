@@ -7,7 +7,7 @@
                 <ui:Label name="profile-title" text="Profile" class="profile-title" />
                 <ui:Button name="close-button" text="X" class="profile-close-button" />
             </ui:VisualElement>
-            <ui:VisualElement name="profile-content" class="profile-content">
+            <ui:ScrollView name="profile-content" class="profile-content">
                 <ui:VisualElement class="stat-card">
                     <ui:VisualElement name="level-icon" class="stat-icon" />
                     <ui:Label text="Level" class="stat-label" />
@@ -48,7 +48,7 @@
                     <ui:Label text="Today's Planting" class="stat-label" />
                     <ui:Label name="daily-cap-value" text="0 / 0" class="stat-value" />
                 </ui:VisualElement>
-            </ui:VisualElement>
+            </ui:ScrollView>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

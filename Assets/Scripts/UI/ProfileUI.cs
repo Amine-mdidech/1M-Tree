@@ -42,9 +42,11 @@ public class ProfileUI : MonoBehaviour
         profileFrame.style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateWoodGrainTexture(256, 256, new Color(0.58f, 0.42f, 0.22f)));
 
-        VisualElement profileContent = root.Q<VisualElement>("profile-content");
+        ScrollView profileContent = root.Q<ScrollView>("profile-content");
         profileContent.style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateParchmentTexture(256, 256, new Color(0.94f, 0.87f, 0.72f)));
+        profileContent.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+        profileContent.verticalScrollerVisibility = ScrollerVisibility.Hidden;
 
         levelValueLabel = root.Q<Label>("level-value");
         landValueLabel = root.Q<Label>("land-value");
