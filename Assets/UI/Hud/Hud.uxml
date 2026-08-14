@@ -14,9 +14,9 @@
                     <ui:VisualElement name="xp-bar-fill" class="xp-bar-fill" picking-mode="Ignore" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="vegetation-cluster" class="vegetation-cluster">
-                <ui:Button name="vegetation-button" class="icon-button vegetation-icon-button" />
-                <ui:Label name="vegetation-label" text="Oak" class="vegetation-label" picking-mode="Ignore" />
+            <ui:VisualElement name="picker-cluster" class="picker-cluster">
+                <ui:Button name="picker-button" class="icon-button picker-icon-button" />
+                <ui:Button name="picker-label" text="Oak" class="picker-label" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:Button name="demo-button" class="icon-button demo-icon-button" />

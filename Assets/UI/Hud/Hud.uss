@@ -32,7 +32,7 @@
     transition-timing-function: ease-out-cubic, ease-out-cubic, ease-out;
 }
 
-.vegetation-cluster {
+.picker-cluster {
     height: 32px;
     margin-left: var(--space-sm);
     flex-direction: row;
@@ -303,7 +303,7 @@
     scale: 0.95 0.95;
 }
 
-.vegetation-label {
+.picker-label {
     margin-right: var(--space-xs);
     padding: 3px var(--space-sm);
     background-color: rgba(0, 0, 0, 0.2);
@@ -319,7 +319,7 @@
 /* Overrides .icon-button's pill radius for this one icon specifically - the other buttons sharing
    that class (lab/codex/profile/settings/demo) are unaffected, since they weren't part of this
    "make the top-left cluster rectangular" request. */
-.vegetation-icon-button {
+.picker-icon-button {
     border-radius: var(--radius-sm);
     border-width: var(--border-thin);
     border-color: var(--color-gold-light);
