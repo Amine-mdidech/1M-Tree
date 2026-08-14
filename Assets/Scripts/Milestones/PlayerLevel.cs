@@ -5,6 +5,7 @@ public class PlayerLevel : MonoBehaviour
     public static PlayerLevel Instance { get; private set; }
 
     public const int XpPerTreePlanted = 5;
+    public const int XpPerAnimalReleased = 5;
     public const int XpPerUnlock = 20;
     public const int XpPerMilestone = 50;
 

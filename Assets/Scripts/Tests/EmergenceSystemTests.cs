@@ -170,60 +170,101 @@ public class EmergenceSystemTests
     }
 
     [Test]
-    public void AdvanceTicks_ElapsedTimeLessThanOneInterval_DoesNotRunTick()
+    public void CanRelease_Herbivore_BlockedByPopulationCap()
     {
-        system.AdvanceTicks(30f); // default tick interval is 60s
+        herbivore.treesPerIndividualCap = 10;
+        EcosystemState.RegisterTreePlanted("oak"); // 1 tree, capacity = 1/10 = 0
 
-        Assert.AreEqual(0, system.EmergenceTickCount);
+        Assert.IsFalse(system.CanRelease(herbivore));
     }
 
     [Test]
-    public void AdvanceTicks_ElapsedTimeCoversMultipleIntervals_RunsThatManyTicksAtOnce()
+    public void CanRelease_Herbivore_BlockedByMissingRequiredVegetation()
     {
-        system.AdvanceTicks(150f); // 150 / 60 = 2 full ticks, 30s remainder
+        herbivore.requiredVegetationIds = new[] { "pine" };
+        // no vegetation registered
 
-        Assert.AreEqual(2, system.EmergenceTickCount);
+        Assert.IsFalse(system.CanRelease(herbivore));
     }
 
     [Test]
-    public void AdvanceTicks_RemainderFromAnEarlierCallCarriesOverInsteadOfBeingLost()
+    public void CanRelease_Herbivore_SatisfiedCriteria_ReturnsTrue()
     {
-        // Simulates two separate short sessions (e.g. app closed and reopened between them):
-        // neither call alone reaches a full interval, but together they should.
-        system.AdvanceTicks(45f);
-        system.AdvanceTicks(20f); // 45 + 20 = 65s >= 60s
+        herbivore.treesPerIndividualCap = 1;
+        EcosystemState.RegisterTreePlanted("oak");
 
-        Assert.AreEqual(1, system.EmergenceTickCount);
+        Assert.IsTrue(system.CanRelease(herbivore));
     }
 
     [Test]
-    public void AdvanceTicks_ZeroTickInterval_DoesNotHangAndRunsNoTicks()
+    public void TryReleaseSpecies_Herbivore_Succeeds_IncrementsPopulation()
     {
-        // A tick interval of 0 (e.g. an Inspector edit dragged past zero) must not spin forever:
-        // tickTimer -= 0 never shrinks, so a naive while-loop would hang the whole Editor.
-        SetTickIntervalSeconds(0f);
+        herbivore.treesPerIndividualCap = 1;
+        EcosystemState.RegisterTreePlanted("oak");
 
-        system.AdvanceTicks(1000f);
+        bool released = system.TryReleaseSpecies(herbivore);
 
-        Assert.AreEqual(0, system.EmergenceTickCount);
+        Assert.IsTrue(released);
+        Assert.AreEqual(1, EcosystemState.GetSpeciesPopulation("test_herbivore"));
     }
 
     [Test]
-    public void AdvanceTicks_NegativeTickInterval_DoesNotHangAndRunsNoTicks()
+    public void TryReleaseSpecies_UnmetCriteria_ReturnsFalseAndDoesNotChangePopulation()
     {
-        // A negative interval makes tickTimer -= tickIntervalSeconds grow every iteration - even
-        // more catastrophic than zero if unguarded.
-        SetTickIntervalSeconds(-1f);
+        herbivore.treesPerIndividualCap = 10;
+        EcosystemState.RegisterTreePlanted("oak"); // capacity = 1/10 = 0
 
-        system.AdvanceTicks(1000f);
+        bool released = system.TryReleaseSpecies(herbivore);
 
-        Assert.AreEqual(0, system.EmergenceTickCount);
+        Assert.IsFalse(released);
+        Assert.AreEqual(0, EcosystemState.GetSpeciesPopulation("test_herbivore"));
     }
 
-    private void SetTickIntervalSeconds(float value)
+    [Test]
+    public void CanRelease_Predator_BlockedByPreyThreshold()
     {
-        FieldInfo field = typeof(EmergenceSystem).GetField("tickIntervalSeconds", BindingFlags.NonPublic | BindingFlags.Instance);
-        field.SetValue(system, value);
+        predator.preySpeciesIds = new[] { "test_herbivore" };
+        predator.preyThreshold = 5;
+        predator.preyToPredatorRatio = 1;
+        EcosystemState.SetSpeciesPopulation("test_herbivore", 3); // below threshold
+
+        Assert.IsFalse(system.CanRelease(predator));
+    }
+
+    [Test]
+    public void CanRelease_Predator_BlockedByPreyToPredatorRatio()
+    {
+        predator.preySpeciesIds = new[] { "test_herbivore" };
+        predator.preyThreshold = 5;
+        predator.preyToPredatorRatio = 10;
+        EcosystemState.SetSpeciesPopulation("test_herbivore", 5); // meets threshold, capacity = 5/10 = 0
+
+        Assert.IsFalse(system.CanRelease(predator));
+    }
+
+    [Test]
+    public void CanRelease_Predator_SatisfiedCriteria_ReturnsTrue()
+    {
+        predator.preySpeciesIds = new[] { "test_herbivore" };
+        predator.preyThreshold = 5;
+        predator.preyToPredatorRatio = 1;
+        EcosystemState.SetSpeciesPopulation("test_herbivore", 5); // capacity = 5/1 = 5, 0 < 5
+
+        Assert.IsTrue(system.CanRelease(predator));
+    }
+
+    [Test]
+    public void TryReleaseSpecies_Predator_Succeeds_IncrementsPopulation()
+    {
+        predator.preySpeciesIds = new[] { "test_herbivore" };
+        predator.preyThreshold = 5;
+        predator.preyToPredatorRatio = 1;
+        EcosystemState.SetSpeciesPopulation("test_herbivore", 5);
+
+        bool released = system.TryReleaseSpecies(predator);
+
+        Assert.IsTrue(released);
+        Assert.AreEqual(1, EcosystemState.GetSpeciesPopulation("test_predator"));
     }
 
     private static int CountActiveCreaturesForSpecies(string speciesId)

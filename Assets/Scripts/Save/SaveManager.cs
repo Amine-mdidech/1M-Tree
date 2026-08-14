@@ -147,13 +147,8 @@ public class SaveManager : MonoBehaviour
             EcosystemState.SetSpeciesPopulation(entry.speciesId, entry.population);
         }
 
-        double offlineSeconds = RestorePlantedTrees(data);
+        RestorePlantedTrees(data);
 
-        // Catch up emergence ticks for the real-world time the app was closed, the same way
-        // RestorePlantedTrees just caught up tree growth - otherwise a session shorter than one
-        // tick interval (60s) could never see a new animal, and any time spent fully closed
-        // between sessions would be silently discarded instead of counting toward the next tick.
-        emergenceSystem.AdvanceTicks((float)offlineSeconds);
         emergenceSystem.SpawnMissingCreatureVisuals();
 
         if (data.activeResearch != null)

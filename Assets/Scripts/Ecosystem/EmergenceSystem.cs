@@ -10,30 +10,16 @@ public class EmergenceSystem : MonoBehaviour
         public int population;
     }
 
-    private const float DefaultTickIntervalSeconds = 60f;
-    private const int TreeCountDivisor = 50;
-    private const float VegetationDiversityStep = 0.1f;
-    private const float NonPredatorChanceCeiling = 0.8f;
-    private const float PredatorChanceCeiling = 0.5f;
-    private const float PredatorPreyRatioCeiling = 2f;
-
     [SerializeField] private List<SpeciesDefinition> unlockedNonPredatorSpecies = new List<SpeciesDefinition>();
     [SerializeField] private List<SpeciesDefinition> unlockedPredatorSpecies = new List<SpeciesDefinition>();
     [SerializeField] private List<SpeciesRuntimeState> populations = new List<SpeciesRuntimeState>();
-    [SerializeField] private float tickIntervalSeconds = DefaultTickIntervalSeconds;
     [SerializeField] private float creatureWanderRadius = 2f;
 
     // Index 0 / 1 = the two walk-cycle frames for that species, swapped by CreatureVisual while moving.
     private static readonly Dictionary<string, Sprite[]> creatureFramesBySpeciesId =
         new Dictionary<string, Sprite[]>();
 
-    private float tickTimer;
-
     public int UnlockedSpeciesCount => unlockedNonPredatorSpecies.Count + unlockedPredatorSpecies.Count;
-
-    // How many emergence ticks have actually run, regardless of whether any of them rolled a
-    // spawn. Lets tests/debugging verify catch-up ticks fired without depending on Random.value.
-    public int EmergenceTickCount { get; private set; }
 
     public bool HasAnyPredatorEmerged()
     {
@@ -109,124 +95,63 @@ public class EmergenceSystem : MonoBehaviour
         return ids;
     }
 
-    private void Update()
+    // Deterministic replacement for the old per-tick probability roll: given the same criteria
+    // (prey population for predators, tree-count-derived capacity for herbivores), this either
+    // is or isn't currently satisfied - no randomness. baseEmergenceWeight is intentionally not
+    // read here; it only ever fed the removed probability roll.
+    public bool CanRelease(SpeciesDefinition species)
     {
-        AdvanceTicks(Time.deltaTime);
-    }
-
-    // Routes both live per-frame ticking and offline/short-session catch-up (see SaveManager,
-    // which calls this once on load with the real-world seconds elapsed since the app last
-    // closed) through the same accounting, so partial progress toward the next tick is never
-    // silently discarded across a session boundary the way a session-local, reset-on-launch
-    // timer would discard it.
-    public void AdvanceTicks(float elapsedSeconds)
-    {
-        int ticksToRun = ConsumeTicks(elapsedSeconds);
-        for (int i = 0; i < ticksToRun; i++)
+        if (species == null)
         {
-            RunEmergenceTick();
-        }
-    }
-
-    private int ConsumeTicks(float elapsedSeconds)
-    {
-        // A zero or negative interval (e.g. an Inspector value dragged past zero) would otherwise
-        // spin the loop below forever: tickTimer -= tickIntervalSeconds never shrinks tickTimer
-        // when tickIntervalSeconds <= 0, so the condition never goes false. That hangs the whole
-        // Editor, since this runs on the main thread every frame.
-        if (tickIntervalSeconds <= 0f)
-        {
-            return 0;
+            return false;
         }
 
-        tickTimer += elapsedSeconds;
-
-        int ticksToRun = 0;
-        while (tickTimer >= tickIntervalSeconds)
+        if (species.category == SpeciesDefinition.SpeciesCategory.Predator)
         {
-            tickTimer -= tickIntervalSeconds;
-            ticksToRun++;
-        }
-
-        return ticksToRun;
-    }
-
-    private void RunEmergenceTick()
-    {
-        EmergenceTickCount++;
-
-        int currentTreeCount = EcosystemState.TotalTreeCount;
-        int distinctVegetationTypesPlanted = EcosystemState.DistinctVegetationTypeCount;
-        float vegetationDiversityMultiplier = 1f + (distinctVegetationTypesPlanted - 1) * VegetationDiversityStep;
-
-        IReadOnlyList<PlantedTree> treesThisTick = PlantedTree.ActiveTrees;
-
-        foreach (SpeciesDefinition species in unlockedNonPredatorSpecies)
-        {
-            if (species == null || species.category == SpeciesDefinition.SpeciesCategory.Predator)
-            {
-                continue;
-            }
-
-            if (!IsVegetationSatisfied(species))
-            {
-                continue;
-            }
-
-            if (species.treesPerIndividualCap > 0)
-            {
-                int populationCapacity = currentTreeCount / species.treesPerIndividualCap;
-                if (EcosystemState.GetSpeciesPopulation(species.id) >= populationCapacity)
-                {
-                    continue;
-                }
-            }
-
-            float emergenceChance = species.baseEmergenceWeight * (currentTreeCount / (float)TreeCountDivisor) * vegetationDiversityMultiplier;
-            emergenceChance = Mathf.Clamp(emergenceChance, 0f, NonPredatorChanceCeiling);
-
-            if (Random.value < emergenceChance)
-            {
-                SpawnIndividual(species, treesThisTick);
-            }
-        }
-
-        RunPredatorEmergence(treesThisTick);
-    }
-
-    private void RunPredatorEmergence(IReadOnlyList<PlantedTree> treesThisTick)
-    {
-        foreach (SpeciesDefinition predator in unlockedPredatorSpecies)
-        {
-            if (predator == null || predator.category != SpeciesDefinition.SpeciesCategory.Predator)
-            {
-                continue;
-            }
-
             int totalPrey = 0;
-            if (predator.preySpeciesIds != null)
+            if (species.preySpeciesIds != null)
             {
-                foreach (string preyId in predator.preySpeciesIds)
+                foreach (string preyId in species.preySpeciesIds)
                 {
                     totalPrey += EcosystemState.GetSpeciesPopulation(preyId);
                 }
             }
 
-            int predatorCapacity = Mathf.FloorToInt(totalPrey / (float)predator.preyToPredatorRatio);
-            int currentPredatorPopulation = EcosystemState.GetSpeciesPopulation(predator.id);
+            int predatorCapacity = Mathf.FloorToInt(totalPrey / (float)species.preyToPredatorRatio);
+            int currentPredatorPopulation = EcosystemState.GetSpeciesPopulation(species.id);
 
-            float emergenceChance = 0f;
-            if (totalPrey >= predator.preyThreshold && currentPredatorPopulation < predatorCapacity)
-            {
-                emergenceChance = predator.baseEmergenceWeight * Mathf.Min(totalPrey / (float)predator.preyThreshold, PredatorPreyRatioCeiling);
-                emergenceChance = Mathf.Clamp(emergenceChance, 0f, PredatorChanceCeiling);
-            }
-
-            if (emergenceChance > 0f && Random.value < emergenceChance)
-            {
-                SpawnIndividual(predator, treesThisTick);
-            }
+            return totalPrey >= species.preyThreshold && currentPredatorPopulation < predatorCapacity;
         }
+
+        if (!IsVegetationSatisfied(species))
+        {
+            return false;
+        }
+
+        if (species.treesPerIndividualCap > 0)
+        {
+            int populationCapacity = EcosystemState.TotalTreeCount / species.treesPerIndividualCap;
+            return EcosystemState.GetSpeciesPopulation(species.id) < populationCapacity;
+        }
+
+        return true;
+    }
+
+    // Player-triggered release: succeeds or fails immediately based on CanRelease, with the same
+    // feedback tree-planting already gives (sound + VFX + XP). The VFX burst comes from
+    // SpawnIndividual's call into SpawnCreatureVisual (playSpawnEffects defaults to true) - don't
+    // add a second one here.
+    public bool TryReleaseSpecies(SpeciesDefinition species)
+    {
+        if (!CanRelease(species))
+        {
+            return false;
+        }
+
+        SpawnIndividual(species, PlantedTree.ActiveTrees);
+        AudioManager.Instance?.PlayPlant();
+        PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerAnimalReleased);
+        return true;
     }
 
     private static bool IsVegetationSatisfied(SpeciesDefinition species)
@@ -494,11 +419,5 @@ public class EmergenceSystem : MonoBehaviour
             default:
                 return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Nub, hasFangs = species.category == SpeciesDefinition.SpeciesCategory.Predator };
         }
-    }
-
-    [ContextMenu("Debug: Force Emergence Tick")]
-    public void ForceEmergenceTick()
-    {
-        RunEmergenceTick();
     }
 }
