@@ -7,6 +7,11 @@
                 <ui:Label name="lab-title" text="Laboratory" class="lab-title" />
                 <ui:Button name="close-button" text="X" class="lab-close-button" />
             </ui:VisualElement>
+            <ui:VisualElement name="lab-tabs" class="lab-tabs">
+                <ui:Button name="plants-tab-button" text="Plants" class="lab-tab-button" />
+                <ui:Button name="herbivores-tab-button" text="Herbivores" class="lab-tab-button" />
+                <ui:Button name="predators-tab-button" text="Predators" class="lab-tab-button" />
+            </ui:VisualElement>
             <ui:VisualElement name="active-research-panel" class="active-research-panel">
                 <ui:Label name="active-research-label" text="" class="active-research-label" />
                 <ui:Button name="skip-button" text="Skip" class="skip-button" />

@@ -70,6 +70,36 @@
     scale: 0.92 0.92;
 }
 
+.lab-tabs {
+    flex-direction: row;
+    margin-bottom: var(--space-sm);
+}
+
+.lab-tab-button {
+    flex-grow: 1;
+    height: 32px;
+    margin-right: var(--space-xs);
+    border-radius: var(--radius-md);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-shadow);
+    border-bottom-width: var(--border-shadow);
+    border-top-color: var(--color-neutral-light);
+    border-left-color: var(--color-neutral-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    background-color: var(--color-neutral);
+    color: var(--text-on-dark);
+    font-size: var(--font-size-sm);
+    -unity-font-style: bold;
+}
+
+.lab-tab-button--active {
+    background-color: var(--color-info);
+    border-top-color: var(--color-info-light);
+    border-left-color: var(--color-info-light);
+}
+
 .active-research-panel {
     flex-grow: 1;
     -unity-background-scale-mode: scale-and-crop;

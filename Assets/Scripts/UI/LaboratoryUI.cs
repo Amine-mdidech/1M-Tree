@@ -31,6 +31,9 @@ public class LaboratoryUI : MonoBehaviour
     private VisualElement activeResearchPanel;
     private Label activeResearchLabel;
     private Button skipButton;
+    private Button plantsTabButton;
+    private Button herbivoresTabButton;
+    private Button predatorsTabButton;
     private ScrollView treeScroll;
     private VisualElement treeCanvas;
     private TechTreeConnectorView connectorView;
@@ -53,6 +56,13 @@ public class LaboratoryUI : MonoBehaviour
         activeResearchPanel = root.Q<VisualElement>("active-research-panel");
         activeResearchLabel = root.Q<Label>("active-research-label");
         skipButton = root.Q<Button>("skip-button");
+        plantsTabButton = root.Q<Button>("plants-tab-button");
+        herbivoresTabButton = root.Q<Button>("herbivores-tab-button");
+        predatorsTabButton = root.Q<Button>("predators-tab-button");
+        predatorsTabButton.style.marginRight = 0;
+        plantsTabButton.clicked += () => SelectTab(LabTab.Plants);
+        herbivoresTabButton.clicked += () => SelectTab(LabTab.Herbivores);
+        predatorsTabButton.clicked += () => SelectTab(LabTab.Predators);
         treeScroll = root.Q<ScrollView>("tree-scroll");
         treeCanvas = root.Q<VisualElement>("tree-canvas");
         treeScroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
@@ -112,6 +122,8 @@ public class LaboratoryUI : MonoBehaviour
     {
         if (visible)
         {
+            selectedTab = LabTab.Plants;
+            RefreshTabButtons();
             RefreshLab();
             PanelAnimator.Open(labRoot, labFrame);
         }
@@ -121,6 +133,26 @@ public class LaboratoryUI : MonoBehaviour
         }
 
         IsOpen = visible;
+    }
+
+    private void SelectTab(LabTab tab)
+    {
+        if (selectedTab == tab)
+        {
+            return;
+        }
+
+        AudioManager.Instance?.PlayTap();
+        selectedTab = tab;
+        RefreshTabButtons();
+        BuildTree();
+    }
+
+    private void RefreshTabButtons()
+    {
+        plantsTabButton.EnableInClassList("lab-tab-button--active", selectedTab == LabTab.Plants);
+        herbivoresTabButton.EnableInClassList("lab-tab-button--active", selectedTab == LabTab.Herbivores);
+        predatorsTabButton.EnableInClassList("lab-tab-button--active", selectedTab == LabTab.Predators);
     }
 
     private void OnCloseButtonClicked()
@@ -185,12 +217,28 @@ public class LaboratoryUI : MonoBehaviour
         Locked
     }
 
+    private enum LabTab
+    {
+        Plants = 0,
+        Herbivores = 1,
+        Predators = 2
+    }
+
+    private LabTab selectedTab = LabTab.Plants;
+
     private void BuildTree()
     {
         treeCanvas.Clear();
         treeCanvas.Add(connectorView);
 
-        IReadOnlyList<ResearchProjectDefinition> projects = researchManager.AvailableResearchProjects;
+        List<ResearchProjectDefinition> projects = new List<ResearchProjectDefinition>();
+        foreach (ResearchProjectDefinition project in researchManager.AvailableResearchProjects)
+        {
+            if (project != null && GetBranchRank(project) == (int)selectedTab)
+            {
+                projects.Add(project);
+            }
+        }
 
         Dictionary<string, ResearchProjectDefinition> byId = new Dictionary<string, ResearchProjectDefinition>();
         foreach (ResearchProjectDefinition project in projects)
