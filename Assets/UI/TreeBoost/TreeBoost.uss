@@ -85,3 +85,28 @@
 .boost-button:active {
     scale: 0.94 0.94;
 }
+
+.move-button {
+    min-width: 170px;
+    min-height: 36px;
+    margin-top: var(--space-sm);
+    border-radius: var(--radius-pill);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-thick);
+    border-bottom-width: var(--border-thick);
+    border-top-color: var(--color-info-light);
+    border-left-color: var(--color-info-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    background-color: var(--color-info);
+    color: var(--text-on-dark);
+    font-size: var(--font-size-sm);
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1;
+    -unity-text-outline-color: var(--color-ink);
+}
+
+.move-button:active {
+    scale: 0.94 0.94;
+}

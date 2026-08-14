@@ -6,7 +6,9 @@
 
 .top-left-cluster {
     position: absolute;
-    top: var(--space-xl);
+    /* Explicit override (not --space-xl, shared by the other corner clusters) so this row alone
+       sits closer to the top edge. */
+    top: 10px;
     left: var(--space-xl);
     flex-direction: row;
     align-items: center;
@@ -19,8 +21,8 @@
     background-color: rgba(24, 20, 18, 0.82);
     -unity-background-scale-mode: stretch-to-fill;
     border-radius: var(--radius-sm);
-    border-width: 1.5px;
-    border-color: rgba(255, 255, 255, 0.16);
+    border-width: var(--border-thin);
+    border-color: var(--color-gold-light);
     padding: 0 var(--space-md) 0 var(--space-xs);
     opacity: 1;
     translate: 0 0;
@@ -84,8 +86,8 @@
     background-color: rgba(24, 20, 18, 0.82);
     -unity-background-scale-mode: stretch-to-fill;
     border-radius: var(--radius-sm);
-    border-width: 1.5px;
-    border-color: rgba(255, 255, 255, 0.16);
+    border-width: var(--border-thin);
+    border-color: var(--color-gold-light);
     padding: 0 var(--space-md) 0 var(--space-xs);
     margin-left: var(--space-sm);
 }
@@ -114,23 +116,37 @@
 .xp-bar-track {
     width: 60px;
     height: 6px;
-    border-radius: var(--radius-pill);
-    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 2px;
+    /* Inset "carved groove" bevel - the inverse of the raised convention (dark top/left, light
+       bottom/right) used everywhere else, since a track is a hollow the fill sits inside rather
+       than a raised object. */
+    border-width: 1px;
+    border-top-color: rgba(0, 0, 0, 0.55);
+    border-left-color: rgba(0, 0, 0, 0.55);
+    border-right-color: rgba(255, 220, 160, 0.25);
+    border-bottom-color: rgba(255, 220, 160, 0.25);
+    background-color: rgba(40, 24, 10, 0.6);
     overflow: hidden;
 }
 
 .xp-bar-fill {
     height: 100%;
     width: 0%;
-    background-color: rgb(140, 89, 217);
-    border-radius: var(--radius-pill);
-    transition-property: width;
-    transition-duration: 0.35s;
-    transition-timing-function: ease-out;
+    -unity-background-scale-mode: stretch-to-fill;
+    /* Slightly dimmed at rest so the flash class below (full white = no dimming) reads as a
+       genuine brightening pop - a multiply-tint can only go as bright as the source texture
+       itself (white = identity), so the "flash" has to start from a dimmed baseline. */
+    -unity-background-image-tint-color: rgb(210, 200, 220);
+    border-radius: 2px;
+    transition-property: width, -unity-background-image-tint-color;
+    transition-duration: 0.35s, 0.15s;
+    transition-timing-function: ease-out, ease-out;
 }
 
+/* Brightens the gradient texture (rather than swapping a flat color, now that the fill uses a
+   generated gradient texture instead of a flat background-color) for the level-up flash pop. */
 .xp-bar-fill--flash {
-    background-color: rgb(210, 180, 255);
+    -unity-background-image-tint-color: rgb(255, 255, 255);
 }
 
 .action-cluster {
@@ -294,7 +310,7 @@
     -unity-background-scale-mode: stretch-to-fill;
     border-radius: var(--radius-sm);
     border-width: 1px;
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--color-gold-light);
     color: var(--text-on-dark);
     font-size: var(--font-size-xs);
     -unity-font-style: bold;
@@ -305,4 +321,53 @@
    "make the top-left cluster rectangular" request. */
 .vegetation-icon-button {
     border-radius: var(--radius-sm);
+    border-width: var(--border-thin);
+    border-color: var(--color-gold-light);
+}
+
+.move-tree-banner-root {
+    display: none;
+    position: absolute;
+    top: var(--space-xl);
+    width: 100%;
+    align-items: center;
+}
+
+.move-tree-banner {
+    flex-direction: row;
+    align-items: center;
+    background-color: rgba(24, 20, 18, 0.9);
+    border-radius: var(--radius-pill);
+    border-width: 1.5px;
+    border-color: rgba(255, 255, 255, 0.2);
+    padding: var(--space-xs) var(--space-sm);
+}
+
+.move-tree-banner-label {
+    color: var(--text-on-dark);
+    font-size: var(--font-size-sm);
+    -unity-font-style: bold;
+    margin-right: var(--space-sm);
+}
+
+.move-tree-cancel-button {
+    height: 26px;
+    padding: 0 var(--space-sm);
+    border-radius: var(--radius-pill);
+    border-top-width: var(--border-thin);
+    border-left-width: var(--border-thin);
+    border-right-width: var(--border-thick);
+    border-bottom-width: var(--border-thick);
+    border-top-color: var(--color-danger-light);
+    border-left-color: var(--color-danger-light);
+    border-right-color: var(--color-shadow);
+    border-bottom-color: var(--color-shadow);
+    background-color: var(--color-danger);
+    color: var(--text-on-dark);
+    font-size: var(--font-size-xs);
+    -unity-font-style: bold;
+}
+
+.move-tree-cancel-button:active {
+    scale: 0.95 0.95;
 }

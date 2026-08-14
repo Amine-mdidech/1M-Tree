@@ -21,6 +21,9 @@ public class CameraPanController : MonoBehaviour
     private bool isDragging;
     private Vector2 pressScreenPosition;
     private Vector2 lastScreenPosition;
+    private PlantedTree treeBeingMoved;
+
+    public static CameraPanController Instance { get; private set; }
 
     public float MapHalfWidth => mapHalfWidth;
     public float MapHalfHeight => mapHalfHeight;
@@ -37,10 +40,46 @@ public class CameraPanController : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+
         if (targetCamera == null)
         {
             targetCamera = Camera.main;
         }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    // Arms move mode: the next tap that lands on a valid spot relocates this tree there instead of
+    // triggering the usual tap-a-tree/tap-empty-ground behavior. Called by TreeBoostUI's Move
+    // button.
+    public void BeginMoveTree(PlantedTree tree)
+    {
+        if (tree == null)
+        {
+            return;
+        }
+
+        treeBeingMoved = tree;
+        HudUI.Instance?.ShowMoveTreeBanner(tree.Vegetation.displayName);
+    }
+
+    public void CancelMoveTree()
+    {
+        treeBeingMoved = null;
+        HudUI.Instance?.HideMoveTreeBanner();
     }
 
     private void Update()
@@ -110,29 +149,33 @@ public class CameraPanController : MonoBehaviour
             Vector3 worldPoint = targetCamera.ScreenToWorldPoint(releaseScreenPosition);
             worldPoint.z = 0f;
 
-            bool handledByLab = laboratoryBuilding != null && laboratoryBuilding.TryHandleTap(worldPoint);
-
-            if (!handledByLab)
+            if (treeBeingMoved != null)
             {
-                CreatureVisual tappedCreature = FindCreatureNear(worldPoint);
-                if (tappedCreature != null)
+                ResolveMoveTreeTap(worldPoint);
+            }
+            else
+            {
+                bool handledByLab = laboratoryBuilding != null && laboratoryBuilding.TryHandleTap(worldPoint);
+
+                if (!handledByLab)
                 {
-                    AudioManager.Instance?.PlayTap();
-                    tappedCreature.ShowNamePopup();
-                }
-                else
-                {
-                    PlantedTree tappedTree = FindTreeNear(worldPoint);
-                    if (tappedTree != null)
+                    CreatureVisual tappedCreature = FindCreatureNear(worldPoint);
+                    if (tappedCreature != null)
                     {
-                        if (!tappedTree.IsMature && treeBoostUI != null)
-                        {
-                            treeBoostUI.Open(tappedTree);
-                        }
+                        AudioManager.Instance?.PlayTap();
+                        tappedCreature.ShowNamePopup();
                     }
-                    else if (treePlanter != null)
+                    else
                     {
-                        treePlanter.PlantTree(worldPoint);
+                        PlantedTree tappedTree = FindTreeNear(worldPoint);
+                        if (tappedTree != null)
+                        {
+                            treeBoostUI?.Open(tappedTree);
+                        }
+                        else if (treePlanter != null)
+                        {
+                            treePlanter.PlantTree(worldPoint);
+                        }
                     }
                 }
             }
@@ -140,6 +183,27 @@ public class CameraPanController : MonoBehaviour
 
         isPressed = false;
         isDragging = false;
+    }
+
+    // A tap on the tree currently being moved cancels the move (a quick way to back out without
+    // hunting for the banner's Cancel button); any other tap is treated as a destination attempt.
+    private void ResolveMoveTreeTap(Vector3 worldPoint)
+    {
+        if (Vector2.Distance(treeBeingMoved.transform.position, worldPoint) <= treeClickRadius)
+        {
+            CancelMoveTree();
+            return;
+        }
+
+        if (treePlanter != null && treePlanter.MoveTree(treeBeingMoved, worldPoint))
+        {
+            treeBeingMoved = null;
+            HudUI.Instance?.HideMoveTreeBanner();
+        }
+        else
+        {
+            AudioManager.Instance?.PlayError();
+        }
     }
 
     private PlantedTree FindTreeNear(Vector3 worldPosition)

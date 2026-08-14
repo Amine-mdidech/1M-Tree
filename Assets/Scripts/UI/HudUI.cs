@@ -18,6 +18,12 @@ public class HudUI : MonoBehaviour
     [SerializeField] private LaboratoryBuilding laboratoryBuilding;
     [SerializeField] private MapUI mapUI;
 
+    // fal.ai-rendered token icons (see docs/art-design-document.md's "HUD token icon" exception) -
+    // static single-purpose glyphs that never need runtime recoloring, unlike most HUD chrome.
+    [SerializeField] private Sprite currencyIconSprite;
+    [SerializeField] private Sprite xpIconSprite;
+    [SerializeField] private Sprite vegetationIconSprite;
+
     private const int MinimapSize = 42;
     private const float MinimapRefreshInterval = 0.5f;
     private const float MinimapTapMaxDragDistance = 5f;
@@ -35,6 +41,9 @@ public class HudUI : MonoBehaviour
     private Label landLockPopupMessage;
     private Button landLockUnlockButton;
     private Button landLockCloseButton;
+    private VisualElement moveTreeBannerRoot;
+    private Label moveTreeBannerLabel;
+    private Button moveTreeCancelButton;
     private Button vegetationButton;
     private Label vegetationLabel;
     private Label gemCountLabel;
@@ -87,7 +96,7 @@ public class HudUI : MonoBehaviour
 
         vegetationButton = root.Q<Button>("vegetation-button");
         vegetationButton.clicked += OnVegetationButtonClicked;
-        vegetationButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.55f, 0.38f, 0.22f), PixelArtUtility.DrawPineGlyph));
+        vegetationButton.style.backgroundImage = new StyleBackground(vegetationIconSprite);
 
         Button profileButton = root.Q<Button>("profile-button");
         profileButton.clicked += OnProfileButtonClicked;
@@ -108,22 +117,27 @@ public class HudUI : MonoBehaviour
         // read as distorted).
         vegetationLabel.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateTexturedPillBackground(96, 24, new Color(0.08f, 0.08f, 0.08f, 0.2f)));
 
+        // Warm brass base (not the plain dark ink used elsewhere) - the badge frame's material,
+        // per the "AAA" pass: see docs/art-design-document.md's HUD token icon note.
+        Color brassBase = new Color(0.24f, 0.16f, 0.07f, 0.88f);
+
         VisualElement gemIcon = root.Q<VisualElement>("gem-icon");
-        gemIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateGlyphSprite(64, PixelArtUtility.DrawGemGlyph));
+        gemIcon.style.backgroundImage = new StyleBackground(currencyIconSprite);
         gemCountLabel = root.Q<Label>("gem-count-label");
 
         VisualElement xpBadge = root.Q<VisualElement>("xp-badge");
-        xpBadge.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateTexturedPillBackground(140, 32, new Color(0.094f, 0.078f, 0.071f, 0.82f)));
+        xpBadge.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBrassMossTexture(140, 32, brassBase));
 
         VisualElement xpIcon = root.Q<VisualElement>("xp-icon");
-        xpIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateGlyphSprite(64, PixelArtUtility.DrawStarGlyph));
+        xpIcon.style.backgroundImage = new StyleBackground(xpIconSprite);
 
         xpLevelLabel = root.Q<Label>("xp-level-label");
         xpBarFill = root.Q<VisualElement>("xp-bar-fill");
+        xpBarFill.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateGlowBarTexture(60, 6, new Color(0.55f, 0.35f, 0.85f), new Color(0.85f, 0.35f, 0.75f)));
 
         topLeftCluster = root.Q<VisualElement>("top-left-cluster");
         currencyBadge = root.Q<VisualElement>("currency-badge");
-        currencyBadge.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateTexturedPillBackground(140, 32, new Color(0.094f, 0.078f, 0.071f, 0.82f)));
+        currencyBadge.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBrassMossTexture(140, 32, brassBase));
         currencyBadge.AddToClassList("currency-badge--enter");
         currencyBadge.schedule.Execute(() => currencyBadge.RemoveFromClassList("currency-badge--enter")).ExecuteLater(50);
 
@@ -139,6 +153,11 @@ public class HudUI : MonoBehaviour
         landLockUnlockButton.clicked += OnLandLockUnlockButtonClicked;
         landLockCloseButton = root.Q<Button>("land-lock-close-button");
         landLockCloseButton.clicked += OnLandLockCloseButtonClicked;
+
+        moveTreeBannerRoot = root.Q<VisualElement>("move-tree-banner-root");
+        moveTreeBannerLabel = root.Q<Label>("move-tree-banner-label");
+        moveTreeCancelButton = root.Q<Button>("move-tree-cancel-button");
+        moveTreeCancelButton.clicked += OnMoveTreeCancelButtonClicked;
 
         RefreshVegetationLabel();
         RefreshGemCount();
@@ -503,6 +522,43 @@ public class HudUI : MonoBehaviour
         }
     }
 
+    public void ShowMoveTreeBanner(string treeName)
+    {
+        if (moveTreeBannerRoot == null)
+        {
+            return;
+        }
+
+        moveTreeBannerLabel.text = $"Tap where to move {treeName}";
+        moveTreeBannerRoot.style.display = DisplayStyle.Flex;
+
+        // Hidden while moving a tree: the currency/XP badges and vegetation picker sit right
+        // behind the banner (both anchored to the top edge) and read as clutter competing with it.
+        if (topLeftCluster != null)
+        {
+            topLeftCluster.style.display = DisplayStyle.None;
+        }
+    }
+
+    public void HideMoveTreeBanner()
+    {
+        if (moveTreeBannerRoot != null)
+        {
+            moveTreeBannerRoot.style.display = DisplayStyle.None;
+        }
+
+        if (topLeftCluster != null)
+        {
+            topLeftCluster.style.display = DisplayStyle.Flex;
+        }
+    }
+
+    private void OnMoveTreeCancelButtonClicked()
+    {
+        AudioManager.Instance?.PlayTap();
+        CameraPanController.Instance?.CancelMoveTree();
+    }
+
     private void RefreshMinimap()
     {
         if (minimapView == null)
@@ -526,11 +582,18 @@ public class HudUI : MonoBehaviour
         float mapHalfWidth = cameraPanController != null ? cameraPanController.MapHalfWidth : 30f;
         float mapHalfHeight = cameraPanController != null ? cameraPanController.MapHalfHeight : 30f;
 
+        // No (1 - ny) flip here: PixelBuffer/Texture2D index 0 is already the BOTTOM row (see
+        // PixelArtUtility's DrawPineGlyph comment on this same convention), so high world-Y
+        // (north) naturally belongs at a high buffer-y (top of the rendered image) with no extra
+        // flip. The flip that used to be here was double-inverting north/south - the whole map
+        // (minimap and the full-screen MapUI panel, which share this method) rendered upside down,
+        // and tapping the minimap - which was already written assuming a correct north-up render -
+        // jumped the camera to the wrong place too.
         Vector2 WorldToMap(Vector2 worldPosition)
         {
             float nx = (worldPosition.x + mapHalfWidth) / (mapHalfWidth * 2f);
             float ny = (worldPosition.y + mapHalfHeight) / (mapHalfHeight * 2f);
-            return new Vector2(nx * size, (1f - ny) * size);
+            return new Vector2(nx * size, ny * size);
         }
 
         if (LandManager.Instance != null)

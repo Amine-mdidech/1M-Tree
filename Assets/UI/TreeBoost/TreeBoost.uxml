@@ -9,6 +9,7 @@
             </ui:VisualElement>
             <ui:Label name="remaining-time-label" text="" class="remaining-time-label" />
             <ui:Button name="boost-button" text="Speed Up" class="boost-button" />
+            <ui:Button name="move-button" text="Move" class="move-button" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

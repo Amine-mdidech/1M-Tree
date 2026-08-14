@@ -20,6 +20,12 @@
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:Button name="demo-button" class="icon-button demo-icon-button" />
+        <ui:VisualElement name="move-tree-banner-root" class="move-tree-banner-root" picking-mode="Ignore">
+            <ui:VisualElement name="move-tree-banner" class="move-tree-banner">
+                <ui:Label name="move-tree-banner-label" text="" class="move-tree-banner-label" picking-mode="Ignore" />
+                <ui:Button name="move-tree-cancel-button" text="Cancel" class="move-tree-cancel-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:VisualElement name="action-cluster" class="action-cluster">
             <ui:Button name="lab-button" class="icon-button" />
             <ui:Button name="codex-button" class="icon-button" />

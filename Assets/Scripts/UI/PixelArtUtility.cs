@@ -280,6 +280,77 @@ public static class PixelArtUtility
         return texture;
     }
 
+    // Warm brass/bronze pill background with a faint moss fleck hugging the bottom edge - the HUD
+    // badge frame's small nod to the game's "built + reclaimed by nature" identity (see the
+    // Laboratory building in art-design-document.md), kept subtle since this sits behind a
+    // compact badge rather than a full panel.
+    public static Texture2D CreateBrassMossTexture(int width, int height, Color baseColor)
+    {
+        PixelBuffer buffer = new PixelBuffer(width, height);
+
+        Color topColor = Color.Lerp(baseColor, Color.white, 0.22f);
+        Color bottomColor = baseColor * 0.7f;
+        bottomColor.a = baseColor.a;
+
+        for (int y = 0; y < height; y++)
+        {
+            float t = y / (float)Mathf.Max(1, height - 1);
+            Color rowColor = Color.Lerp(topColor, bottomColor, t);
+            for (int x = 0; x < width; x++)
+            {
+                buffer.Set(x, y, rowColor);
+            }
+        }
+
+        ApplyGrain(buffer, baseColor.GetHashCode(), 0.07f);
+        ApplyMossFleck(buffer, baseColor.GetHashCode() ^ 0x5bd1e995);
+
+        return buffer.ToTexture();
+    }
+
+    private static void ApplyMossFleck(PixelBuffer buffer, int seed)
+    {
+        System.Random rng = new System.Random(seed);
+        Color moss = new Color(0.35f, 0.5f, 0.22f);
+        int flecks = Mathf.Max(3, (buffer.Width * buffer.Height) / 900);
+
+        for (int i = 0; i < flecks; i++)
+        {
+            int x = rng.Next(buffer.Width);
+            // Hugs the bottom third of the badge, like moss creeping up from a base edge rather
+            // than scattered at random across the whole face.
+            int y = rng.Next((int)(buffer.Height * 0.35f));
+            float alpha = 0.12f + (float)rng.NextDouble() * 0.18f;
+            buffer.Blend(x, y, new Color(moss.r, moss.g, moss.b, alpha));
+        }
+    }
+
+    // Horizontal gradient with a brighter streak through the upper-middle fading to darker at the
+    // bottom edge - the same top-lit bevel convention as every other beveled HUD element, applied
+    // to a progress-bar fill instead of a panel/button face. Stretch-to-fill means this reads
+    // correctly at any fill width, from a sliver to the full bar.
+    public static Texture2D CreateGlowBarTexture(int width, int height, Color colorA, Color colorB)
+    {
+        PixelBuffer buffer = new PixelBuffer(width, height);
+
+        for (int x = 0; x < width; x++)
+        {
+            float t = x / (float)Mathf.Max(1, width - 1);
+            Color baseColor = Color.Lerp(colorA, colorB, t);
+
+            for (int y = 0; y < height; y++)
+            {
+                float rowT = y / (float)Mathf.Max(1, height - 1);
+                float shade = Mathf.Lerp(1.25f, 0.75f, rowT);
+                Color color = baseColor * shade;
+                color.a = baseColor.a;
+                buffer.Set(x, y, color);
+            }
+        }
+
+        return buffer.ToTexture();
+    }
+
     public static Texture2D CreateStoneTexture(int width, int height, Color baseColor)
     {
         Color[] pixels = new Color[width * height];

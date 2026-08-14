@@ -167,4 +167,79 @@ public class TreePlanterTests
     {
         Assert.IsTrue(planter.CanPlantAt(Vector3.zero));
     }
+
+    [Test]
+    public void CanMoveTreeTo_OwnCurrentPosition_ReturnsTrue()
+    {
+        planter.PlantTree(Vector3.zero);
+        PlantedTree tree = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude)[0];
+
+        // The tree is excluded from its own spacing check, so "moving" it onto the spot it
+        // already occupies must not be rejected as "too close to an existing tree".
+        Assert.IsTrue(planter.CanMoveTreeTo(tree, Vector3.zero));
+    }
+
+    [Test]
+    public void CanMoveTreeTo_TooCloseToAnotherTree_ReturnsFalse()
+    {
+        planter.PlantTree(Vector3.zero);
+        planter.PlantTree(new Vector3(10f, 0f, 0f));
+        PlantedTree treeToMove = FindTreeNearestTo(new Vector3(10f, 0f, 0f));
+
+        Assert.IsFalse(planter.CanMoveTreeTo(treeToMove, new Vector3(0.1f, 0f, 0f)));
+    }
+
+    [Test]
+    public void CanMoveTreeTo_FarFromOtherTrees_ReturnsTrue()
+    {
+        planter.PlantTree(Vector3.zero);
+        PlantedTree tree = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude)[0];
+
+        Assert.IsTrue(planter.CanMoveTreeTo(tree, new Vector3(20f, 0f, 0f)));
+    }
+
+    [Test]
+    public void MoveTree_ValidDestination_RelocatesTreeAndDoesNotConsumeDailyCap()
+    {
+        planter.PlantTree(Vector3.zero);
+        PlantedTree tree = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude)[0];
+        int treesPlantedBefore = dailyGrant.TreesPlantedToday;
+
+        bool moved = planter.MoveTree(tree, new Vector3(20f, 0f, 0f));
+
+        Assert.IsTrue(moved);
+        Assert.AreEqual(new Vector3(20f, 0f, 0f), tree.transform.position);
+        Assert.AreEqual(treesPlantedBefore, dailyGrant.TreesPlantedToday);
+    }
+
+    [Test]
+    public void MoveTree_InvalidDestination_LeavesTreeInPlace()
+    {
+        planter.PlantTree(Vector3.zero);
+        planter.PlantTree(new Vector3(10f, 0f, 0f));
+        PlantedTree treeToMove = FindTreeNearestTo(new Vector3(10f, 0f, 0f));
+
+        bool moved = planter.MoveTree(treeToMove, new Vector3(0.1f, 0f, 0f));
+
+        Assert.IsFalse(moved);
+        Assert.AreEqual(new Vector3(10f, 0f, 0f), treeToMove.transform.position);
+    }
+
+    private static PlantedTree FindTreeNearestTo(Vector3 position)
+    {
+        PlantedTree closest = null;
+        float closestDistance = float.MaxValue;
+
+        foreach (PlantedTree tree in Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude))
+        {
+            float distance = Vector3.Distance(tree.transform.position, position);
+            if (distance < closestDistance)
+            {
+                closest = tree;
+                closestDistance = distance;
+            }
+        }
+
+        return closest;
+    }
 }

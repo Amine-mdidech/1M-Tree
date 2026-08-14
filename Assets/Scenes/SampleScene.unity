@@ -1453,6 +1453,9 @@ MonoBehaviour:
   cameraPanController: {fileID: 519420033}
   laboratoryBuilding: {fileID: 337284886}
   mapUI: {fileID: 185969798}
+  currencyIconSprite: {fileID: 21300000, guid: c3ba5e216af65486fbfb3c240ad0ecef, type: 3}
+  xpIconSprite: {fileID: 21300000, guid: f18c9ea4e3eac426c950c3ac9742bc55, type: 3}
+  vegetationIconSprite: {fileID: 21300000, guid: 8d8342c564452463d9989f460117d43a, type: 3}
 --- !u!114 &853456667
 MonoBehaviour:
   m_ObjectHideFlags: 0

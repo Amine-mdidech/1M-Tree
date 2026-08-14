@@ -124,7 +124,7 @@ public class TreePlanter : MonoBehaviour
             return;
         }
 
-        if (IsTooCloseToExistingTree(position))
+        if (IsTooCloseToExistingTree(position, excludeTree: null))
         {
             Debug.Log("Can't plant a tree here — too close to another tree.");
             AudioManager.Instance?.PlayError();
@@ -148,7 +148,9 @@ public class TreePlanter : MonoBehaviour
         Handheld.Vibrate();
     }
 
-    private bool IsTooCloseToExistingTree(Vector3 position)
+    // excludeTree lets a move-in-progress check spacing against every OTHER tree without being
+    // blocked by its own current position.
+    private bool IsTooCloseToExistingTree(Vector3 position, PlantedTree excludeTree)
     {
         foreach (PlantedTree tree in PlantedTree.ActiveTrees)
         {
@@ -156,7 +158,7 @@ public class TreePlanter : MonoBehaviour
             // synchronous with DestroyImmediate outside a running Player/PlayMode loop, e.g. in
             // EditMode tests) - Unity's overridden null check catches this safely before touching
             // transform on an object that no longer exists.
-            if (tree == null)
+            if (tree == null || tree == excludeTree)
             {
                 continue;
             }
@@ -195,7 +197,7 @@ public class TreePlanter : MonoBehaviour
             return false;
         }
 
-        if (IsTooCloseToExistingTree(position))
+        if (IsTooCloseToExistingTree(position, excludeTree: null))
         {
             return false;
         }
@@ -205,6 +207,60 @@ public class TreePlanter : MonoBehaviour
             return false;
         }
 
+        return true;
+    }
+
+    // Shares every placement rule CanPlantAt uses except the daily cap (moving an already-planted
+    // tree doesn't spend a new plant) - and excludes the tree itself from the spacing check so it
+    // isn't blocked by its own current position.
+    public bool CanMoveTreeTo(PlantedTree tree, Vector3 position)
+    {
+        if (tree == null)
+        {
+            return false;
+        }
+
+        if (LandManager.Instance != null && !LandManager.Instance.IsWithinOwnedLand(position))
+        {
+            return false;
+        }
+
+        if (laboratoryBuilding != null && laboratoryBuilding.IsWithinExclusionZone(position))
+        {
+            return false;
+        }
+
+        if (RiverManager.Instance != null && RiverManager.Instance.IsBlocked(position))
+        {
+            return false;
+        }
+
+        if (RiverManager.Instance != null && RiverManager.Instance.IsWithinSandBank(position))
+        {
+            return false;
+        }
+
+        if (IsTooCloseToExistingTree(position, tree))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    // Free and uncapped - relocating a tree you already planted is layout tidying, not new growth,
+    // so it deliberately doesn't touch dailyGrant or EcosystemState.RegisterTreePlanted.
+    public bool MoveTree(PlantedTree tree, Vector3 position)
+    {
+        if (!CanMoveTreeTo(tree, position))
+        {
+            return false;
+        }
+
+        tree.transform.position = position;
+        AudioManager.Instance?.PlayPlant();
+        VfxUtility.SpawnBurst(position, tree.Vegetation.foliageColor);
+        Handheld.Vibrate();
         return true;
     }
 

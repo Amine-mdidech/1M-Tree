@@ -13,6 +13,7 @@ public class TreeBoostUI : MonoBehaviour
     private Label treeNameLabel;
     private Label remainingTimeLabel;
     private Button boostButton;
+    private Button moveButton;
 
     private PlantedTree targetTree;
 
@@ -35,9 +36,11 @@ public class TreeBoostUI : MonoBehaviour
         treeNameLabel = root.Q<Label>("tree-name-label");
         remainingTimeLabel = root.Q<Label>("remaining-time-label");
         boostButton = root.Q<Button>("boost-button");
+        moveButton = root.Q<Button>("move-button");
 
         root.Q<Button>("close-button").clicked += Close;
         boostButton.clicked += OnBoostButtonClicked;
+        moveButton.clicked += OnMoveButtonClicked;
 
         SetVisible(false);
     }
@@ -54,18 +57,12 @@ public class TreeBoostUI : MonoBehaviour
             return;
         }
 
-        if (targetTree.IsMature)
-        {
-            Close();
-            return;
-        }
-
         Refresh();
     }
 
     public void Open(PlantedTree tree)
     {
-        if (tree == null || tree.IsMature)
+        if (tree == null)
         {
             return;
         }
@@ -90,6 +87,15 @@ public class TreeBoostUI : MonoBehaviour
     private void Refresh()
     {
         treeNameLabel.text = targetTree.Vegetation.displayName;
+
+        bool isMature = targetTree.IsMature;
+        remainingTimeLabel.style.display = isMature ? DisplayStyle.None : DisplayStyle.Flex;
+        boostButton.style.display = isMature ? DisplayStyle.None : DisplayStyle.Flex;
+
+        if (isMature)
+        {
+            return;
+        }
 
         int remaining = Mathf.Max(0, Mathf.CeilToInt(targetTree.GetRemainingGrowthSeconds()));
         int minutes = remaining / 60;
@@ -125,6 +131,17 @@ public class TreeBoostUI : MonoBehaviour
         AudioManager.Instance?.PlayBoost();
         VfxUtility.SpawnBurst(boostPosition, new Color(1f, 0.85f, 0.3f));
         Handheld.Vibrate();
+        Close();
+    }
+
+    private void OnMoveButtonClicked()
+    {
+        if (targetTree == null)
+        {
+            return;
+        }
+
+        CameraPanController.Instance?.BeginMoveTree(targetTree);
         Close();
     }
 }
