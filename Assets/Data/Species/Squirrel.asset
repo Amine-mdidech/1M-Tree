@@ -18,7 +18,7 @@ MonoBehaviour:
   unlockedByDefault: 0
   requiredVegetationIds: []
   baseEmergenceWeight: 1
-  treesPerIndividualCap: 20
+  treesPerIndividualCap: 2
   preySpeciesIds: []
   preyThreshold: 0
   preyToPredatorRatio: 0

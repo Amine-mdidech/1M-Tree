@@ -20,8 +20,8 @@ MonoBehaviour:
   baseEmergenceWeight: 0.7
   preySpeciesIds:
   - squirrel
-  preyThreshold: 10
-  preyToPredatorRatio: 4
+  preyThreshold: 5
+  preyToPredatorRatio: 5
   researchDurationSeconds: 360
   documentaryTitle: Fox
   documentaryText: Documentary text coming soon.
