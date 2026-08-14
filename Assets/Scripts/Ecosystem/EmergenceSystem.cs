@@ -383,34 +383,10 @@ public class EmergenceSystem : MonoBehaviour
                 return new Color(0.82f, 0.62f, 0.35f);
             case "wolf":
                 return new Color(0.55f, 0.56f, 0.58f);
-            case "rabbit":
-                return new Color(0.78f, 0.68f, 0.55f);
-            case "hare":
-                return new Color(0.68f, 0.52f, 0.32f);
-            case "goat":
-                return new Color(0.85f, 0.83f, 0.78f);
-            case "antelope":
-                return new Color(0.75f, 0.5f, 0.3f);
-            case "deer":
-                return new Color(0.6f, 0.4f, 0.25f);
-            case "zebra":
-                return new Color(0.88f, 0.86f, 0.82f);
-            case "boar":
-                return new Color(0.4f, 0.32f, 0.28f);
-            case "buffalo":
-                return new Color(0.32f, 0.28f, 0.24f);
-            case "moose":
-                return new Color(0.35f, 0.28f, 0.2f);
-            case "giraffe":
-                return new Color(0.85f, 0.65f, 0.3f);
-            case "elephant":
-                return new Color(0.55f, 0.55f, 0.58f);
-            case "lion":
-                return new Color(0.75f, 0.58f, 0.28f);
             case "fox":
                 return new Color(0.78f, 0.4f, 0.2f);
-            case "eagle":
-                return new Color(0.5f, 0.4f, 0.3f);
+            case "squirrel":
+                return new Color(0.62f, 0.38f, 0.2f);
             default:
                 return GetCategoryColor(species.category);
         }
@@ -453,15 +429,10 @@ public class EmergenceSystem : MonoBehaviour
         float baseScale = GetCategoryScale(species.category);
         switch (species.id)
         {
-            case "elephant":
-                return baseScale * 1.6f;
-            case "giraffe":
-                return baseScale * 1.3f;
-            case "rabbit":
-            case "hare":
-                return baseScale * 0.6f;
             case "fox":
                 return baseScale * 0.85f;
+            case "squirrel":
+                return baseScale * 0.6f;
             default:
                 return baseScale;
         }
@@ -495,16 +466,6 @@ public class EmergenceSystem : MonoBehaviour
 
     private static Sprite[] BuildCreatureFrames(SpeciesDefinition species)
     {
-        if (species.id == "eagle")
-        {
-            Color birdColor = GetSpeciesColor(species);
-            return new[]
-            {
-                PixelArtUtility.CreateBirdSprite(64, birdColor, 0),
-                PixelArtUtility.CreateBirdSprite(64, birdColor, 1)
-            };
-        }
-
         PixelArtUtility.QuadrupedTraits traits = GetQuadrupedTraits(species);
         return new[]
         {
@@ -526,32 +487,10 @@ public class EmergenceSystem : MonoBehaviour
                 return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Pointed, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.ThinHorns, tailStyle = PixelArtUtility.AnimalTailStyle.Nub };
             case "wolf":
                 return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Pointed, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Bushy, hasFangs = true };
-            case "rabbit":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Long, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Tuft };
-            case "hare":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Long, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Tuft };
-            case "goat":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Pointed, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.CurvedHorns, tailStyle = PixelArtUtility.AnimalTailStyle.Nub };
-            case "antelope":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Pointed, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.ThinHorns, tailStyle = PixelArtUtility.AnimalTailStyle.Nub };
-            case "deer":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.Antlers, tailStyle = PixelArtUtility.AnimalTailStyle.Nub, pattern = PixelArtUtility.AnimalPattern.Spots, patternColor = Color.white };
-            case "zebra":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Long, pattern = PixelArtUtility.AnimalPattern.Stripes, patternColor = new Color(0.12f, 0.1f, 0.08f) };
-            case "boar":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.Tusks, tailStyle = PixelArtUtility.AnimalTailStyle.Nub };
-            case "buffalo":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.CurvedHorns, tailStyle = PixelArtUtility.AnimalTailStyle.Long };
-            case "moose":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.Antlers, tailStyle = PixelArtUtility.AnimalTailStyle.Nub };
-            case "giraffe":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.ThinHorns, tailStyle = PixelArtUtility.AnimalTailStyle.Long, pattern = PixelArtUtility.AnimalPattern.Spots, patternColor = new Color(0.55f, 0.35f, 0.15f) };
-            case "elephant":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Flappy, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.Tusks, tailStyle = PixelArtUtility.AnimalTailStyle.Long };
-            case "lion":
-                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Tuft, hasMane = true, hasFangs = true };
             case "fox":
                 return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Pointed, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Bushy, hasFangs = true };
+            case "squirrel":
+                return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Bushy };
             default:
                 return new PixelArtUtility.QuadrupedTraits { bodyColor = color, earStyle = PixelArtUtility.AnimalEarStyle.Round, ornamentStyle = PixelArtUtility.AnimalOrnamentStyle.None, tailStyle = PixelArtUtility.AnimalTailStyle.Nub, hasFangs = species.category == SpeciesDefinition.SpeciesCategory.Predator };
         }

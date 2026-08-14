@@ -65,4 +65,23 @@ public class SpeciesRosterTests
         ResearchProjectDefinition foxResearch = AssetDatabase.LoadAssetAtPath<ResearchProjectDefinition>("Assets/Data/Research/FoxResearch.asset");
         Assert.IsEmpty(foxResearch.prerequisiteProjectIds);
     }
+
+    [Test]
+    public void Squirrel_ExistsWithCorrectData()
+    {
+        SpeciesDefinition squirrel = AssetDatabase.LoadAssetAtPath<SpeciesDefinition>("Assets/Data/Species/Squirrel.asset");
+        Assert.IsNotNull(squirrel);
+        Assert.AreEqual("squirrel", squirrel.id);
+        Assert.AreEqual(SpeciesDefinition.SpeciesCategory.Herbivore, squirrel.category);
+        Assert.IsFalse(squirrel.unlockedByDefault);
+    }
+
+    [Test]
+    public void SquirrelResearch_ExistsWithNoPrerequisite()
+    {
+        ResearchProjectDefinition squirrelResearch = AssetDatabase.LoadAssetAtPath<ResearchProjectDefinition>("Assets/Data/Research/SquirrelResearch.asset");
+        Assert.IsNotNull(squirrelResearch);
+        Assert.AreEqual("squirrel", squirrelResearch.unlocksSpeciesId);
+        Assert.IsEmpty(squirrelResearch.prerequisiteProjectIds);
+    }
 }
