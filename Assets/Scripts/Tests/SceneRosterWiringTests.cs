@@ -189,6 +189,14 @@ public class SceneRosterWiringTests
     }
 
     [Test]
+    public void SpeciesSummaryUI_EmergenceSystem_IsWired()
+    {
+        SpeciesSummaryUI summaryUI = FindComponent<SpeciesSummaryUI>();
+        Assert.IsNotNull(summaryUI);
+        Assert.IsNotNull(GetPrivateField(summaryUI, "emergenceSystem"));
+    }
+
+    [Test]
     public void ScreenNavigator_SpeciesSummaryUI_IsWired()
     {
         ScreenNavigator navigator = FindComponent<ScreenNavigator>();

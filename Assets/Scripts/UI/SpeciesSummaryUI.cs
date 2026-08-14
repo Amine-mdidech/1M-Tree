@@ -9,6 +9,7 @@ public class SpeciesSummaryUI : MonoBehaviour
 
     [SerializeField] private List<SpeciesDefinition> allSpecies = new List<SpeciesDefinition>();
     [SerializeField] private List<VegetationDefinition> allVegetation = new List<VegetationDefinition>();
+    [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private ScreenNavigator screenNavigator;
 
     private UIDocument uiDocument;
@@ -195,7 +196,10 @@ public class SpeciesSummaryUI : MonoBehaviour
     {
         rowList.Clear();
 
-        List<SpeciesDefinition> present = FilterPresentSpecies(allSpecies, category);
+        HashSet<string> unlockedSpeciesIds = emergenceSystem != null
+            ? new HashSet<string>(emergenceSystem.GetUnlockedSpeciesIds())
+            : null;
+        List<SpeciesDefinition> present = FilterPresentSpecies(allSpecies, category, unlockedSpeciesIds);
         foreach (SpeciesDefinition species in present)
         {
             Sprite icon = EmergenceSystem.GetSpeciesIconSprite(species);
@@ -268,13 +272,24 @@ public class SpeciesSummaryUI : MonoBehaviour
         return counts;
     }
 
-    // Pure filtering logic, extracted for direct unit testing (see SpeciesSummaryTests.cs).
-    public static List<SpeciesDefinition> FilterPresentSpecies(List<SpeciesDefinition> allSpecies, SpeciesDefinition.SpeciesCategory category)
+    // Pure filtering logic, extracted for direct unit testing (see SpeciesSummaryTests.cs). A
+    // species shows up either because it currently has live population, or because it's been
+    // researched/unlocked (even at 0 population) - so a researched-but-not-yet-released animal
+    // still appears with a 0 counter instead of disappearing entirely.
+    public static List<SpeciesDefinition> FilterPresentSpecies(List<SpeciesDefinition> allSpecies, SpeciesDefinition.SpeciesCategory category, HashSet<string> unlockedSpeciesIds)
     {
         List<SpeciesDefinition> result = new List<SpeciesDefinition>();
         foreach (SpeciesDefinition species in allSpecies)
         {
-            if (species != null && species.category == category && EcosystemState.GetSpeciesPopulation(species.id) > 0)
+            if (species == null || species.category != category)
+            {
+                continue;
+            }
+
+            bool isPresent = EcosystemState.GetSpeciesPopulation(species.id) > 0
+                || (unlockedSpeciesIds != null && unlockedSpeciesIds.Contains(species.id));
+
+            if (isPresent)
             {
                 result.Add(species);
             }

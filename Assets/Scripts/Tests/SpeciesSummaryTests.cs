@@ -104,11 +104,28 @@ public class SpeciesSummaryTests
 
         List<SpeciesDefinition> all = new List<SpeciesDefinition> { herbivoreWithCap, herbivoreWithRequiredVegetation, predator };
 
-        List<SpeciesDefinition> herbivores = SpeciesSummaryUI.FilterPresentSpecies(all, SpeciesDefinition.SpeciesCategory.Herbivore);
-        List<SpeciesDefinition> predators = SpeciesSummaryUI.FilterPresentSpecies(all, SpeciesDefinition.SpeciesCategory.Predator);
+        List<SpeciesDefinition> herbivores = SpeciesSummaryUI.FilterPresentSpecies(all, SpeciesDefinition.SpeciesCategory.Herbivore, null);
+        List<SpeciesDefinition> predators = SpeciesSummaryUI.FilterPresentSpecies(all, SpeciesDefinition.SpeciesCategory.Predator, null);
 
         CollectionAssert.AreEquivalent(new[] { herbivoreWithCap }, herbivores);
         CollectionAssert.AreEquivalent(new[] { predator }, predators);
+    }
+
+    [Test]
+    public void FilterPresentSpecies_IncludesUnlockedSpeciesEvenAtZeroPopulation()
+    {
+        // Zero population for both, but only herbivoreWithCap is "unlocked" - a researched animal
+        // with none currently released should still appear (with a 0 counter), while a
+        // never-unlocked one at 0 population should not.
+        EcosystemState.SetSpeciesPopulation("test_herbivore_cap", 0);
+        EcosystemState.SetSpeciesPopulation("test_herbivore_veg", 0);
+
+        List<SpeciesDefinition> all = new List<SpeciesDefinition> { herbivoreWithCap, herbivoreWithRequiredVegetation };
+        HashSet<string> unlocked = new HashSet<string> { "test_herbivore_cap" };
+
+        List<SpeciesDefinition> herbivores = SpeciesSummaryUI.FilterPresentSpecies(all, SpeciesDefinition.SpeciesCategory.Herbivore, unlocked);
+
+        CollectionAssert.AreEquivalent(new[] { herbivoreWithCap }, herbivores);
     }
 
     [Test]

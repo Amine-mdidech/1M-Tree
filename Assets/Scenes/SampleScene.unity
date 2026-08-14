@@ -1594,6 +1594,7 @@ MonoBehaviour:
   allVegetation:
   - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
   - {fileID: 11400000, guid: cb3e4882552f24c069c2e17e5c3d588b, type: 2}
+  emergenceSystem: {fileID: 1589978606}
   screenNavigator: {fileID: 2005323408}
 --- !u!114 &1085389040
 MonoBehaviour:
