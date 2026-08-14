@@ -39,9 +39,11 @@ public class DemoUI : MonoBehaviour
         demoFrame.style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateStoneTexture(256, 256, new Color(0.32f, 0.34f, 0.36f)));
 
-        VisualElement demoScroll = root.Q<VisualElement>("demo-scroll");
+        ScrollView demoScroll = root.Q<ScrollView>("demo-scroll");
         demoScroll.style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateStoneTexture(256, 256, new Color(0.85f, 0.86f, 0.87f)));
+        demoScroll.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+        demoScroll.verticalScrollerVisibility = ScrollerVisibility.Hidden;
 
         statusLabel = root.Q<Label>("demo-status");
 
