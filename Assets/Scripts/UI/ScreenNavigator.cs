@@ -9,6 +9,7 @@ public class ScreenNavigator : MonoBehaviour
     [SerializeField] private DemoUI demoUI;
     [SerializeField] private SettingsUI settingsUI;
     [SerializeField] private MapUI mapUI;
+    [SerializeField] private SpeciesSummaryUI speciesSummaryUI;
 
     public void OpenCodex()
     {
@@ -52,6 +53,13 @@ public class ScreenNavigator : MonoBehaviour
         SetHomeToolbarVisible(false);
     }
 
+    public void OpenSpeciesSummary()
+    {
+        CloseOtherPanels(speciesSummaryUI);
+        if (speciesSummaryUI != null) speciesSummaryUI.SetOpen(true);
+        SetHomeToolbarVisible(false);
+    }
+
     public void GoHome()
     {
         CloseOtherPanels(null);
@@ -90,6 +98,11 @@ public class ScreenNavigator : MonoBehaviour
         if (mapUI != null && !ReferenceEquals(mapUI, except))
         {
             mapUI.SetOpen(false);
+        }
+
+        if (speciesSummaryUI != null && !ReferenceEquals(speciesSummaryUI, except))
+        {
+            speciesSummaryUI.SetOpen(false);
         }
     }
 
