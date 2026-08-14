@@ -478,6 +478,19 @@ public class EmergenceSystem : MonoBehaviour
         return frames;
     }
 
+    // Exposes the same procedurally-generated creature sprite CreatureVisual renders in the world,
+    // for use as a small icon elsewhere (e.g. the species summary panel) without needing a
+    // duplicate, dedicated icon asset per species.
+    public static Sprite GetSpeciesIconSprite(SpeciesDefinition species)
+    {
+        if (species == null)
+        {
+            return null;
+        }
+
+        return GetCreatureFrames(species)[0];
+    }
+
     private static bool IsValidFrames(Sprite[] frames)
     {
         return frames != null && frames.Length > 0 && frames[0] != null;

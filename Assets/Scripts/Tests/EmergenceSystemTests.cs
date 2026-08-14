@@ -371,6 +371,20 @@ public class EmergenceSystemTests
         Object.DestroyImmediate(predator2);
     }
 
+    [Test]
+    public void GetSpeciesIconSprite_ReturnsNonNullSprite()
+    {
+        Sprite icon = EmergenceSystem.GetSpeciesIconSprite(herbivore);
+
+        Assert.IsNotNull(icon);
+    }
+
+    [Test]
+    public void GetSpeciesIconSprite_NullSpecies_ReturnsNull()
+    {
+        Assert.IsNull(EmergenceSystem.GetSpeciesIconSprite(null));
+    }
+
     private static int CountActiveCreaturesForSpecies(string speciesId)
     {
         int count = 0;
