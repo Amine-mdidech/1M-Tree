@@ -6,6 +6,15 @@ public class CreatureVisual : MonoBehaviour
     private const float HuntChance = 0.1f;
     private const float HuntDetectionRadius = 3f;
 
+    // Squirrel-only wander tuning (see PickSquirrelNearTreeTarget/PickSquirrelAdventureTarget):
+    // normal wandering hugs whatever tree is currently nearest, at a tighter radius than every
+    // other species; roughly once a minute it instead takes one longer trip away before its next
+    // pick re-anchors it to a tree again.
+    private const float SquirrelNearTreeRadiusMultiplier = 0.5f;
+    private const float SquirrelAdventureDistanceMultiplier = 4f;
+    private const float SquirrelAdventureIntervalMinSeconds = 45f;
+    private const float SquirrelAdventureIntervalMaxSeconds = 75f;
+
     // Over-bright multiply tints - values above 1 read as an over-bright/"fluorescent" glow
     // against the sprite's baked color even without an HDR/bloom pipeline. Herbivore vs. predator
     // so the highlight itself hints at what you tapped, not just that you tapped something.
@@ -43,6 +52,7 @@ public class CreatureVisual : MonoBehaviour
     private float walkAnimationTimer;
     private Vector3 previousPosition;
     private bool awakeStateReady;
+    private float squirrelAdventureTimer;
 
     private GameObject namePopupRoot;
     private TextMesh namePopupTextMesh;
@@ -60,6 +70,7 @@ public class CreatureVisual : MonoBehaviour
         wanderRadius = radius;
         walkFrames = frames;
         previousPosition = home;
+        squirrelAdventureTimer = Random.Range(SquirrelAdventureIntervalMinSeconds, SquirrelAdventureIntervalMaxSeconds);
         PickNewTarget();
     }
 
@@ -213,6 +224,11 @@ public class CreatureVisual : MonoBehaviour
             PickNewTarget();
         }
 
+        if (IsSquirrel())
+        {
+            squirrelAdventureTimer -= Time.deltaTime;
+        }
+
         Vector3 destination = huntTarget != null ? huntTarget.transform.position : targetPosition;
         transform.position = Vector3.MoveTowards(transform.position, destination, moveSpeed * Time.deltaTime);
 
@@ -264,8 +280,29 @@ public class CreatureVisual : MonoBehaviour
             }
         }
 
+        if (IsSquirrel())
+        {
+            if (squirrelAdventureTimer <= 0f)
+            {
+                targetPosition = PickSquirrelAdventureTarget();
+                squirrelAdventureTimer = Random.Range(SquirrelAdventureIntervalMinSeconds, SquirrelAdventureIntervalMaxSeconds);
+            }
+            else
+            {
+                targetPosition = PickSquirrelNearTreeTarget();
+            }
+
+            pickNewTargetTimer = Random.Range(2f, 5f);
+            return;
+        }
+
         targetPosition = PickWanderTarget();
         pickNewTargetTimer = Random.Range(2f, 5f);
+    }
+
+    private bool IsSquirrel()
+    {
+        return species != null && species.id == "squirrel";
     }
 
     // Rejects candidates whose straight-line path from here would cross the river, retrying a
@@ -287,6 +324,79 @@ public class CreatureVisual : MonoBehaviour
         }
 
         return transform.position;
+    }
+
+    // Re-anchors "home" on whatever tree is currently nearest (not just the squirrel's original
+    // spawn point) and wanders in a tighter radius around it than other species use, so a squirrel
+    // visually sticks close to real trees. Falls back to the last-known home position (today's
+    // default behavior) when no trees exist at all.
+    private Vector3 PickSquirrelNearTreeTarget()
+    {
+        if (TryFindNearestTreePosition(transform.position, out Vector3 nearestTreePosition))
+        {
+            homePosition = nearestTreePosition;
+        }
+
+        const int maxAttempts = 6;
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            Vector2 offset = Random.insideUnitCircle * (wanderRadius * SquirrelNearTreeRadiusMultiplier);
+            Vector3 candidate = homePosition + new Vector3(offset.x, offset.y, 0f);
+
+            if (!DoesPathCrossRiver(transform.position, candidate))
+            {
+                return candidate;
+            }
+        }
+
+        return transform.position;
+    }
+
+    // One longer trip away from wherever the squirrel currently is, roughly once a minute. Doesn't
+    // re-anchor home itself - the next pick's PickSquirrelNearTreeTarget call naturally draws the
+    // squirrel back toward whatever tree ends up nearest afterward, over the following couple of
+    // picks rather than snapping back instantly.
+    private Vector3 PickSquirrelAdventureTarget()
+    {
+        float adventureDistance = wanderRadius * SquirrelAdventureDistanceMultiplier;
+
+        const int maxAttempts = 6;
+        for (int attempt = 0; attempt < maxAttempts; attempt++)
+        {
+            Vector2 offset = Random.insideUnitCircle.normalized * adventureDistance;
+            Vector3 candidate = transform.position + new Vector3(offset.x, offset.y, 0f);
+
+            if (!DoesPathCrossRiver(transform.position, candidate))
+            {
+                return candidate;
+            }
+        }
+
+        return transform.position;
+    }
+
+    private static bool TryFindNearestTreePosition(Vector3 from, out Vector3 nearestPosition)
+    {
+        PlantedTree nearest = null;
+        float nearestDistance = float.MaxValue;
+
+        foreach (PlantedTree tree in PlantedTree.ActiveTrees)
+        {
+            if (tree == null)
+            {
+                continue;
+            }
+
+            float distance = Vector2.Distance(from, tree.transform.position);
+            if (distance < nearestDistance)
+            {
+                nearest = tree;
+                nearestDistance = distance;
+            }
+        }
+
+        nearestPosition = nearest != null ? nearest.transform.position : from;
+        return nearest != null;
     }
 
     private static bool DoesPathCrossRiver(Vector3 from, Vector3 to)
