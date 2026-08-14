@@ -10,6 +10,7 @@ public class ScreenNavigator : MonoBehaviour
     [SerializeField] private SettingsUI settingsUI;
     [SerializeField] private MapUI mapUI;
     [SerializeField] private SpeciesSummaryUI speciesSummaryUI;
+    [SerializeField] private TreeBoostUI treeBoostUI;
 
     public void OpenCodex()
     {
@@ -103,6 +104,14 @@ public class ScreenNavigator : MonoBehaviour
         if (speciesSummaryUI != null && !ReferenceEquals(speciesSummaryUI, except))
         {
             speciesSummaryUI.SetOpen(false);
+        }
+
+        // TreeBoostUI is a small contextual popup opened directly by CameraPanController on a tree
+        // tap, not through this navigator's OpenX() methods - it's never passed as `except`, so it
+        // always closes here, whichever full panel is opening.
+        if (treeBoostUI != null)
+        {
+            treeBoostUI.Close();
         }
     }
 

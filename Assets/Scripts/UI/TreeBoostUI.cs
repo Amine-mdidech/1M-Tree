@@ -72,7 +72,7 @@ public class TreeBoostUI : MonoBehaviour
         SetVisible(true);
     }
 
-    private void Close()
+    public void Close()
     {
         targetTree = null;
         SetVisible(false);

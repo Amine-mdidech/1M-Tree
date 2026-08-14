@@ -814,6 +814,7 @@ MonoBehaviour:
   - {fileID: 3828346}
   - {fileID: 126855092}
   - {fileID: 828866597}
+  - {fileID: 1085389040}
   mapHalfWidth: 30
   mapHalfHeight: 30
   treeClickRadius: 0.6
@@ -1826,6 +1827,7 @@ MonoBehaviour:
   settingsUI: {fileID: 219540831}
   mapUI: {fileID: 185969798}
   speciesSummaryUI: {fileID: 1085389039}
+  treeBoostUI: {fileID: 905178289}
 --- !u!4 &2005323409
 Transform:
   m_ObjectHideFlags: 0
