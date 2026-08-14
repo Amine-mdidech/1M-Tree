@@ -17,6 +17,7 @@ public class HudUI : MonoBehaviour
     [SerializeField] private CodexUI codexUI;
     [SerializeField] private LaboratoryUI laboratoryUI;
     [SerializeField] private ProfileUI profileUI;
+    [SerializeField] private SpeciesSummaryUI speciesSummaryUI;
     [SerializeField] private DemoUI demoUI;
     [SerializeField] private SettingsUI settingsUI;
     [SerializeField] private TreePlanter treePlanter;
@@ -113,6 +114,10 @@ public class HudUI : MonoBehaviour
         Button profileButton = root.Q<Button>("profile-button");
         profileButton.clicked += OnProfileButtonClicked;
         profileButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.73f, 0.54f, 0.24f), PixelArtUtility.DrawPersonGlyph));
+
+        Button speciesSummaryButton = root.Q<Button>("species-summary-button");
+        speciesSummaryButton.clicked += OnSpeciesSummaryButtonClicked;
+        speciesSummaryButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.45f, 0.58f, 0.32f), PixelArtUtility.DrawPawGlyph));
 
         Button settingsButton = root.Q<Button>("settings-button");
         settingsButton.clicked += OnSettingsButtonClicked;
@@ -256,6 +261,20 @@ public class HudUI : MonoBehaviour
         else if (profileUI != null)
         {
             profileUI.SetOpen(true);
+        }
+    }
+
+    private void OnSpeciesSummaryButtonClicked()
+    {
+        AudioManager.Instance?.PlayTap();
+
+        if (screenNavigator != null)
+        {
+            screenNavigator.OpenSpeciesSummary();
+        }
+        else if (speciesSummaryUI != null)
+        {
+            speciesSummaryUI.SetOpen(true);
         }
     }
 
