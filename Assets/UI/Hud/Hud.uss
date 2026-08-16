@@ -15,7 +15,7 @@
 }
 
 .currency-badge {
-    height: 32px;
+    height: 26px;
     flex-direction: row;
     align-items: center;
     background-color: rgba(24, 20, 18, 0.82);
@@ -23,7 +23,7 @@
     border-radius: var(--radius-sm);
     border-width: var(--border-thin);
     border-color: var(--color-gold-light);
-    padding: 0 var(--space-md) 0 var(--space-xs);
+    padding: 0 var(--space-sm) 0 var(--space-xs);
     opacity: 1;
     translate: 0 0;
     scale: 1 1;
@@ -32,9 +32,13 @@
     transition-timing-function: ease-out-cubic, ease-out-cubic, ease-out;
 }
 
+#funds-badge {
+    margin-left: var(--space-xs);
+}
+
 .picker-cluster {
-    height: 32px;
-    margin-left: var(--space-sm);
+    height: 26px;
+    margin-left: var(--space-xs);
     flex-direction: row;
     align-items: center;
 }
@@ -50,8 +54,8 @@
 
 .gem-float-label {
     position: absolute;
-    top: 20px;
-    left: 175px;
+    top: 16px;
+    left: 155px;
     color: var(--color-gold);
     font-size: var(--font-size-md);
     -unity-font-style: bold;
@@ -69,8 +73,8 @@
 
 .funds-float-label {
     position: absolute;
-    top: 20px;
-    left: 265px;
+    top: 16px;
+    left: 235px;
     color: var(--color-gold);
     font-size: var(--font-size-md);
     -unity-font-style: bold;
@@ -87,8 +91,8 @@
 }
 
 .gem-icon {
-    width: 16px;
-    height: 16px;
+    width: 13px;
+    height: 13px;
     margin-right: var(--space-xs);
 }
 
@@ -99,7 +103,7 @@
 }
 
 .xp-badge {
-    height: 32px;
+    height: 26px;
     flex-direction: row;
     align-items: center;
     background-color: rgba(24, 20, 18, 0.82);
@@ -107,13 +111,13 @@
     border-radius: var(--radius-sm);
     border-width: var(--border-thin);
     border-color: var(--color-gold-light);
-    padding: 0 var(--space-md) 0 var(--space-xs);
-    margin-left: var(--space-sm);
+    padding: 0 var(--space-sm) 0 var(--space-xs);
+    margin-left: var(--space-xs);
 }
 
 .xp-icon {
-    width: 16px;
-    height: 16px;
+    width: 13px;
+    height: 13px;
     margin-right: var(--space-xs);
 }
 
@@ -133,7 +137,7 @@
 }
 
 .xp-bar-track {
-    width: 60px;
+    width: 44px;
     height: 6px;
     border-radius: 2px;
     /* Inset "carved groove" bevel - the inverse of the raised convention (dark top/left, light
@@ -324,7 +328,7 @@
 
 .picker-label {
     margin-right: var(--space-xs);
-    padding: 3px var(--space-sm);
+    padding: 2px var(--space-xs);
     background-color: rgba(0, 0, 0, 0.2);
     -unity-background-scale-mode: stretch-to-fill;
     border-radius: var(--radius-sm);
@@ -335,10 +339,13 @@
     -unity-font-style: bold;
 }
 
-/* Overrides .icon-button's pill radius for this one icon specifically - the other buttons sharing
-   that class (lab/codex/profile/settings/demo) are unaffected, since they weren't part of this
-   "make the top-left cluster rectangular" request. */
+/* Overrides .icon-button's pill radius (and, for this cluster specifically, its size - the top-left
+   cluster is tight on horizontal space now that it holds two currency badges, an XP bar, and this
+   picker) for this one icon. The other buttons sharing the base class (lab/codex/profile/settings/
+   demo) are unaffected, since neither this radius nor this size change touches `.icon-button` itself. */
 .picker-icon-button {
+    width: 22px;
+    height: 22px;
     border-radius: var(--radius-sm);
     border-width: var(--border-thin);
     border-color: var(--color-gold-light);
