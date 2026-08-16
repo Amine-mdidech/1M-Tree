@@ -390,3 +390,22 @@
 .move-tree-cancel-button:active {
     scale: 0.95 0.95;
 }
+
+.cost-float-label {
+    position: absolute;
+    color: var(--color-danger-light);
+    font-size: var(--font-size-md);
+    -unity-font-style: bold;
+    -unity-text-outline-width: 1;
+    -unity-text-outline-color: var(--color-ink);
+    opacity: 1;
+    translate: 0 0;
+    transition-property: opacity, translate;
+    transition-duration: 0.75s;
+    transition-timing-function: ease-out;
+}
+
+.cost-float-label--animate {
+    opacity: 0;
+    translate: 0 -28px;
+}

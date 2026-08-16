@@ -145,6 +145,7 @@ public class TreePlanter : MonoBehaviour
         AudioManager.Instance?.PlayPlant();
         PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerTreePlanted);
         VfxUtility.SpawnBurst(position, vegetation.foliageColor);
+        HudUI.Instance?.ShowFloatingCost(position, vegetation.plantCost);
         Handheld.Vibrate();
     }
 

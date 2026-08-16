@@ -207,6 +207,7 @@ public class EmergenceSystem : MonoBehaviour
         SpawnIndividual(species, position);
         AudioManager.Instance?.PlayPlant();
         PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerAnimalReleased);
+        HudUI.Instance?.ShowFloatingCost(position, species.releaseCost);
         return true;
     }
 

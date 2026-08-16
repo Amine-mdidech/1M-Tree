@@ -706,6 +706,33 @@ public class HudUI : MonoBehaviour
         }
     }
 
+    public void ShowFloatingCost(Vector3 worldPosition, int cost)
+    {
+        if (uiDocument == null || cameraPanController == null)
+        {
+            return;
+        }
+
+        VisualElement root = uiDocument.rootVisualElement;
+        if (root.panel == null)
+        {
+            return;
+        }
+
+        Vector2 screenPosition = cameraPanController.TargetCamera.WorldToScreenPoint(worldPosition);
+        Vector2 panelPosition = RuntimePanelUtils.ScreenToPanel(root.panel, screenPosition);
+
+        Label floatingLabel = new Label($"-{cost}");
+        floatingLabel.AddToClassList("cost-float-label");
+        floatingLabel.pickingMode = PickingMode.Ignore;
+        floatingLabel.style.left = panelPosition.x;
+        floatingLabel.style.top = panelPosition.y;
+        root.Add(floatingLabel);
+
+        floatingLabel.schedule.Execute(() => floatingLabel.AddToClassList("cost-float-label--animate")).ExecuteLater(10);
+        floatingLabel.schedule.Execute(() => floatingLabel.RemoveFromHierarchy()).ExecuteLater(800);
+    }
+
     private void OnMoveTreeCancelButtonClicked()
     {
         AudioManager.Instance?.PlayTap();
