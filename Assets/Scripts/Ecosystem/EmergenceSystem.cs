@@ -197,7 +197,11 @@ public class EmergenceSystem : MonoBehaviour
             return false;
         }
 
-        if (economyManager != null && !economyManager.TrySpend(species.releaseCost))
+        if (economyManager == null)
+        {
+            Debug.LogWarning("EmergenceSystem has no EconomyManager assigned — releases are not being charged.");
+        }
+        else if (!economyManager.TrySpend(species.releaseCost))
         {
             Debug.Log($"Can't release {species.displayName} yet — not enough funds (need {species.releaseCost}, have {economyManager.Funds}).");
             AudioManager.Instance?.PlayError();

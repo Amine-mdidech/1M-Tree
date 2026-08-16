@@ -64,8 +64,13 @@ public class ScreenNavigator : MonoBehaviour
 
     public void OpenStore()
     {
+        if (storeUI == null)
+        {
+            return;
+        }
+
         CloseOtherPanels(storeUI);
-        if (storeUI != null) storeUI.SetOpen(true);
+        storeUI.SetOpen(true);
         SetHomeToolbarVisible(false);
     }
 

@@ -211,4 +211,60 @@ public class SceneRosterWiringTests
         Assert.IsNotNull(hud);
         Assert.IsNotNull(GetPrivateField(hud, "speciesSummaryUI"));
     }
+
+    [Test]
+    public void TreePlanter_EconomyManager_IsWired()
+    {
+        TreePlanter treePlanter = FindComponent<TreePlanter>();
+        Assert.IsNotNull(treePlanter);
+        Assert.IsNotNull(GetPrivateField(treePlanter, "economyManager"));
+    }
+
+    [Test]
+    public void MilestoneManager_EconomyManager_IsWired()
+    {
+        MilestoneManager milestoneManager = FindComponent<MilestoneManager>();
+        Assert.IsNotNull(milestoneManager);
+        Assert.IsNotNull(GetPrivateField(milestoneManager, "economyManager"));
+    }
+
+    [Test]
+    public void SaveManager_EconomyManager_IsWired()
+    {
+        SaveManager saveManager = FindComponent<SaveManager>();
+        Assert.IsNotNull(saveManager);
+        Assert.IsNotNull(GetPrivateField(saveManager, "economyManager"));
+    }
+
+    [Test]
+    public void ProfileUI_EconomyManager_IsWired()
+    {
+        ProfileUI profileUI = FindComponent<ProfileUI>();
+        Assert.IsNotNull(profileUI);
+        Assert.IsNotNull(GetPrivateField(profileUI, "economyManager"));
+    }
+
+    [Test]
+    public void EmergenceSystem_EconomyManager_IsWired()
+    {
+        EmergenceSystem emergenceSystem = FindComponent<EmergenceSystem>();
+        Assert.IsNotNull(emergenceSystem);
+        Assert.IsNotNull(GetPrivateField(emergenceSystem, "economyManager"));
+    }
+
+    [Test]
+    public void HudUI_EconomyManager_IsWired()
+    {
+        HudUI hud = FindComponent<HudUI>();
+        Assert.IsNotNull(hud);
+        Assert.IsNotNull(GetPrivateField(hud, "economyManager"));
+    }
+
+    [Test]
+    public void EconomyManager_EmergenceSystem_IsWired()
+    {
+        EconomyManager economyManager = FindComponent<EconomyManager>();
+        Assert.IsNotNull(economyManager);
+        Assert.IsNotNull(GetPrivateField(economyManager, "emergenceSystem"));
+    }
 }

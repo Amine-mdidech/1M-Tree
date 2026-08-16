@@ -434,6 +434,15 @@ public class HudUI : MonoBehaviour
         RefreshPickerLabel();
     }
 
+    // Called by SaveManager after loading a save, so the just-restored Gems/Funds values aren't
+    // misread as a "gain" on the very next Update() (both counters otherwise latch their Awake-time
+    // defaults in OnEnable(), which runs before SaveManager.LoadGame() in Start()).
+    public void ResetDisplayBaseline()
+    {
+        lastDisplayedGems = -1;
+        lastDisplayedFunds = -1;
+    }
+
     private void RefreshGemCount()
     {
         if (gemCountLabel == null || milestoneManager == null)

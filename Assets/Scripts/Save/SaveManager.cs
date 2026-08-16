@@ -54,6 +54,7 @@ public class SaveManager : MonoBehaviour
         PlayerSaveData data = new PlayerSaveData
         {
             funds = economyManager.Funds,
+            milestoneFundsBonus = economyManager.MilestoneFundsBonus,
             lastFundsGrantTimestamp = economyManager.LastFundsGrantTimestamp,
             lastSessionTimestamp = DateTime.UtcNow.ToString("o"),
             gems = milestoneManager.Gems,
@@ -117,7 +118,7 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(SavePath);
         PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
 
-        economyManager.LoadState(data.funds, data.lastFundsGrantTimestamp);
+        economyManager.LoadState(data.funds, data.milestoneFundsBonus, data.lastFundsGrantTimestamp);
         milestoneManager.LoadState(data.gems, data.completedMilestoneIds);
         playerLevel.LoadState(data.level, data.xp);
         landManager.LoadState(data.landTier);
@@ -154,6 +155,8 @@ public class SaveManager : MonoBehaviour
         {
             researchManager.LoadActiveResearch(data.activeResearch.projectId, data.activeResearch.remainingSeconds);
         }
+
+        HudUI.Instance?.ResetDisplayBaseline();
 
         Debug.Log($"Game loaded from {SavePath}");
     }

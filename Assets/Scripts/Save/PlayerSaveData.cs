@@ -30,9 +30,10 @@ public class ActiveResearchSaveData
 public class PlayerSaveData
 {
     // Field initializer (not just a default) so an old save file missing this key — from before
-    // this field existed — deserializes to a reasonable starting balance instead of 0. Numerically
-    // matches EconomyManager.StartingFunds, though the two aren't linked by reference.
-    public int funds = 300;
+    // this field existed — deserializes to a reasonable starting balance instead of 0. References
+    // EconomyManager.StartingFunds directly rather than duplicating the literal.
+    public int funds = EconomyManager.StartingFunds;
+    public int milestoneFundsBonus;
     public string lastFundsGrantTimestamp;
     public string lastSessionTimestamp;
     public int gems;

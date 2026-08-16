@@ -6,7 +6,7 @@ public class EconomyManager : MonoBehaviour
     private const int BaseDailyFunds = 300;
     private const int FundsPerTree = 1;
     private const int FundsPerSpecies = 50;
-    private const int StartingFunds = 300;
+    public const int StartingFunds = 300;
     private const float ResetCheckIntervalSeconds = 5f;
 
     [SerializeField] private EmergenceSystem emergenceSystem;
@@ -18,6 +18,7 @@ public class EconomyManager : MonoBehaviour
     private float resetCheckTimer;
 
     public int Funds => funds;
+    public int MilestoneFundsBonus => milestoneFundsBonus;
     public string LastFundsGrantTimestamp => lastFundsGrantTimestamp;
 
     private void Awake()
@@ -50,9 +51,10 @@ public class EconomyManager : MonoBehaviour
         Debug.Log($"Daily funds bonus increased by {amount}. New base daily funds: {BaseDailyFunds + milestoneFundsBonus}.");
     }
 
-    public void LoadState(int savedFunds, string savedLastFundsGrantTimestamp)
+    public void LoadState(int savedFunds, int savedMilestoneFundsBonus, string savedLastFundsGrantTimestamp)
     {
         funds = savedFunds;
+        milestoneFundsBonus = savedMilestoneFundsBonus;
 
         if (DateTime.TryParse(savedLastFundsGrantTimestamp, null, System.Globalization.DateTimeStyles.RoundtripKind, out DateTime parsed))
         {
