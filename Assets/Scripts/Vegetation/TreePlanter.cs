@@ -42,6 +42,15 @@ public class TreePlanter : MonoBehaviour
         Debug.Log($"Selected vegetation: {CurrentVegetation.displayName}");
     }
 
+    public void SelectVegetation(VegetationDefinition vegetation)
+    {
+        int index = unlockedVegetation.IndexOf(vegetation);
+        if (index >= 0)
+        {
+            currentVegetationIndex = index;
+        }
+    }
+
     public bool IsVegetationUnlocked(string vegetationId)
     {
         foreach (VegetationDefinition vegetation in unlockedVegetation)

@@ -412,6 +412,39 @@ public class EmergenceSystemTests
     }
 
     [Test]
+    public void SelectReleasableSpecies_Herbivore_SetsCurrentSpeciesToMatch()
+    {
+        SpeciesDefinition herbivore2 = ScriptableObject.CreateInstance<SpeciesDefinition>();
+        herbivore2.id = "test_herbivore2";
+        herbivore2.category = SpeciesDefinition.SpeciesCategory.Herbivore;
+
+        system.AddUnlockedSpecies(herbivore);
+        system.AddUnlockedSpecies(herbivore2);
+
+        system.SelectReleasableSpecies(herbivore2);
+
+        Assert.AreEqual(herbivore2, system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore));
+
+        Object.DestroyImmediate(herbivore2);
+    }
+
+    [Test]
+    public void SelectReleasableSpecies_NotUnlocked_LeavesSelectionUnchanged()
+    {
+        system.AddUnlockedSpecies(herbivore);
+
+        SpeciesDefinition notUnlocked = ScriptableObject.CreateInstance<SpeciesDefinition>();
+        notUnlocked.id = "test_not_unlocked";
+        notUnlocked.category = SpeciesDefinition.SpeciesCategory.Herbivore;
+
+        system.SelectReleasableSpecies(notUnlocked);
+
+        Assert.AreEqual(herbivore, system.CurrentReleasableSpecies(SpeciesDefinition.SpeciesCategory.Herbivore));
+
+        Object.DestroyImmediate(notUnlocked);
+    }
+
+    [Test]
     public void GetSpeciesIconSprite_ReturnsNonNullSprite()
     {
         Sprite icon = EmergenceSystem.GetSpeciesIconSprite(herbivore);

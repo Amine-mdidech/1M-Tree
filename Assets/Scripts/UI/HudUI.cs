@@ -18,6 +18,7 @@ public class HudUI : MonoBehaviour
     [SerializeField] private LaboratoryUI laboratoryUI;
     [SerializeField] private ProfileUI profileUI;
     [SerializeField] private SpeciesSummaryUI speciesSummaryUI;
+    [SerializeField] private StoreUI storeUI;
     [SerializeField] private DemoUI demoUI;
     [SerializeField] private SettingsUI settingsUI;
     [SerializeField] private TreePlanter treePlanter;
@@ -121,6 +122,10 @@ public class HudUI : MonoBehaviour
         Button speciesSummaryButton = root.Q<Button>("species-summary-button");
         speciesSummaryButton.clicked += OnSpeciesSummaryButtonClicked;
         speciesSummaryButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.45f, 0.58f, 0.32f), PixelArtUtility.DrawPawGlyph));
+
+        Button storeButton = root.Q<Button>("store-button");
+        storeButton.clicked += OnStoreButtonClicked;
+        storeButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.8f, 0.6f, 0.15f), PixelArtUtility.DrawCoinGlyph));
 
         Button settingsButton = root.Q<Button>("settings-button");
         settingsButton.clicked += OnSettingsButtonClicked;
@@ -287,6 +292,20 @@ public class HudUI : MonoBehaviour
         }
     }
 
+    private void OnStoreButtonClicked()
+    {
+        AudioManager.Instance?.PlayTap();
+
+        if (screenNavigator != null)
+        {
+            screenNavigator.OpenStore();
+        }
+        else if (storeUI != null)
+        {
+            storeUI.SetOpen(true);
+        }
+    }
+
     private void OnSettingsButtonClicked()
     {
         AudioManager.Instance?.PlayTap();
@@ -406,6 +425,13 @@ public class HudUI : MonoBehaviour
             : SpeciesDefinition.SpeciesCategory.Herbivore;
 
         return emergenceSystem.CurrentReleasableSpecies(category);
+    }
+
+    public void SetPickerCategory(PickerCategory category)
+    {
+        currentPickerCategory = category;
+        RefreshPickerIcon();
+        RefreshPickerLabel();
     }
 
     private void RefreshGemCount()

@@ -10,6 +10,7 @@ public class ScreenNavigator : MonoBehaviour
     [SerializeField] private SettingsUI settingsUI;
     [SerializeField] private MapUI mapUI;
     [SerializeField] private SpeciesSummaryUI speciesSummaryUI;
+    [SerializeField] private StoreUI storeUI;
     [SerializeField] private TreeBoostUI treeBoostUI;
 
     public void OpenCodex()
@@ -61,6 +62,13 @@ public class ScreenNavigator : MonoBehaviour
         SetHomeToolbarVisible(false);
     }
 
+    public void OpenStore()
+    {
+        CloseOtherPanels(storeUI);
+        if (storeUI != null) storeUI.SetOpen(true);
+        SetHomeToolbarVisible(false);
+    }
+
     public void GoHome()
     {
         CloseOtherPanels(null);
@@ -104,6 +112,11 @@ public class ScreenNavigator : MonoBehaviour
         if (speciesSummaryUI != null && !ReferenceEquals(speciesSummaryUI, except))
         {
             speciesSummaryUI.SetOpen(false);
+        }
+
+        if (storeUI != null && !ReferenceEquals(storeUI, except))
+        {
+            storeUI.SetOpen(false);
         }
 
         // TreeBoostUI is a small contextual popup opened directly by CameraPanController on a tree

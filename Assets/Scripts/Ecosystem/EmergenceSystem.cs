@@ -245,6 +245,30 @@ public class EmergenceSystem : MonoBehaviour
         }
     }
 
+    public void SelectReleasableSpecies(SpeciesDefinition species)
+    {
+        if (species == null)
+        {
+            return;
+        }
+
+        List<SpeciesDefinition> list = ListForCategory(species.category);
+        int index = list.IndexOf(species);
+        if (index < 0)
+        {
+            return;
+        }
+
+        if (species.category == SpeciesDefinition.SpeciesCategory.Predator)
+        {
+            currentPredatorIndex = index;
+        }
+        else
+        {
+            currentHerbivoreIndex = index;
+        }
+    }
+
     private List<SpeciesDefinition> ListForCategory(SpeciesDefinition.SpeciesCategory category)
     {
         return category == SpeciesDefinition.SpeciesCategory.Predator

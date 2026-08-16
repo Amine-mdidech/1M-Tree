@@ -98,6 +98,24 @@ public class TreePlanterTests
     }
 
     [Test]
+    public void SelectVegetation_SetsCurrentVegetationToMatch()
+    {
+        planter.AddUnlockedVegetation(pine);
+
+        planter.SelectVegetation(pine);
+
+        Assert.AreEqual("pine", planter.CurrentVegetation.id);
+    }
+
+    [Test]
+    public void SelectVegetation_NotUnlocked_LeavesCurrentVegetationUnchanged()
+    {
+        planter.SelectVegetation(pine); // pine not yet unlocked
+
+        Assert.AreEqual("oak", planter.CurrentVegetation.id);
+    }
+
+    [Test]
     public void PlantTree_SpendsFundsAndSpawnsATree()
     {
         int treesBefore = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude).Length;
