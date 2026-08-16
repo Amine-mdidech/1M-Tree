@@ -19,6 +19,7 @@ MonoBehaviour:
   requiredVegetationIds: []
   baseEmergenceWeight: 0.6
   treesPerIndividualCap: 0
+  releaseCost: 200
   preySpeciesIds:
   - gazelle
   preyThreshold: 5

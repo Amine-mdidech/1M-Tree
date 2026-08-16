@@ -38,4 +38,7 @@ public class VegetationDefinition : ScriptableObject
     // individual species can be upgraded one at a time.
     public Sprite heroSprite;
     public float heroSpriteMatureWorldDiameter = 2.4f;
+
+    // Flat Funds cost to plant one instance of this vegetation (see EconomyManager).
+    public int plantCost;
 }

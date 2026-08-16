@@ -19,6 +19,7 @@ MonoBehaviour:
   requiredVegetationIds: []
   baseEmergenceWeight: 1
   treesPerIndividualCap: 20
+  releaseCost: 50
   preySpeciesIds: []
   preyThreshold: 0
   preyToPredatorRatio: 0

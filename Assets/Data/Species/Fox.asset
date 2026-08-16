@@ -18,6 +18,7 @@ MonoBehaviour:
   unlockedByDefault: 0
   requiredVegetationIds: []
   baseEmergenceWeight: 0.7
+  releaseCost: 200
   preySpeciesIds:
   - squirrel
   preyThreshold: 5

@@ -18,6 +18,9 @@ public class SpeciesDefinition : ScriptableObject
     public float baseEmergenceWeight;
     public int treesPerIndividualCap;
 
+    // Flat Funds cost to release one individual of this species (see EconomyManager).
+    public int releaseCost;
+
     [Header("Predator-only fields")]
     public string[] preySpeciesIds = new string[0];
     public int preyThreshold;

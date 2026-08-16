@@ -28,3 +28,4 @@ MonoBehaviour:
   trunkColor: {r: 0.35, g: 0.22, b: 0.12, a: 1}
   heroSprite: {fileID: 21300000, guid: 9f9ea69b4e1b54be0985317079328a34, type: 3}
   heroSpriteMatureWorldDiameter: 2.4
+  plantCost: 10
