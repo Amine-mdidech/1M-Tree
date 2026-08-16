@@ -7,6 +7,10 @@
                 <ui:VisualElement name="gem-icon" class="gem-icon" picking-mode="Ignore" />
                 <ui:Label name="gem-count-label" text="0" class="gem-count-label" picking-mode="Ignore" />
             </ui:VisualElement>
+            <ui:VisualElement name="funds-badge" class="currency-badge" picking-mode="Ignore">
+                <ui:VisualElement name="funds-icon" class="gem-icon" picking-mode="Ignore" />
+                <ui:Label name="funds-count-label" text="0" class="gem-count-label" picking-mode="Ignore" />
+            </ui:VisualElement>
             <ui:VisualElement name="xp-badge" class="xp-badge" picking-mode="Ignore">
                 <ui:VisualElement name="xp-icon" class="xp-icon" picking-mode="Ignore" />
                 <ui:Label name="xp-level-label" text="Lv 1" class="xp-level-label" picking-mode="Ignore" />

@@ -23,6 +23,7 @@ public class HudUI : MonoBehaviour
     [SerializeField] private TreePlanter treePlanter;
     [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private MilestoneManager milestoneManager;
+    [SerializeField] private EconomyManager economyManager;
     [SerializeField] private CameraPanController cameraPanController;
     [SerializeField] private LaboratoryBuilding laboratoryBuilding;
     [SerializeField] private MapUI mapUI;
@@ -62,6 +63,8 @@ public class HudUI : MonoBehaviour
     private PickerCategory currentPickerCategory = PickerCategory.Plant;
     private Label gemCountLabel;
     private int lastDisplayedGems = -1;
+    private Label fundsCountLabel;
+    private int lastDisplayedFunds = -1;
     private VisualElement xpBarFill;
     private Label xpLevelLabel;
     private int lastDisplayedLevel = -1;
@@ -143,6 +146,10 @@ public class HudUI : MonoBehaviour
         gemIcon.style.backgroundImage = new StyleBackground(currencyIconSprite);
         gemCountLabel = root.Q<Label>("gem-count-label");
 
+        VisualElement fundsIcon = root.Q<VisualElement>("funds-icon");
+        fundsIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(16, new Color(0.85f, 0.65f, 0.2f), PixelArtUtility.DrawCoinGlyph));
+        fundsCountLabel = root.Q<Label>("funds-count-label");
+
         VisualElement xpBadge = root.Q<VisualElement>("xp-badge");
         xpBadge.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBrassMossTexture(140, 32, brassBase));
 
@@ -180,6 +187,7 @@ public class HudUI : MonoBehaviour
         RefreshPickerIcon();
         RefreshPickerLabel();
         RefreshGemCount();
+        RefreshFundsCount();
         RefreshXp();
         minimapRefreshTimer = 0f;
     }
@@ -187,6 +195,7 @@ public class HudUI : MonoBehaviour
     private void Update()
     {
         RefreshGemCount();
+        RefreshFundsCount();
         RefreshXp();
 
         minimapRefreshTimer -= Time.deltaTime;
@@ -442,6 +451,47 @@ public class HudUI : MonoBehaviour
         hudLayer.Add(floatingLabel);
 
         floatingLabel.schedule.Execute(() => floatingLabel.AddToClassList("gem-float-label--animate")).ExecuteLater(10);
+        floatingLabel.schedule.Execute(() => floatingLabel.RemoveFromHierarchy()).ExecuteLater(800);
+    }
+
+    private void RefreshFundsCount()
+    {
+        if (fundsCountLabel == null || economyManager == null)
+        {
+            return;
+        }
+
+        int currentFunds = economyManager.Funds;
+        if (currentFunds == lastDisplayedFunds)
+        {
+            return;
+        }
+
+        int previousFunds = lastDisplayedFunds;
+        lastDisplayedFunds = currentFunds;
+        fundsCountLabel.text = currentFunds.ToString();
+
+        if (previousFunds >= 0 && currentFunds > previousFunds)
+        {
+            AnimateFundsGain(currentFunds - previousFunds);
+        }
+    }
+
+    private void AnimateFundsGain(int amount)
+    {
+        VisualElement fundsBadge = fundsCountLabel?.parent;
+        VisualElement hudLayer = fundsBadge?.parent;
+        if (hudLayer == null)
+        {
+            return;
+        }
+
+        Label floatingLabel = new Label($"+{amount}");
+        floatingLabel.AddToClassList("funds-float-label");
+        floatingLabel.pickingMode = PickingMode.Ignore;
+        hudLayer.Add(floatingLabel);
+
+        floatingLabel.schedule.Execute(() => floatingLabel.AddToClassList("funds-float-label--animate")).ExecuteLater(10);
         floatingLabel.schedule.Execute(() => floatingLabel.RemoveFromHierarchy()).ExecuteLater(800);
     }
 

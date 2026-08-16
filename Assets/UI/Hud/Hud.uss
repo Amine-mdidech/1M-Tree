@@ -67,6 +67,25 @@
     translate: 0 -28px;
 }
 
+.funds-float-label {
+    position: absolute;
+    top: 20px;
+    left: 265px;
+    color: var(--color-gold);
+    font-size: var(--font-size-md);
+    -unity-font-style: bold;
+    opacity: 1;
+    translate: 0 0;
+    transition-property: opacity, translate;
+    transition-duration: 0.75s;
+    transition-timing-function: ease-out;
+}
+
+.funds-float-label--animate {
+    opacity: 0;
+    translate: 0 -28px;
+}
+
 .gem-icon {
     width: 16px;
     height: 16px;
