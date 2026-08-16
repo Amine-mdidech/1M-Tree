@@ -9,6 +9,8 @@ public class EmergenceSystemTests
     private EmergenceSystem system;
     private SpeciesDefinition herbivore;
     private SpeciesDefinition predator;
+    private GameObject economyManagerGO;
+    private EconomyManager economyManager;
 
     [SetUp]
     public void SetUp()
@@ -25,6 +27,16 @@ public class EmergenceSystemTests
 
         go = new GameObject("TestEmergenceSystem");
         system = go.AddComponent<EmergenceSystem>();
+
+        economyManagerGO = new GameObject("TestEconomyManager");
+        economyManager = economyManagerGO.AddComponent<EconomyManager>();
+        SetPrivateField(system, "economyManager", economyManager);
+    }
+
+    private static void SetPrivateField(object target, string fieldName, object value)
+    {
+        FieldInfo field = target.GetType().GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Instance);
+        field.SetValue(target, value);
     }
 
     [TearDown]
@@ -41,6 +53,7 @@ public class EmergenceSystemTests
         Object.DestroyImmediate(go);
         Object.DestroyImmediate(herbivore);
         Object.DestroyImmediate(predator);
+        Object.DestroyImmediate(economyManagerGO);
     }
 
     [Test]
@@ -309,6 +322,33 @@ public class EmergenceSystemTests
     public void TryReleaseSpeciesAt_NullSpecies_ReturnsFalse()
     {
         Assert.IsFalse(system.TryReleaseSpeciesAt(null, Vector3.zero));
+    }
+
+    [Test]
+    public void TryReleaseSpeciesAt_InsufficientFunds_ReturnsFalseAndDoesNotChangePopulation()
+    {
+        herbivore.treesPerIndividualCap = 1;
+        herbivore.releaseCost = 1000;
+        EcosystemState.RegisterTreePlanted("oak");
+
+        bool released = system.TryReleaseSpeciesAt(herbivore, Vector3.zero);
+
+        Assert.IsFalse(released);
+        Assert.AreEqual(0, EcosystemState.GetSpeciesPopulation("test_herbivore"));
+    }
+
+    [Test]
+    public void TryReleaseSpeciesAt_SufficientFunds_SpendsCost()
+    {
+        herbivore.treesPerIndividualCap = 1;
+        herbivore.releaseCost = 50;
+        EcosystemState.RegisterTreePlanted("oak");
+        int fundsBefore = economyManager.Funds;
+
+        bool released = system.TryReleaseSpeciesAt(herbivore, Vector3.zero);
+
+        Assert.IsTrue(released);
+        Assert.AreEqual(fundsBefore - 50, economyManager.Funds);
     }
 
     [Test]

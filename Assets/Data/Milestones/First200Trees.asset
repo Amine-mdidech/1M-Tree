@@ -15,5 +15,5 @@ MonoBehaviour:
   id: first_200_trees
   requirementType: 0
   requirementValue: 200
-  rewardDailyCapBonus: 15
+  rewardDailyFundsBonus: 15
   rewardGems: 25

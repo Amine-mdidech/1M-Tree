@@ -238,7 +238,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
   currentVegetationIndex: 0
   treeSprite: {fileID: 0}
-  dailyGrant: {fileID: 796134812}
+  economyManager: {fileID: 796134812}
   laboratoryBuilding: {fileID: 337284886}
   debugBatchPlantCount: 20
 --- !u!4 &34543762
@@ -316,7 +316,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0e493cb424e5b43f4bacd273522370f0, type: 2}
   completedMilestoneIds: []
   gems: 0
-  dailyGrant: {fileID: 796134812}
+  economyManager: {fileID: 796134812}
   emergenceSystem: {fileID: 1589978606}
 --- !u!4 &150096814
 Transform:
@@ -995,7 +995,7 @@ MonoBehaviour:
   milestoneManager: {fileID: 150096813}
   emergenceSystem: {fileID: 1589978606}
   treePlanter: {fileID: 34543761}
-  dailyGrant: {fileID: 796134812}
+  economyManager: {fileID: 796134812}
   allSpecies:
   - {fileID: 11400000, guid: 2036f63c3f1af497f85e21e1f315fec6, type: 2}
   - {fileID: 11400000, guid: 9d40678badc0949a186d38083e725934, type: 2}
@@ -1235,7 +1235,7 @@ GameObject:
   - component: {fileID: 796134813}
   - component: {fileID: 796134812}
   m_Layer: 0
-  m_Name: DailyGrant
+  m_Name: EconomyManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1253,10 +1253,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f122f5810d2fd4dcfafcc7873620bbcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DailyGrant
-  treesPlantedToday: 0
-  dailyTreeCap: 30
-  milestoneCapBonus: 0
-  lastGrantResetTimestamp: 
+  emergenceSystem: {fileID: 1589978606}
+  funds: 300
+  milestoneFundsBonus: 0
+  lastFundsGrantTimestamp: 
 --- !u!4 &796134813
 Transform:
   m_ObjectHideFlags: 0
@@ -1324,7 +1324,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 339d8350c2a6049f5847cc354dd07878, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
-  dailyGrant: {fileID: 796134812}
+  economyManager: {fileID: 796134812}
   milestoneManager: {fileID: 150096813}
   emergenceSystem: {fileID: 1589978606}
   researchManager: {fileID: 2125939471}
@@ -1391,6 +1391,7 @@ MonoBehaviour:
   treePlanter: {fileID: 34543761}
   emergenceSystem: {fileID: 1589978606}
   milestoneManager: {fileID: 150096813}
+  economyManager: {fileID: 796134812}
   cameraPanController: {fileID: 519420033}
   laboratoryBuilding: {fileID: 337284886}
   mapUI: {fileID: 185969798}
@@ -1671,6 +1672,7 @@ MonoBehaviour:
   creatureWanderRadius: 2
   currentHerbivoreIndex: 0
   currentPredatorIndex: 0
+  economyManager: {fileID: 796134812}
 --- !u!4 &1589978607
 Transform:
   m_ObjectHideFlags: 0

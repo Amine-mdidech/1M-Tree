@@ -7,8 +7,8 @@ public class TreePlanterTests
 {
     private GameObject planterGO;
     private TreePlanter planter;
-    private GameObject dailyGrantGO;
-    private DailyGrant dailyGrant;
+    private GameObject economyManagerGO;
+    private EconomyManager economyManager;
     private VegetationDefinition oak;
     private VegetationDefinition pine;
 
@@ -30,12 +30,15 @@ public class TreePlanterTests
         planterGO = new GameObject("TestTreePlanter");
         planter = planterGO.AddComponent<TreePlanter>();
 
-        dailyGrantGO = new GameObject("TestDailyGrant");
-        dailyGrant = dailyGrantGO.AddComponent<DailyGrant>();
+        economyManagerGO = new GameObject("TestEconomyManager");
+        economyManager = economyManagerGO.AddComponent<EconomyManager>();
+
+        oak.plantCost = 10;
+        pine.plantCost = 10;
 
         SetPrivateField(planter, "unlockedVegetation", new List<VegetationDefinition> { oak });
         SetPrivateField(planter, "plantableVegetation", new List<VegetationDefinition> { oak, pine });
-        SetPrivateField(planter, "dailyGrant", dailyGrant);
+        SetPrivateField(planter, "economyManager", economyManager);
     }
 
     [TearDown]
@@ -47,7 +50,7 @@ public class TreePlanterTests
         }
 
         Object.DestroyImmediate(planterGO);
-        Object.DestroyImmediate(dailyGrantGO);
+        Object.DestroyImmediate(economyManagerGO);
         Object.DestroyImmediate(oak);
         Object.DestroyImmediate(pine);
     }
@@ -95,28 +98,31 @@ public class TreePlanterTests
     }
 
     [Test]
-    public void PlantTree_ConsumesDailyAllowanceAndSpawnsATree()
+    public void PlantTree_SpendsFundsAndSpawnsATree()
     {
         int treesBefore = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude).Length;
+        int fundsBefore = economyManager.Funds;
 
         planter.PlantTree(Vector3.zero);
 
         int treesAfter = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude).Length;
         Assert.AreEqual(treesBefore + 1, treesAfter);
-        Assert.AreEqual(1, dailyGrant.TreesPlantedToday);
+        Assert.AreEqual(fundsBefore - oak.plantCost, economyManager.Funds);
     }
 
     [Test]
-    public void PlantTree_StopsAtDailyCap()
+    public void PlantTree_StopsWhenFundsRunOut()
     {
-        // Spaced well past the minimum tree-to-tree distance so this loop exercises the daily cap
-        // specifically, not incidentally getting rejected by the spacing rule instead.
+        // EconomyManager starts with 300 Funds and oak costs 10, so exactly 30 plants are
+        // affordable before funds run out. Spaced well past the minimum tree-to-tree distance so
+        // this loop exercises running out of funds specifically, not the spacing rule.
         for (int i = 0; i < 30; i++)
         {
             planter.PlantTree(new Vector3(i * 10f, 0f, 0f));
         }
 
         int treesAtCap = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude).Length;
+        Assert.AreEqual(0, economyManager.Funds);
 
         planter.PlantTree(new Vector3(1000f, 0f, 0f));
 
@@ -199,17 +205,17 @@ public class TreePlanterTests
     }
 
     [Test]
-    public void MoveTree_ValidDestination_RelocatesTreeAndDoesNotConsumeDailyCap()
+    public void MoveTree_ValidDestination_RelocatesTreeAndDoesNotSpendFunds()
     {
         planter.PlantTree(Vector3.zero);
         PlantedTree tree = Object.FindObjectsByType<PlantedTree>(FindObjectsInactive.Exclude)[0];
-        int treesPlantedBefore = dailyGrant.TreesPlantedToday;
+        int fundsBefore = economyManager.Funds;
 
         bool moved = planter.MoveTree(tree, new Vector3(20f, 0f, 0f));
 
         Assert.IsTrue(moved);
         Assert.AreEqual(new Vector3(20f, 0f, 0f), tree.transform.position);
-        Assert.AreEqual(treesPlantedBefore, dailyGrant.TreesPlantedToday);
+        Assert.AreEqual(fundsBefore, economyManager.Funds);
     }
 
     [Test]

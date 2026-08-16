@@ -14,7 +14,7 @@ public class TreePlanter : MonoBehaviour
     [SerializeField] private List<VegetationDefinition> unlockedVegetation = new List<VegetationDefinition>();
     [SerializeField] private int currentVegetationIndex;
     [SerializeField] private Sprite treeSprite;
-    [SerializeField] private DailyGrant dailyGrant;
+    [SerializeField] private EconomyManager economyManager;
     [SerializeField] private LaboratoryBuilding laboratoryBuilding;
     [SerializeField] private int debugBatchPlantCount = 20;
 
@@ -89,9 +89,9 @@ public class TreePlanter : MonoBehaviour
             return;
         }
 
-        if (dailyGrant == null)
+        if (economyManager == null)
         {
-            Debug.LogWarning("TreePlanter has no DailyGrant assigned.");
+            Debug.LogWarning("TreePlanter has no EconomyManager assigned.");
             return;
         }
 
@@ -131,9 +131,9 @@ public class TreePlanter : MonoBehaviour
             return;
         }
 
-        if (!dailyGrant.TryConsumeTreePlant())
+        if (!economyManager.TrySpend(vegetation.plantCost))
         {
-            Debug.Log($"Daily tree cap reached ({dailyGrant.TreesPlantedToday}/{dailyGrant.DailyTreeCap}). Come back after the next grant reset.");
+            Debug.Log($"Not enough funds to plant {vegetation.displayName} (need {vegetation.plantCost}, have {economyManager.Funds}).");
             AudioManager.Instance?.PlayError();
             return;
         }
@@ -202,9 +202,14 @@ public class TreePlanter : MonoBehaviour
             return false;
         }
 
-        if (dailyGrant != null && !dailyGrant.CanPlantTree)
+        if (economyManager != null)
         {
-            return false;
+            VegetationDefinition vegetation = CurrentVegetation;
+            int cost = vegetation != null ? vegetation.plantCost : 0;
+            if (!economyManager.CanAfford(cost))
+            {
+                return false;
+            }
         }
 
         return true;
@@ -249,7 +254,7 @@ public class TreePlanter : MonoBehaviour
     }
 
     // Free and uncapped - relocating a tree you already planted is layout tidying, not new growth,
-    // so it deliberately doesn't touch dailyGrant or EcosystemState.RegisterTreePlanted.
+    // so it deliberately doesn't touch economyManager or EcosystemState.RegisterTreePlanted.
     public bool MoveTree(PlantedTree tree, Vector3 position)
     {
         if (!CanMoveTreeTo(tree, position))
@@ -289,14 +294,16 @@ public class TreePlanter : MonoBehaviour
         return null;
     }
 
-    [ContextMenu("Debug: Plant N Trees (auto-resets daily cap)")]
+    [ContextMenu("Debug: Plant N Trees (auto-grants funds)")]
     public void DebugPlantBatch()
     {
         for (int i = 0; i < debugBatchPlantCount; i++)
         {
-            if (dailyGrant != null && !dailyGrant.CanPlantTree)
+            VegetationDefinition vegetation = CurrentVegetation;
+            int cost = vegetation != null ? vegetation.plantCost : 0;
+            if (economyManager != null && !economyManager.CanAfford(cost))
             {
-                dailyGrant.DebugForceReset();
+                economyManager.DebugForceGrant();
             }
 
             Vector3 position = new Vector3(i * 0.5f, 0f, 0f);

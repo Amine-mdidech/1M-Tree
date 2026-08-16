@@ -16,6 +16,7 @@ public class EmergenceSystem : MonoBehaviour
     [SerializeField] private float creatureWanderRadius = 2f;
     [SerializeField] private int currentHerbivoreIndex;
     [SerializeField] private int currentPredatorIndex;
+    [SerializeField] private EconomyManager economyManager;
 
     // Index 0 / 1 = the two walk-cycle frames for that species, swapped by CreatureVisual while moving.
     private static readonly Dictionary<string, Sprite[]> creatureFramesBySpeciesId =
@@ -192,6 +193,13 @@ public class EmergenceSystem : MonoBehaviour
         if (!CanRelease(species))
         {
             Debug.Log($"Can't release {species.displayName} yet — criteria not met.");
+            AudioManager.Instance?.PlayError();
+            return false;
+        }
+
+        if (economyManager != null && !economyManager.TrySpend(species.releaseCost))
+        {
+            Debug.Log($"Can't release {species.displayName} yet — not enough funds (need {species.releaseCost}, have {economyManager.Funds}).");
             AudioManager.Instance?.PlayError();
             return false;
         }

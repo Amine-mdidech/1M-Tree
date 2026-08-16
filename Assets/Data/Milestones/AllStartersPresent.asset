@@ -15,5 +15,5 @@ MonoBehaviour:
   id: all_starters_present
   requirementType: 1
   requirementValue: 2
-  rewardDailyCapBonus: 5
+  rewardDailyFundsBonus: 5
   rewardGems: 5

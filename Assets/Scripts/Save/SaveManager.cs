@@ -9,7 +9,7 @@ public class SaveManager : MonoBehaviour
 {
     private const int MaxOfflineSeconds = 24 * 60 * 60;
 
-    [SerializeField] private DailyGrant dailyGrant;
+    [SerializeField] private EconomyManager economyManager;
     [SerializeField] private MilestoneManager milestoneManager;
     [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private ResearchManager researchManager;
@@ -53,9 +53,8 @@ public class SaveManager : MonoBehaviour
     {
         PlayerSaveData data = new PlayerSaveData
         {
-            treesPlantedToday = dailyGrant.TreesPlantedToday,
-            dailyTreeCap = dailyGrant.DailyTreeCap,
-            lastGrantResetTimestamp = dailyGrant.LastGrantResetTimestamp,
+            funds = economyManager.Funds,
+            lastFundsGrantTimestamp = economyManager.LastFundsGrantTimestamp,
             lastSessionTimestamp = DateTime.UtcNow.ToString("o"),
             gems = milestoneManager.Gems,
             level = playerLevel.Level,
@@ -118,7 +117,7 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(SavePath);
         PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
 
-        dailyGrant.LoadState(data.treesPlantedToday, data.dailyTreeCap, data.lastGrantResetTimestamp);
+        economyManager.LoadState(data.funds, data.lastFundsGrantTimestamp);
         milestoneManager.LoadState(data.gems, data.completedMilestoneIds);
         playerLevel.LoadState(data.level, data.xp);
         landManager.LoadState(data.landTier);

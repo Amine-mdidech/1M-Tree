@@ -15,5 +15,5 @@ MonoBehaviour:
   id: first_50_trees
   requirementType: 0
   requirementValue: 50
-  rewardDailyCapBonus: 10
+  rewardDailyFundsBonus: 10
   rewardGems: 10

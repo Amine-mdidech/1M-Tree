@@ -13,6 +13,6 @@ public class MilestoneDefinition : ScriptableObject
     public string id;
     public RequirementType requirementType;
     public int requirementValue;
-    public int rewardDailyCapBonus;
+    public int rewardDailyFundsBonus;
     public int rewardGems;
 }

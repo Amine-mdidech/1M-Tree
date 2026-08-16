@@ -15,5 +15,5 @@ MonoBehaviour:
   id: first_predator
   requirementType: 2
   requirementValue: 1
-  rewardDailyCapBonus: 10
+  rewardDailyFundsBonus: 10
   rewardGems: 20

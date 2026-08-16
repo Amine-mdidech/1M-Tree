@@ -8,7 +8,7 @@ public class MilestoneManager : MonoBehaviour
     [SerializeField] private List<MilestoneDefinition> milestones = new List<MilestoneDefinition>();
     [SerializeField] private List<string> completedMilestoneIds = new List<string>();
     [SerializeField] private int gems;
-    [SerializeField] private DailyGrant dailyGrant;
+    [SerializeField] private EconomyManager economyManager;
     [SerializeField] private EmergenceSystem emergenceSystem;
 
     private float checkTimer;
@@ -113,14 +113,14 @@ public class MilestoneManager : MonoBehaviour
     {
         completedMilestoneIds.Add(milestone.id);
 
-        if (milestone.rewardDailyCapBonus > 0 && dailyGrant != null)
+        if (milestone.rewardDailyFundsBonus > 0 && economyManager != null)
         {
-            dailyGrant.AddDailyCapBonus(milestone.rewardDailyCapBonus);
+            economyManager.AddDailyFundsBonus(milestone.rewardDailyFundsBonus);
         }
 
         gems += milestone.rewardGems;
 
-        Debug.Log($"Milestone completed: {milestone.id} (+{milestone.rewardDailyCapBonus} daily cap, +{milestone.rewardGems} gems).");
+        Debug.Log($"Milestone completed: {milestone.id} (+{milestone.rewardDailyFundsBonus} daily funds, +{milestone.rewardGems} gems).");
         AudioManager.Instance?.PlayMilestone();
         PlayerLevel.Instance?.AddXp(PlayerLevel.XpPerMilestone);
         Handheld.Vibrate();

@@ -581,6 +581,16 @@ public static class PixelArtUtility
         FillDiamond(canvas, new Vector2(size * 0.42f, size * 0.42f), size * 0.12f, gemLight, gemLight, 0);
     }
 
+    public static void DrawCoinGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color coin = new Color(0.95f, 0.78f, 0.25f);
+        Color coinLight = new Color(1f, 0.92f, 0.6f);
+
+        FillCircle(canvas, new Vector2(size * 0.5f, size * 0.5f), size * 0.34f, coin, coin, 0);
+        FillCircle(canvas, new Vector2(size * 0.4f, size * 0.4f), size * 0.1f, coinLight, coinLight, 0);
+    }
+
     public static void DrawPersonGlyph(PixelBuffer canvas)
     {
         int size = canvas.Width;

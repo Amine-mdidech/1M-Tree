@@ -29,9 +29,11 @@ public class ActiveResearchSaveData
 [Serializable]
 public class PlayerSaveData
 {
-    public int treesPlantedToday;
-    public int dailyTreeCap;
-    public string lastGrantResetTimestamp;
+    // Field initializer (not just a default) so an old save file missing this key — from before
+    // this field existed — deserializes to a reasonable starting balance instead of 0. Numerically
+    // matches EconomyManager.StartingFunds, though the two aren't linked by reference.
+    public int funds = 300;
+    public string lastFundsGrantTimestamp;
     public string lastSessionTimestamp;
     public int gems;
     public int level;

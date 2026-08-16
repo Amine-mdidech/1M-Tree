@@ -9,7 +9,7 @@ public class ProfileUI : MonoBehaviour
     [SerializeField] private MilestoneManager milestoneManager;
     [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private TreePlanter treePlanter;
-    [SerializeField] private DailyGrant dailyGrant;
+    [SerializeField] private EconomyManager economyManager;
     [SerializeField] private List<SpeciesDefinition> allSpecies = new List<SpeciesDefinition>();
     [SerializeField] private List<VegetationDefinition> allVegetation = new List<VegetationDefinition>();
     [SerializeField] private ScreenNavigator screenNavigator;
@@ -24,7 +24,7 @@ public class ProfileUI : MonoBehaviour
     private Label speciesValueLabel;
     private Label vegetationValueLabel;
     private Label milestonesValueLabel;
-    private Label dailyCapValueLabel;
+    private Label fundsValueLabel;
 
     public static bool IsOpen { get; private set; }
 
@@ -55,7 +55,7 @@ public class ProfileUI : MonoBehaviour
         speciesValueLabel = root.Q<Label>("species-value");
         vegetationValueLabel = root.Q<Label>("vegetation-value");
         milestonesValueLabel = root.Q<Label>("milestones-value");
-        dailyCapValueLabel = root.Q<Label>("daily-cap-value");
+        fundsValueLabel = root.Q<Label>("funds-value");
 
         root.Q<VisualElement>("level-icon").style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateBadgedGlyphSprite(28, new Color(0.55f, 0.35f, 0.85f), PixelArtUtility.DrawStarGlyph));
@@ -71,8 +71,8 @@ public class ProfileUI : MonoBehaviour
             PixelArtUtility.CreateBadgedGlyphSprite(28, new Color(0.14f, 0.55f, 0.6f), PixelArtUtility.DrawSproutGlyph));
         root.Q<VisualElement>("milestones-icon").style.backgroundImage = new StyleBackground(
             PixelArtUtility.CreateBadgedGlyphSprite(28, new Color(0.95f, 0.7f, 0.15f), PixelArtUtility.DrawStarGlyph));
-        root.Q<VisualElement>("daily-cap-icon").style.backgroundImage = new StyleBackground(
-            PixelArtUtility.CreateBadgedGlyphSprite(28, new Color(0.75f, 0.55f, 0.28f), PixelArtUtility.DrawHourglassGlyph));
+        root.Q<VisualElement>("funds-icon").style.backgroundImage = new StyleBackground(
+            PixelArtUtility.CreateBadgedGlyphSprite(28, new Color(0.85f, 0.65f, 0.2f), PixelArtUtility.DrawCoinGlyph));
 
         root.Q<Button>("close-button").clicked += OnCloseButtonClicked;
 
@@ -160,9 +160,9 @@ public class ProfileUI : MonoBehaviour
             vegetationValueLabel.text = $"{treePlanter.GetUnlockedVegetationIds().Count} / {allVegetation.Count}";
         }
 
-        if (dailyGrant != null)
+        if (economyManager != null)
         {
-            dailyCapValueLabel.text = $"{dailyGrant.TreesPlantedToday} / {dailyGrant.DailyTreeCap}";
+            fundsValueLabel.text = economyManager.Funds.ToString();
         }
     }
 }

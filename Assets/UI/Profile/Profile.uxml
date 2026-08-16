@@ -44,9 +44,9 @@
                     <ui:Label name="milestones-value" text="0 / 0" class="stat-value" />
                 </ui:VisualElement>
                 <ui:VisualElement class="stat-card">
-                    <ui:VisualElement name="daily-cap-icon" class="stat-icon" />
-                    <ui:Label text="Today's Planting" class="stat-label" />
-                    <ui:Label name="daily-cap-value" text="0 / 0" class="stat-value" />
+                    <ui:VisualElement name="funds-icon" class="stat-icon" />
+                    <ui:Label text="Funds" class="stat-label" />
+                    <ui:Label name="funds-value" text="0" class="stat-value" />
                 </ui:VisualElement>
             </ui:ScrollView>
         </ui:VisualElement>
