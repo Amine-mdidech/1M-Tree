@@ -57,7 +57,7 @@ public class MainMenuUI : MonoBehaviour
         SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(SavePath);
 
         playButton.text = summary.SaveExists ? "Continue" : "Play";
-        newGameButton.style.display = summary.SaveExists ? DisplayStyle.Flex : DisplayStyle.None;
+        newGameButton.style.display = summary.FileExists ? DisplayStyle.Flex : DisplayStyle.None;
         treesPlantedLabel.text = $"Trees planted: {summary.TreesPlanted}";
 
         RefreshMilestones(summary.CompletedMilestoneIds);

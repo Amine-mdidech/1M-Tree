@@ -28,6 +28,7 @@ public class SaveSummaryReaderTests
         SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
 
         Assert.IsFalse(summary.SaveExists);
+        Assert.IsFalse(summary.FileExists);
         Assert.AreEqual(0, summary.TreesPlanted);
         Assert.IsEmpty(summary.CompletedMilestoneIds);
     }
@@ -43,6 +44,7 @@ public class SaveSummaryReaderTests
         SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
 
         Assert.IsTrue(summary.SaveExists);
+        Assert.IsTrue(summary.FileExists);
         Assert.AreEqual(2, summary.TreesPlanted);
     }
 
@@ -66,5 +68,29 @@ public class SaveSummaryReaderTests
         SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
 
         Assert.IsFalse(summary.SaveExists);
+    }
+
+    [Test]
+    public void ReadSummary_CorruptFile_StillReportsFileExists()
+    {
+        File.WriteAllText(tempPath, "not valid json at all, just plain text");
+
+        SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
+
+        Assert.IsTrue(summary.FileExists);
+    }
+
+    [Test]
+    public void ReadSummary_NullCompletedMilestoneIds_ReturnsEmptyListInsteadOfNull()
+    {
+        // Simulates a hand-edited/corrupted save where JsonUtility parses successfully
+        // but "completedMilestoneIds" is explicitly null in the JSON, bypassing the
+        // field initializer default.
+        File.WriteAllText(tempPath, "{\"completedMilestoneIds\":null}");
+
+        SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
+
+        Assert.IsNotNull(summary.CompletedMilestoneIds);
+        Assert.IsEmpty(summary.CompletedMilestoneIds);
     }
 }

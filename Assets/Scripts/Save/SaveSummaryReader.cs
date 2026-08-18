@@ -7,6 +7,7 @@ public static class SaveSummaryReader
     public struct SaveSummary
     {
         public bool SaveExists;
+        public bool FileExists;
         public int TreesPlanted;
         public List<string> CompletedMilestoneIds;
     }
@@ -15,7 +16,7 @@ public static class SaveSummaryReader
     {
         if (!File.Exists(savePath))
         {
-            return Empty();
+            return Empty(false);
         }
 
         try
@@ -24,27 +25,29 @@ public static class SaveSummaryReader
             PlayerSaveData data = JsonUtility.FromJson<PlayerSaveData>(json);
             if (data == null)
             {
-                return Empty();
+                return Empty(true);
             }
 
             return new SaveSummary
             {
                 SaveExists = true,
+                FileExists = true,
                 TreesPlanted = data.plantedTrees.Count,
-                CompletedMilestoneIds = data.completedMilestoneIds
+                CompletedMilestoneIds = data.completedMilestoneIds ?? new List<string>()
             };
         }
         catch (System.Exception)
         {
-            return Empty();
+            return Empty(true);
         }
     }
 
-    private static SaveSummary Empty()
+    private static SaveSummary Empty(bool fileExists)
     {
         return new SaveSummary
         {
             SaveExists = false,
+            FileExists = fileExists,
             TreesPlanted = 0,
             CompletedMilestoneIds = new List<string>()
         };

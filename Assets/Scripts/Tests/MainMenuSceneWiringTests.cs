@@ -1,12 +1,16 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class MainMenuSceneWiringTests
 {
     private const string ScenePath = "Assets/Scenes/MainMenu.unity";
+    private const string SampleScenePath = "Assets/Scenes/SampleScene.unity";
 
     private Scene loadedScene;
 
@@ -22,9 +26,18 @@ public class MainMenuSceneWiringTests
         EditorSceneManager.CloseScene(loadedScene, true);
     }
 
-    private static T FindComponent<T>() where T : Object
+    private T FindComponent<T>() where T : Component
     {
-        return Object.FindFirstObjectByType<T>(FindObjectsInactive.Include);
+        foreach (GameObject root in loadedScene.GetRootGameObjects())
+        {
+            T found = root.GetComponentInChildren<T>(true);
+            if (found != null)
+            {
+                return found;
+            }
+        }
+
+        return null;
     }
 
     private static object GetPrivateField(object target, string fieldName)
@@ -79,5 +92,61 @@ public class MainMenuSceneWiringTests
         Assert.GreaterOrEqual(scenes.Length, 2);
         StringAssert.Contains("MainMenu.unity", scenes[0].path);
         StringAssert.Contains("SampleScene.unity", scenes[1].path);
+    }
+
+    [Test]
+    public void MainMenuUI_UIDocument_IsWired()
+    {
+        MainMenuUI menu = FindComponent<MainMenuUI>();
+        Assert.IsNotNull(menu);
+        UIDocument document = menu.GetComponent<UIDocument>();
+        Assert.IsNotNull(document);
+        Assert.IsNotNull(document.visualTreeAsset);
+        Assert.IsNotNull(document.panelSettings);
+    }
+
+    [Test]
+    public void SettingsUI_UIDocument_IsWired()
+    {
+        SettingsUI settings = FindComponent<SettingsUI>();
+        Assert.IsNotNull(settings);
+        UIDocument document = settings.GetComponent<UIDocument>();
+        Assert.IsNotNull(document);
+        Assert.IsNotNull(document.visualTreeAsset);
+        Assert.IsNotNull(document.panelSettings);
+    }
+
+    [Test]
+    public void MainMenuUI_AllMilestones_MatchesSampleSceneRoster()
+    {
+        Scene sampleScene = EditorSceneManager.OpenScene(SampleScenePath, OpenSceneMode.Additive);
+        try
+        {
+            MainMenuUI menu = FindComponent<MainMenuUI>();
+            Assert.IsNotNull(menu);
+            IList menuMilestones = (IList)GetPrivateField(menu, "allMilestones");
+            List<string> menuIds = new List<string>();
+            foreach (object m in menuMilestones)
+            {
+                FieldInfo idField = m.GetType().GetField("id");
+                menuIds.Add((string)idField.GetValue(m));
+            }
+
+            MilestoneManager milestoneManager = Object.FindFirstObjectByType<MilestoneManager>(FindObjectsInactive.Include);
+            Assert.IsNotNull(milestoneManager);
+            IList sampleMilestones = (IList)GetPrivateField(milestoneManager, "milestones");
+            List<string> sampleIds = new List<string>();
+            foreach (object m in sampleMilestones)
+            {
+                FieldInfo idField = m.GetType().GetField("id");
+                sampleIds.Add((string)idField.GetValue(m));
+            }
+
+            CollectionAssert.AreEquivalent(sampleIds, menuIds);
+        }
+        finally
+        {
+            EditorSceneManager.CloseScene(sampleScene, true);
+        }
     }
 }
