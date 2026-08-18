@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DemoUI
   milestoneManager: {fileID: 150096813}
+  economyManager: {fileID: 796134812}
   playerLevel: {fileID: 261973069}
   emergenceSystem: {fileID: 1589978606}
   treePlanter: {fileID: 34543761}
@@ -815,6 +816,7 @@ MonoBehaviour:
   - {fileID: 126855092}
   - {fileID: 828866597}
   - {fileID: 1085389040}
+  - {fileID: 1306842390}
   mapHalfWidth: 30
   mapHalfHeight: 30
   treeClickRadius: 0.6
@@ -1386,6 +1388,7 @@ MonoBehaviour:
   laboratoryUI: {fileID: 184606783}
   profileUI: {fileID: 576196791}
   speciesSummaryUI: {fileID: 1085389039}
+  storeUI: {fileID: 1306842389}
   demoUI: {fileID: 3828345}
   settingsUI: {fileID: 219540831}
   treePlanter: {fileID: 34543761}
@@ -1635,6 +1638,86 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1306842388
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1306842391}
+  - component: {fileID: 1306842390}
+  - component: {fileID: 1306842389}
+  m_Layer: 0
+  m_Name: Store
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1306842389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306842388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63ee7177d3f14bc582eb1edd762bd54e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Grove.Runtime::StoreUI
+  allVegetation:
+  - {fileID: 11400000, guid: e717ce56c03c2467d82947f48cb725ab, type: 2}
+  - {fileID: 11400000, guid: cb3e4882552f24c069c2e17e5c3d588b, type: 2}
+  allSpecies:
+  - {fileID: 11400000, guid: 2036f63c3f1af497f85e21e1f315fec6, type: 2}
+  - {fileID: 11400000, guid: 9d40678badc0949a186d38083e725934, type: 2}
+  - {fileID: 11400000, guid: 91e28778e4cdd4ffbaca49ab5ff2a6ab, type: 2}
+  - {fileID: 11400000, guid: 3c98b0a1d978f4d3a9b72168d37b4226, type: 2}
+  treePlanter: {fileID: 34543761}
+  emergenceSystem: {fileID: 1589978606}
+  economyManager: {fileID: 796134812}
+  screenNavigator: {fileID: 2005323408}
+--- !u!114 &1306842390
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306842388}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 4ac2a21ce320c46fd9c02b387b7cd9d8, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 8a06a4a89e154124ba4c86e33b897c60, type: 3}
+  m_SortingOrder: 1
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &1306842391
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1306842388}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1589978605
 GameObject:
   m_ObjectHideFlags: 0
@@ -1830,6 +1913,7 @@ MonoBehaviour:
   settingsUI: {fileID: 219540831}
   mapUI: {fileID: 185969798}
   speciesSummaryUI: {fileID: 1085389039}
+  storeUI: {fileID: 1306842389}
   treeBoostUI: {fileID: 905178289}
 --- !u!4 &2005323409
 Transform:
@@ -2011,3 +2095,4 @@ SceneRoots:
   - {fileID: 709656798}
   - {fileID: 1647342583}
   - {fileID: 1085389041}
+  - {fileID: 1306842391}

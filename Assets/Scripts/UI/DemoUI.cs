@@ -7,8 +7,10 @@ using UnityEngine.UIElements;
 public class DemoUI : MonoBehaviour
 {
     private const int GemGrant = 100;
+    private const int FundsGrant = 500;
 
     [SerializeField] private MilestoneManager milestoneManager;
+    [SerializeField] private EconomyManager economyManager;
     [SerializeField] private PlayerLevel playerLevel;
     [SerializeField] private EmergenceSystem emergenceSystem;
     [SerializeField] private TreePlanter treePlanter;
@@ -49,6 +51,7 @@ public class DemoUI : MonoBehaviour
 
         root.Q<Button>("close-button").clicked += OnCloseButtonClicked;
         root.Q<Button>("add-gems-button").clicked += OnAddGemsClicked;
+        root.Q<Button>("add-funds-button").clicked += OnAddFundsClicked;
         root.Q<Button>("level-up-button").clicked += OnLevelUpClicked;
         root.Q<Button>("unlock-species-button").clicked += OnUnlockSpeciesClicked;
         root.Q<Button>("unlock-vegetation-button").clicked += OnUnlockVegetationClicked;
@@ -131,6 +134,17 @@ public class DemoUI : MonoBehaviour
 
         milestoneManager.AddGems(GemGrant);
         SetStatus($"+{GemGrant} gems.");
+    }
+
+    private void OnAddFundsClicked()
+    {
+        if (economyManager == null)
+        {
+            return;
+        }
+
+        economyManager.AddFunds(FundsGrant);
+        SetStatus($"+{FundsGrant} funds.");
     }
 
     private void OnLevelUpClicked()

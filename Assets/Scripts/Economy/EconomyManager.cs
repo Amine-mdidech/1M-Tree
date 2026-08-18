@@ -45,6 +45,16 @@ public class EconomyManager : MonoBehaviour
         return true;
     }
 
+    public void AddFunds(int amount)
+    {
+        if (amount < 0)
+        {
+            return;
+        }
+
+        funds += amount;
+    }
+
     public void AddDailyFundsBonus(int amount)
     {
         milestoneFundsBonus += amount;

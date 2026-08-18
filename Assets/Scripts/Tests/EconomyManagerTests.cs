@@ -157,4 +157,20 @@ public class EconomyManagerTests
         // 50 restored + exactly one day's catch-up grant of 300, not seven
         Assert.AreEqual(50 + 300, economy.Funds);
     }
+
+    [Test]
+    public void AddFunds_IncreasesBalance()
+    {
+        economy.AddFunds(500);
+
+        Assert.AreEqual(300 + 500, economy.Funds);
+    }
+
+    [Test]
+    public void AddFunds_NegativeAmount_IsIgnored()
+    {
+        economy.AddFunds(-10);
+
+        Assert.AreEqual(300, economy.Funds);
+    }
 }
