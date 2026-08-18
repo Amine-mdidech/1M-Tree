@@ -1,0 +1,27 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <ui:Style src="project://database/Assets/UI/Theme/Theme.uss" />
+    <ui:Style src="project://database/Assets/UI/MainMenu/MainMenu.uss" />
+    <ui:VisualElement name="menu-root" class="menu-root theme-scope">
+        <ui:VisualElement name="menu-frame" class="menu-frame">
+            <ui:Label name="menu-title" text="1M Trees" class="menu-title" />
+            <ui:Label name="menu-trees-planted" text="Trees planted: 0" class="menu-stat" />
+            <ui:Button name="play-button" text="Play" class="menu-button" />
+            <ui:Button name="new-game-button" text="New Game" class="menu-button" />
+            <ui:Label text="Upcoming Milestones" class="menu-section-title" />
+            <ui:ScrollView name="milestones-scroll" class="menu-milestones-scroll" />
+            <ui:VisualElement name="menu-footer" class="menu-footer">
+                <ui:Button name="settings-button" text="Settings" class="menu-button menu-button-small" />
+                <ui:Button name="quit-button" text="Quit" class="menu-button menu-button-small" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="confirm-root" class="confirm-root">
+            <ui:VisualElement name="confirm-frame" class="confirm-frame">
+                <ui:Label text="This will erase your current progress. Are you sure?" class="confirm-message" />
+                <ui:VisualElement class="confirm-buttons">
+                    <ui:Button name="confirm-yes-button" text="Erase and Start Over" class="menu-button menu-button-danger" />
+                    <ui:Button name="confirm-no-button" text="Cancel" class="menu-button" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
