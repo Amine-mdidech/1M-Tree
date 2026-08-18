@@ -158,6 +158,6 @@
     margin-right: var(--space-sm);
 }
 
-.confirm-buttons .menu-button:last-child {
+.confirm-buttons .menu-button-last {
     margin-right: 0;
 }

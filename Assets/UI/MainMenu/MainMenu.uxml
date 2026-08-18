@@ -19,7 +19,7 @@
                 <ui:Label text="This will erase your current progress. Are you sure?" class="confirm-message" />
                 <ui:VisualElement class="confirm-buttons">
                     <ui:Button name="confirm-yes-button" text="Erase and Start Over" class="menu-button menu-button-danger" />
-                    <ui:Button name="confirm-no-button" text="Cancel" class="menu-button" />
+                    <ui:Button name="confirm-no-button" text="Cancel" class="menu-button menu-button-last" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
