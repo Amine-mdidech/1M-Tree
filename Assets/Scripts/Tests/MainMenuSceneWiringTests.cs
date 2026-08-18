@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Reflection;
 using NUnit.Framework;
 using UnityEditor.SceneManagement;
@@ -10,7 +8,6 @@ using UnityEngine.UIElements;
 public class MainMenuSceneWiringTests
 {
     private const string ScenePath = "Assets/Scenes/MainMenu.unity";
-    private const string SampleScenePath = "Assets/Scenes/SampleScene.unity";
 
     private Scene loadedScene;
 
@@ -61,16 +58,11 @@ public class MainMenuSceneWiringTests
     }
 
     [Test]
-    public void MainMenuUI_AllMilestones_HasFiveEntries()
+    public void MainMenuUI_BackgroundSprite_IsWired()
     {
         MainMenuUI menu = FindComponent<MainMenuUI>();
         Assert.IsNotNull(menu);
-        System.Collections.IList milestones = (System.Collections.IList)GetPrivateField(menu, "allMilestones");
-        Assert.AreEqual(5, milestones.Count);
-        foreach (object milestone in milestones)
-        {
-            Assert.IsNotNull(milestone);
-        }
+        Assert.IsNotNull(GetPrivateField(menu, "backgroundSprite"));
     }
 
     [Test]
@@ -114,39 +106,5 @@ public class MainMenuSceneWiringTests
         Assert.IsNotNull(document);
         Assert.IsNotNull(document.visualTreeAsset);
         Assert.IsNotNull(document.panelSettings);
-    }
-
-    [Test]
-    public void MainMenuUI_AllMilestones_MatchesSampleSceneRoster()
-    {
-        Scene sampleScene = EditorSceneManager.OpenScene(SampleScenePath, OpenSceneMode.Additive);
-        try
-        {
-            MainMenuUI menu = FindComponent<MainMenuUI>();
-            Assert.IsNotNull(menu);
-            IList menuMilestones = (IList)GetPrivateField(menu, "allMilestones");
-            List<string> menuIds = new List<string>();
-            foreach (object m in menuMilestones)
-            {
-                FieldInfo idField = m.GetType().GetField("id");
-                menuIds.Add((string)idField.GetValue(m));
-            }
-
-            MilestoneManager milestoneManager = Object.FindFirstObjectByType<MilestoneManager>(FindObjectsInactive.Include);
-            Assert.IsNotNull(milestoneManager);
-            IList sampleMilestones = (IList)GetPrivateField(milestoneManager, "milestones");
-            List<string> sampleIds = new List<string>();
-            foreach (object m in sampleMilestones)
-            {
-                FieldInfo idField = m.GetType().GetField("id");
-                sampleIds.Add((string)idField.GetValue(m));
-            }
-
-            CollectionAssert.AreEquivalent(sampleIds, menuIds);
-        }
-        finally
-        {
-            EditorSceneManager.CloseScene(sampleScene, true);
-        }
     }
 }

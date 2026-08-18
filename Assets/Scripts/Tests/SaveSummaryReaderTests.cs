@@ -29,35 +29,18 @@ public class SaveSummaryReaderTests
 
         Assert.IsFalse(summary.SaveExists);
         Assert.IsFalse(summary.FileExists);
-        Assert.AreEqual(0, summary.TreesPlanted);
-        Assert.IsEmpty(summary.CompletedMilestoneIds);
     }
 
     [Test]
-    public void ReadSummary_ValidFile_ReturnsTreesPlantedCount()
+    public void ReadSummary_ValidFile_ReturnsSaveExistsAndFileExists()
     {
         PlayerSaveData data = new PlayerSaveData();
-        data.plantedTrees.Add(new PlantedTreeSaveData { vegetationId = "oak" });
-        data.plantedTrees.Add(new PlantedTreeSaveData { vegetationId = "pine" });
         File.WriteAllText(tempPath, JsonUtility.ToJson(data));
 
         SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
 
         Assert.IsTrue(summary.SaveExists);
         Assert.IsTrue(summary.FileExists);
-        Assert.AreEqual(2, summary.TreesPlanted);
-    }
-
-    [Test]
-    public void ReadSummary_ValidFile_ReturnsCompletedMilestoneIds()
-    {
-        PlayerSaveData data = new PlayerSaveData();
-        data.completedMilestoneIds.Add("first_10_trees");
-        File.WriteAllText(tempPath, JsonUtility.ToJson(data));
-
-        SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
-
-        CollectionAssert.AreEquivalent(new[] { "first_10_trees" }, summary.CompletedMilestoneIds);
     }
 
     [Test]
@@ -78,19 +61,5 @@ public class SaveSummaryReaderTests
         SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
 
         Assert.IsTrue(summary.FileExists);
-    }
-
-    [Test]
-    public void ReadSummary_NullCompletedMilestoneIds_ReturnsEmptyListInsteadOfNull()
-    {
-        // Simulates a hand-edited/corrupted save where JsonUtility parses successfully
-        // but "completedMilestoneIds" is explicitly null in the JSON, bypassing the
-        // field initializer default.
-        File.WriteAllText(tempPath, "{\"completedMilestoneIds\":null}");
-
-        SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
-
-        Assert.IsNotNull(summary.CompletedMilestoneIds);
-        Assert.IsEmpty(summary.CompletedMilestoneIds);
     }
 }

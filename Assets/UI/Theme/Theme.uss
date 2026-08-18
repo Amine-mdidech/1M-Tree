@@ -58,9 +58,6 @@
     --surface-summary: rgb(120, 130, 90);
     --surface-summary-inner: rgb(232, 232, 210);
     --surface-summary-border: rgb(50, 55, 35);
-    --surface-menu: rgb(60, 45, 90);
-    --surface-menu-inner: rgb(20, 14, 30);
-    --surface-menu-border: rgb(30, 20, 45);
 
     /* --- Text colors --- */
     --text-on-dark: rgb(255, 255, 255);

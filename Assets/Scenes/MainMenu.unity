@@ -149,13 +149,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a2718a827324f929eb6951a6671cb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Grove.Runtime::MainMenuUI
-  allMilestones:
-  - {fileID: 11400000, guid: 22614ad652356471ca031bdff73fedbe, type: 2}
-  - {fileID: 11400000, guid: b6a1ed02c360144c2a0d655479b5d17b, type: 2}
-  - {fileID: 11400000, guid: 0e493cb424e5b43f4bacd273522370f0, type: 2}
-  - {fileID: 11400000, guid: 3384a5d945bf946c6b46520b1805e8d4, type: 2}
-  - {fileID: 11400000, guid: 837e44047ba264e1eb240d8648422320, type: 2}
   settingsUI: {fileID: 2089643521}
+  backgroundSprite: {fileID: 21300000, guid: f9ee785c521845e49888781d88790489, type: 3}
 --- !u!114 &248653747
 MonoBehaviour:
   m_ObjectHideFlags: 0
