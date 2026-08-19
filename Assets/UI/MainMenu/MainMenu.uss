@@ -160,7 +160,6 @@
 }
 
 .menu-button-primary {
-    flex-grow: 1;
     background-color: rgb(122, 148, 95);
     border-color: rgb(122, 148, 95);
 }
