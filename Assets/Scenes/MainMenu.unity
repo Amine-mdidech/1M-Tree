@@ -150,7 +150,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Grove.Runtime::MainMenuUI
   settingsUI: {fileID: 2089643521}
-  backgroundSprite: {fileID: 21300000, guid: f9ee785c521845e49888781d88790489, type: 3}
 --- !u!114 &248653747
 MonoBehaviour:
   m_ObjectHideFlags: 0

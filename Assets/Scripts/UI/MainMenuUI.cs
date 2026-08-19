@@ -9,13 +9,8 @@ public class MainMenuUI : MonoBehaviour
     private const string GameplaySceneName = "SampleScene";
 
     [SerializeField] private SettingsUI settingsUI;
-    // fal.ai-generated hero art (see docs/art-design-document.md) used as the title screen's
-    // backdrop so the menu reads as this game's world, not a generic button stack.
-    [SerializeField] private Sprite backgroundSprite;
 
     private UIDocument uiDocument;
-    private VisualElement menuRoot;
-    private VisualElement menuFrame;
     private VisualElement confirmRoot;
     private VisualElement confirmFrame;
     private Button playButton;
@@ -31,16 +26,6 @@ public class MainMenuUI : MonoBehaviour
     private void OnEnable()
     {
         VisualElement root = uiDocument.rootVisualElement;
-
-        menuRoot = root.Q<VisualElement>("menu-root");
-        if (backgroundSprite != null)
-        {
-            menuRoot.style.backgroundImage = new StyleBackground(backgroundSprite);
-        }
-
-        menuFrame = root.Q<VisualElement>("menu-frame");
-        menuFrame.style.backgroundImage = new StyleBackground(
-            PixelArtUtility.CreateStoneTexture(256, 256, new Color(0.62f, 0.47f, 0.28f)));
 
         confirmRoot = root.Q<VisualElement>("confirm-root");
         confirmFrame = root.Q<VisualElement>("confirm-frame");
