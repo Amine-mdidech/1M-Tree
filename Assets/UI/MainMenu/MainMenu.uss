@@ -141,14 +141,14 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    min-height: 75px;
+    min-height: 150px;
     padding: 0 var(--space-xl);
     margin-right: var(--space-sm);
     /* Radius kept proportional to the button height (was 16px at 60px
        tall - the value the user confirmed as "rectangular with a rounded
        corner" matching the Claude Design mockup) so buttons still read as
        rounded now that they've grown taller through later size requests. */
-    border-radius: 20px;
+    border-radius: 40px;
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.2);
     background-color: rgba(0, 0, 0, 0);
@@ -184,10 +184,10 @@
     margin-right: 0;
     padding: 0 var(--space-sm);
     color: var(--color-danger-light);
-    /* Quit's own +100% height request, independent of the other buttons'
-       +25% (set on .menu-button above) - overrides it since this class is
-       declared later in the file. */
-    min-height: 120px;
+    /* Quit's own height, independent of the other buttons' height (set on
+       .menu-button above) - overrides it since this class is declared
+       later in the file. Doubled again in step with the other three. */
+    min-height: 240px;
 }
 
 .menu-button-ghost .menu-button-icon {
