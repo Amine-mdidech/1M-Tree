@@ -136,8 +136,8 @@ public class MainMenuUI : MonoBehaviour
     private static Texture2D CreateScrimTexture()
     {
         const int height = 128;
-        const float edgeAlpha = 0.82f;
-        const float middleAlpha = 0.55f;
+        const float edgeAlpha = 0.94f;
+        const float middleAlpha = 0.82f;
         Color solid = new Color(42f / 255f, 40f / 255f, 30f / 255f);
 
         Texture2D texture = new Texture2D(1, height, TextureFormat.RGBA32, false);
