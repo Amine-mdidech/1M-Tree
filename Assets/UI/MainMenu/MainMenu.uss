@@ -33,7 +33,7 @@
     width: 160%;
     height: 100%;
     -unity-background-scale-mode: scale-and-crop;
-    opacity: 0.9;
+    opacity: 0.22;
 }
 
 .menu-bg-scrim {
@@ -126,17 +126,13 @@
     margin-top: var(--space-xs);
 }
 
-.menu-gap {
-    height: var(--space-xl);
+.menu-spacer {
+    flex-grow: 1;
 }
 
 .menu-button-row {
     flex-direction: row;
     align-items: center;
-}
-
-.menu-scenic-footer {
-    flex-grow: 1;
 }
 
 .menu-button {

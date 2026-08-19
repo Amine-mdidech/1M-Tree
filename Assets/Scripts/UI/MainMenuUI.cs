@@ -128,17 +128,16 @@ public class MainMenuUI : MonoBehaviour
     // A 1xN texture stretched to fill the scrim element - cheaper than a full-size gradient and
     // reads identically since it's stretched uniformly. Row 0 is the texture's top edge (matching
     // this project's established PixelArtUtility convention, e.g. DrawGearGlyph's low-y prong
-    // rendering at the visual top). The header/title/subtitle/button row all cluster near the top
-    // of the card regardless of how tall the card itself is (the card fills the screen, but that
-    // content block is a fixed height) - so the scrim stays solid just long enough to keep that
-    // text readable, then clears to fully transparent, letting the backdrop show vividly through
-    // the rest of the card (the "scenic footer") instead of washing the whole card out.
+    // rendering at the visual top). The header/title/subtitle sit at the top and the button row
+    // sits at the very bottom (per the mockup), so both ends need to stay dark enough to read -
+    // alpha is highest at the top and bottom edges and dips gently in the middle, giving the
+    // panning backdrop just a hint of visibility there without ever risking text/button contrast
+    // at either end.
     private static Texture2D CreateScrimTexture()
     {
         const int height = 128;
-        const float solidUntilFraction = 0.22f;
-        const float clearByFraction = 0.42f;
-        const float solidAlpha = 0.85f;
+        const float edgeAlpha = 0.82f;
+        const float middleAlpha = 0.55f;
         Color solid = new Color(42f / 255f, 40f / 255f, 30f / 255f);
 
         Texture2D texture = new Texture2D(1, height, TextureFormat.RGBA32, false);
@@ -147,20 +146,9 @@ public class MainMenuUI : MonoBehaviour
         for (int y = 0; y < height; y++)
         {
             float t = y / (float)(height - 1);
-            float alpha;
-            if (t <= solidUntilFraction)
-            {
-                alpha = solidAlpha;
-            }
-            else if (t >= clearByFraction)
-            {
-                alpha = 0f;
-            }
-            else
-            {
-                float fadeT = (t - solidUntilFraction) / (clearByFraction - solidUntilFraction);
-                alpha = Mathf.Lerp(solidAlpha, 0f, fadeT);
-            }
+            // 0 at both edges, 1 at the midpoint - a smooth dip, not a hard-edged band.
+            float dip = Mathf.Sin(t * Mathf.PI);
+            float alpha = Mathf.Lerp(edgeAlpha, middleAlpha, dip);
 
             texture.SetPixel(0, y, new Color(solid.r, solid.g, solid.b, alpha));
         }
