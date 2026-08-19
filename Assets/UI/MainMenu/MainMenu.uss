@@ -176,6 +176,11 @@
     margin-left: auto;
     margin-right: 0;
     padding: 0 var(--space-sm);
+    color: var(--color-danger-light);
+}
+
+.menu-button-ghost .menu-button-icon {
+    -unity-background-image-tint-color: var(--color-danger-light);
 }
 
 .menu-button-danger {
