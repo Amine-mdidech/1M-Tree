@@ -138,7 +138,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    min-height: 60px;
+    min-height: 75px;
     padding: 0 var(--space-xl);
     margin-right: var(--space-sm);
     border-radius: 16px;
@@ -177,6 +177,10 @@
     margin-right: 0;
     padding: 0 var(--space-sm);
     color: var(--color-danger-light);
+    /* Quit's own +100% height request, independent of the other buttons'
+       +25% (set on .menu-button above) - overrides it since this class is
+       declared later in the file. */
+    min-height: 120px;
 }
 
 .menu-button-ghost .menu-button-icon {
@@ -192,21 +196,20 @@
     margin-right: 0;
 }
 
-/* Explicit min-widths set each button's on-screen length. A full +100% on
-   top of the already-doubled length overflowed the row (Settings/Quit
-   overlapped by ~58px) - scaled back to +50% over that prior width so the
-   row still fits the frame with room to spare. Height is governed by
-   menu-button's min-height, untouched here. */
+/* Explicit min-widths set each button's on-screen length. Play/New
+   Game/Settings are +25% over their prior width per the latest request
+   (Quit's length is untouched - only its height changed, via
+   .menu-button-ghost above). */
 #play-button {
-    min-width: 522px;
+    min-width: 653px;
 }
 
 #new-game-button {
-    min-width: 561px;
+    min-width: 701px;
 }
 
 #settings-button {
-    min-width: 495px;
+    min-width: 619px;
 }
 
 #quit-button {
