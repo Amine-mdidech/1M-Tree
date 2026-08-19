@@ -192,6 +192,25 @@
     margin-right: 0;
 }
 
+/* Explicit min-widths double each button's on-screen length (measured at the
+   current layout) per the "100% bigger in length, not height" request - the
+   height stays governed by menu-button's min-height, untouched here. */
+#play-button {
+    min-width: 348px;
+}
+
+#new-game-button {
+    min-width: 374px;
+}
+
+#settings-button {
+    min-width: 330px;
+}
+
+#quit-button {
+    min-width: 194px;
+}
+
 .confirm-root {
     position: absolute;
     top: 0;
