@@ -10,7 +10,6 @@
 .menu-frame {
     width: 100%;
     max-width: 480px;
-    max-height: 100%;
     padding: var(--space-lg);
     align-items: stretch;
 }
