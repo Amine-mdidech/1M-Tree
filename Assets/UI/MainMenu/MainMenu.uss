@@ -112,7 +112,7 @@
 }
 
 .menu-title {
-    font-size: 76px;
+    font-size: 152px;
     color: rgb(250, 240, 230);
     -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
     -unity-text-align: middle-center;
@@ -121,7 +121,7 @@
 }
 
 .menu-subtitle {
-    font-size: 17px;
+    font-size: 34px;
     color: rgb(212, 206, 196);
     -unity-font-definition: url("project://database/Assets/Fonts/Figtree-Regular.ttf");
     -unity-text-align: middle-center;
