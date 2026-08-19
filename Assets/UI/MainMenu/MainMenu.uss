@@ -153,7 +153,10 @@
     border-color: rgba(255, 255, 255, 0.2);
     background-color: rgba(0, 0, 0, 0);
     color: var(--text-on-dark);
-    font-size: var(--font-size-lg);
+    /* Scaled up with the button height (was --font-size-lg/18px at the
+       original 60px height) so the label reads clearly at the buttons'
+       current 150px height instead of looking tiny inside them. */
+    font-size: 45px;
     -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
 }
 
@@ -162,9 +165,9 @@
 }
 
 .menu-button-icon {
-    width: 22px;
-    height: 22px;
-    margin-right: var(--space-sm);
+    width: 55px;
+    height: 55px;
+    margin-right: 20px;
 }
 
 .menu-button-primary {
