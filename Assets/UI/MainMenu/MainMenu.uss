@@ -138,7 +138,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    min-height: 60px;
+    min-height: 120px;
     padding: 0 var(--space-xl);
     margin-right: var(--space-sm);
     border-radius: 16px;
