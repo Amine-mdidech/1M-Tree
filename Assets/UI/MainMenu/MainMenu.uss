@@ -12,7 +12,7 @@
     border-radius: 0;
     overflow: hidden;
     background-color: rgb(42, 40, 30);
-    padding: var(--space-lg);
+    padding: 35px;
 }
 
 .menu-bg-pan {
@@ -31,7 +31,7 @@
     width: 160%;
     height: 100%;
     -unity-background-scale-mode: scale-and-crop;
-    opacity: 0.08;
+    opacity: 0.5;
 }
 
 .menu-bg-scrim {
@@ -109,7 +109,7 @@
 }
 
 .menu-title {
-    font-size: 44px;
+    font-size: 76px;
     color: rgb(250, 240, 230);
     -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
     -unity-text-align: middle-center;
@@ -118,7 +118,7 @@
 }
 
 .menu-subtitle {
-    font-size: var(--font-size-md);
+    font-size: 17px;
     color: rgb(212, 206, 196);
     -unity-font-definition: url("project://database/Assets/Fonts/Figtree-Regular.ttf");
     -unity-text-align: middle-center;
