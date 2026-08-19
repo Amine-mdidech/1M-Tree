@@ -141,7 +141,11 @@
     min-height: 75px;
     padding: 0 var(--space-xl);
     margin-right: var(--space-sm);
-    border-radius: 16px;
+    /* Radius kept proportional to the button height (was 16px at 60px
+       tall - the value the user confirmed as "rectangular with a rounded
+       corner" matching the Claude Design mockup) so buttons still read as
+       rounded now that they've grown taller through later size requests. */
+    border-radius: 20px;
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.2);
     background-color: rgba(0, 0, 0, 0);
