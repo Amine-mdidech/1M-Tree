@@ -138,7 +138,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    min-height: 120px;
+    min-height: 60px;
     padding: 0 var(--space-xl);
     margin-right: var(--space-sm);
     border-radius: 16px;
@@ -192,23 +192,25 @@
     margin-right: 0;
 }
 
-/* Explicit min-widths double each button's on-screen length (measured at the
-   current layout) per the "100% bigger in length, not height" request - the
-   height stays governed by menu-button's min-height, untouched here. */
+/* Explicit min-widths set each button's on-screen length. A full +100% on
+   top of the already-doubled length overflowed the row (Settings/Quit
+   overlapped by ~58px) - scaled back to +50% over that prior width so the
+   row still fits the frame with room to spare. Height is governed by
+   menu-button's min-height, untouched here. */
 #play-button {
-    min-width: 348px;
+    min-width: 522px;
 }
 
 #new-game-button {
-    min-width: 374px;
+    min-width: 561px;
 }
 
 #settings-button {
-    min-width: 330px;
+    min-width: 495px;
 }
 
 #quit-button {
-    min-width: 194px;
+    min-width: 291px;
 }
 
 .confirm-root {
