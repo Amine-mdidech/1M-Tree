@@ -140,7 +140,7 @@
     min-height: 60px;
     padding: 0 var(--space-xl);
     margin-right: var(--space-sm);
-    border-radius: 20px;
+    border-radius: var(--radius-pill);
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.2);
     background-color: rgba(0, 0, 0, 0);
