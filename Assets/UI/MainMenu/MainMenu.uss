@@ -126,6 +126,11 @@
     -unity-font-definition: url("project://database/Assets/Fonts/Figtree-Regular.ttf");
     -unity-text-align: middle-center;
     margin-top: var(--space-xs);
+    /* Default is nowrap (see .confirm-message needing the same override) -
+       this subtitle's new copy is long enough to overflow the frame width
+       at 34px without wrapping. */
+    white-space: normal;
+    max-width: 80%;
 }
 
 .menu-spacer {

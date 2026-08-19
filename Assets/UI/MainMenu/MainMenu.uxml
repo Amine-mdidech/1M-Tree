@@ -23,7 +23,7 @@
             </ui:VisualElement>
             <ui:VisualElement name="menu-title-area" class="menu-title-area" picking-mode="Ignore">
                 <ui:Label name="menu-title" text="1M Trees" class="menu-title" />
-                <ui:Label text="Government funding meets a dying ecosystem" class="menu-subtitle" />
+                <ui:Label text="Plant trees in your world and help plant trees around the world" class="menu-subtitle" />
             </ui:VisualElement>
             <ui:VisualElement class="menu-spacer" picking-mode="Ignore" />
             <ui:VisualElement name="menu-button-row" class="menu-button-row">
