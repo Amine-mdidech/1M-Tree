@@ -52,8 +52,8 @@
 .menu-pill {
     flex-direction: row;
     align-items: center;
-    height: 36px;
-    padding: 0 var(--space-md);
+    height: 54px;
+    padding: 0 18px;
     border-radius: var(--radius-pill);
     background-color: rgba(20, 18, 14, 0.55);
     border-width: 1px;
@@ -61,14 +61,14 @@
 }
 
 .menu-pill-icon {
-    width: 16px;
-    height: 16px;
-    margin-right: var(--space-xs);
+    width: 24px;
+    height: 24px;
+    margin-right: 6px;
 }
 
 .menu-pill-label {
     color: var(--text-on-dark);
-    font-size: var(--font-size-sm);
+    font-size: 20px;
     -unity-font-style: bold;
 }
 
@@ -82,8 +82,8 @@
 }
 
 .menu-icon-button {
-    width: 36px;
-    height: 36px;
+    width: 54px;
+    height: 54px;
     padding: 0;
     margin: 0;
     border-radius: var(--radius-pill);
@@ -99,8 +99,8 @@
 }
 
 .menu-icon-button-glyph {
-    width: 18px;
-    height: 18px;
+    width: 27px;
+    height: 27px;
 }
 
 .menu-title-area {
