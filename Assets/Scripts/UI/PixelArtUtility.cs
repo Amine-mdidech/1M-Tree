@@ -221,6 +221,28 @@ public static class PixelArtUtility
         }
     }
 
+    private static void FillTriangleRight(PixelBuffer buffer, RectInt bounds, Color fill)
+    {
+        int width = Mathf.Max(1, bounds.width);
+        int centerY = bounds.yMin + bounds.height / 2;
+
+        int xMin = Mathf.Max(0, bounds.xMin);
+        int xMax = Mathf.Min(buffer.Width - 1, bounds.xMax - 1);
+
+        for (int x = xMin; x <= xMax; x++)
+        {
+            float t = width <= 1 ? 0f : (x - bounds.xMin) / (float)(width - 1);
+            int halfHeight = Mathf.RoundToInt(Mathf.Lerp(bounds.height / 2f, 0f, t));
+
+            int yMin = Mathf.Max(0, centerY - halfHeight);
+            int yMax = Mathf.Min(buffer.Height - 1, centerY + halfHeight);
+            for (int y = yMin; y <= yMax; y++)
+            {
+                buffer.Blend(x, y, fill);
+            }
+        }
+    }
+
     private static void DrawFrondLine(PixelBuffer buffer, Vector2 from, Vector2 to, float thickness, Color color)
     {
         int steps = Mathf.Max(1, Mathf.CeilToInt(Vector2.Distance(from, to)));
@@ -697,6 +719,25 @@ public static class PixelArtUtility
                 canvas.Blend(x, y, fill);
             }
         }
+    }
+
+    public static void DrawPlayGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color fill = Color.white;
+
+        FillTriangleRight(canvas, new RectInt((int)(size * 0.28f), (int)(size * 0.2f), (int)(size * 0.44f), (int)(size * 0.6f)), fill);
+    }
+
+    public static void DrawExitGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color line = Color.white;
+        int thickness = Mathf.Max(2, size / 16);
+
+        FillRect(canvas, new RectInt((int)(size * 0.22f), (int)(size * 0.2f), thickness, (int)(size * 0.6f)), line);
+        FillRect(canvas, new RectInt((int)(size * 0.22f), (int)(size * 0.44f), (int)(size * 0.5f), thickness), line);
+        FillTriangleRight(canvas, new RectInt((int)(size * 0.58f), (int)(size * 0.32f), (int)(size * 0.24f), (int)(size * 0.36f)), line);
     }
 
     public static void DrawTerritoryGlyph(PixelBuffer canvas)

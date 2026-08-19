@@ -4,19 +4,36 @@
 
 ## Purpose
 
-This project has two co-existing visual systems: a procedural pixel-art UI system (buttons, panels, HUD chrome) and, newer, fal.ai-generated set-piece art for hero world objects. This doc exists so that every future asset — whether a new panel, a new HUD icon, or a new world building/prop — gets deliberately assigned to the right system instead of drifting toward a third, inconsistent style. Read the relevant section below *before* writing a prompt or a `PixelArtUtility` call.
+This project has three co-existing visual systems: a procedural pixel-art UI system (buttons, panels, HUD chrome), fal.ai-generated set-piece art for hero world objects, and — newest — fal.ai-generated flat illustrated backdrops for full-bleed UI screens (title/menu screens, not in-world chrome). This doc exists so that every future asset — whether a new panel, a new HUD icon, a new world building/prop, or a new screen backdrop — gets deliberately assigned to the right system instead of drifting toward a fourth, inconsistent style. Read the relevant section below *before* writing a prompt or a `PixelArtUtility` call.
 
-## The two systems, and how to choose between them
+## The three systems, and how to choose between them
 
-| | Procedural pixel art | fal.ai-generated art |
-|---|---|---|
-| Used for | UI chrome: panel frames, buttons, badges, icons, HUD widgets, minimap | Hero/set-piece **world objects**: single landmark buildings, the river |
-| Reference | `ui-style-guide.md`, `PixelArtUtility.cs` | This document, `Assets/Textures/Laboratory/LabBuilding.png` |
-| Why | Needs tight, consistent bevel/token system; must be recolorable and regenerable at runtime (badges change color per state, icons are drawn from a shared glyph set) | Benefits from rich real-material detail (glass, stone, foliage) that procedural pixel art can't cheaply match; generated once, cached as a static asset, not recolored at runtime |
-| Trees / animals | Still procedural today (`PixelArtUtility`) — this is deliberate for now (there are many of them, spawned/recolored at runtime), **but** the Laboratory sets a visibly higher bar. If a future request asks to upgrade trees/animals to fal.ai art, that's a legitimate direction to pursue, not a rule violation — flag it and decide with the user rather than assuming either way. |
-| HUD token icons | `Assets/Textures/Hud/GemIcon.png`, `LevelStarIcon.png`, `VegetationIcon.png` (currency, level/XP, and vegetation-picker icons) — a deliberate, scoped exception to the default rule below. |
+| | Procedural pixel art | fal.ai hero objects | fal.ai screen backdrops |
+|---|---|---|---|
+| Used for | UI chrome: panel frames, buttons, badges, icons, HUD widgets, minimap | Hero/set-piece **world objects**: single landmark buildings, the river | Full-bleed **screen backgrounds**: title/menu screen art, not in-world scenery and not clickable chrome |
+| Reference | `ui-style-guide.md`, `PixelArtUtility.cs` | This document, `Assets/Textures/Laboratory/LabBuilding.png` | This document, `Assets/Textures/MainMenu/MainMenuBackground.png` |
+| Style | Beveled chunky mobile-game chrome | Clean stylized 3D render, semi-realistic materials | Flat 2D illustration — flat color shapes, no 3D shading, no outlines |
+| Why | Needs tight, consistent bevel/token system; must be recolorable and regenerable at runtime (badges change color per state, icons are drawn from a shared glyph set) | Benefits from rich real-material detail (glass, stone, foliage) that procedural pixel art can't cheaply match; generated once, cached as a static asset, not recolored at runtime | A screen backdrop is atmosphere, not a game object — it never needs recoloring/state, and a flat illustration reads better as a full-screen backdrop behind UI text than a busy 3D render would (less visual competition with button/text contrast) |
+| Trees / animals | Still procedural today (`PixelArtUtility`) — this is deliberate for now (there are many of them, spawned/recolored at runtime), **but** the Laboratory sets a visibly higher bar. If a future request asks to upgrade trees/animals to fal.ai art, that's a legitimate direction to pursue, not a rule violation — flag it and decide with the user rather than assuming either way. |  |  |
+| HUD token icons | `Assets/Textures/Hud/GemIcon.png`, `LevelStarIcon.png`, `VegetationIcon.png` (currency, level/XP, and vegetation-picker icons) — a deliberate, scoped exception to the default rule below. |  |  |
 
-**Default rule:** if what you're building is a *widget the player clicks/reads UI state from*, it's procedural (follow `ui-style-guide.md`). If it's a *thing that exists in the game world as scenery/landmark*, it's a fal.ai candidate — but check with the user before spending a generation on something that wasn't explicitly asked for.
+**Default rule:** if what you're building is a *widget the player clicks/reads UI state from*, it's procedural (follow `ui-style-guide.md`). If it's a *thing that exists in the game world as scenery/landmark*, it's a fal.ai hero-object candidate. If it's a *full-screen backdrop behind a UI screen* (not clicked, not in-world), it's a fal.ai screen-backdrop candidate, per the template below. Check with the user before spending a generation on something that wasn't explicitly asked for.
+
+## Screen backdrops: flat illustrated style
+
+Unlike hero objects (isolated, chroma-keyed, composited into a 3D world), a screen backdrop is a **full illustrated scene**, generated at a wide aspect ratio so it can pan/parallax behind UI content, and used directly — no background removal, no world-scale/pivot conventions. Composited with a runtime-generated dark gradient overlay (bottom-heavy, see the owning UI script) so foreground button text stays readable without baking a scrim into the source image itself, which would make the asset non-reusable if the UI's color scheme ever changes.
+
+**Prompt template:**
+```
+flat illustrated video game background art, [subject], minimalist flat vector
+illustration style, flat color shapes, no outlines, no 3D shading, soft color
+gradient lighting, wide panoramic landscape composition, distinct foreground/
+midground/background layers, peaceful mood, no text, no characters, no UI
+elements
+```
+Generate wide (roughly 2.2–2.5:1) so there's enough width for a slow horizontal pan without ever showing an edge. No chroma key, no post-processing background removal — this style is a finished full-frame image, not an isolated object to be cut out.
+
+**Reference:** `Assets/Textures/MainMenu/MainMenuBackground.png` (the title screen's sunrise-over-a-reforested-valley backdrop) is the first and current example of this style.
 
 **The HUD token icon exception:** a small class of HUD icon does fit fal.ai despite being "chrome" — a *static single-purpose token* (a currency symbol, a level medal, a category icon) whose glyph never changes shape or needs runtime recoloring, only the frame/count/label around it does. The badge frame, XP bar, and button bevel stay procedural (still built from `PixelArtUtility`/USS tokens, still animate/pulse/recolor normally); only the glyph itself is fal.ai art, swapped in via a `[SerializeField] Sprite` on the owning UI script (see `HudUI.cs`'s `currencyIconSprite`/`xpIconSprite`/`vegetationIconSprite`). Framing differs from the isolated-hero-object template above: these are small HUD tokens, not world objects, so the prompt uses a 3/4 icon angle ("stylized 3D render of a [subject]... 3/4 perspective, centered composition") rather than the top-down isometric framing used for buildings/landmarks. Don't reach for this by default — most "chrome" icons (nav buttons, category glyphs that vary per state) should stay procedural per the default rule; this exception is for the handful of icons that are effectively a game's "brand" tokens (currency, rank) where the extra visual weight earns its keep.
 

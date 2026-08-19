@@ -62,4 +62,24 @@ public class SaveSummaryReaderTests
 
         Assert.IsTrue(summary.FileExists);
     }
+
+    [Test]
+    public void ReadSummary_ValidFile_ReturnsLevel()
+    {
+        PlayerSaveData data = new PlayerSaveData();
+        data.level = 12;
+        File.WriteAllText(tempPath, JsonUtility.ToJson(data));
+
+        SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
+
+        Assert.AreEqual(12, summary.Level);
+    }
+
+    [Test]
+    public void ReadSummary_NoFile_ReturnsLevelZero()
+    {
+        SaveSummaryReader.SaveSummary summary = SaveSummaryReader.ReadSummary(tempPath);
+
+        Assert.AreEqual(0, summary.Level);
+    }
 }

@@ -3,12 +3,46 @@
     <ui:Style src="project://database/Assets/UI/MainMenu/MainMenu.uss" />
     <ui:VisualElement name="menu-root" class="menu-root theme-scope">
         <ui:VisualElement name="menu-frame" class="menu-frame">
-            <ui:Label name="menu-title" text="1M Trees" class="menu-title" />
-            <ui:Button name="play-button" text="Play" class="menu-button" />
-            <ui:Button name="new-game-button" text="New Game" class="menu-button" />
-            <ui:VisualElement name="menu-footer" class="menu-footer">
-                <ui:Button name="settings-button" text="Settings" class="menu-button menu-button-small" />
-                <ui:Button name="quit-button" text="Quit" class="menu-button menu-button-small menu-button-last" />
+            <ui:VisualElement name="menu-bg-pan" class="menu-bg-pan" picking-mode="Ignore">
+                <ui:VisualElement name="menu-bg-image" class="menu-bg-image" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="menu-bg-scrim" class="menu-bg-scrim" picking-mode="Ignore" />
+            <ui:VisualElement name="menu-header" class="menu-header">
+                <ui:VisualElement name="level-badge" class="menu-pill">
+                    <ui:VisualElement name="level-badge-icon" class="menu-pill-icon" />
+                    <ui:Label name="level-badge-label" text="Lv. 1" class="menu-pill-label" />
+                </ui:VisualElement>
+                <ui:VisualElement name="menu-header-right" class="menu-header-right">
+                    <ui:VisualElement name="language-pill" class="menu-pill">
+                        <ui:Label text="EN" class="menu-pill-label" />
+                    </ui:VisualElement>
+                    <ui:Button name="mute-button" class="menu-icon-button">
+                        <ui:VisualElement name="mute-button-icon" class="menu-icon-button-glyph" />
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="menu-title-area" class="menu-title-area" picking-mode="Ignore">
+                <ui:Label name="menu-title" text="1M Trees" class="menu-title" />
+                <ui:Label text="Government funding meets a dying ecosystem" class="menu-subtitle" />
+            </ui:VisualElement>
+            <ui:VisualElement class="menu-spacer" picking-mode="Ignore" />
+            <ui:VisualElement name="menu-button-row" class="menu-button-row">
+                <ui:Button name="play-button" class="menu-button menu-button-primary">
+                    <ui:VisualElement name="play-button-icon" class="menu-button-icon" />
+                    <ui:Label name="play-button-label" text="Play" class="menu-button-label" />
+                </ui:Button>
+                <ui:Button name="new-game-button" class="menu-button menu-button-secondary">
+                    <ui:VisualElement name="new-game-button-icon" class="menu-button-icon" />
+                    <ui:Label text="New Game" class="menu-button-label" />
+                </ui:Button>
+                <ui:Button name="settings-button" class="menu-button menu-button-secondary">
+                    <ui:VisualElement name="settings-button-icon" class="menu-button-icon" />
+                    <ui:Label text="Settings" class="menu-button-label" />
+                </ui:Button>
+                <ui:Button name="quit-button" class="menu-button menu-button-ghost">
+                    <ui:VisualElement name="quit-button-icon" class="menu-button-icon" />
+                    <ui:Label text="Quit" class="menu-button-label" />
+                </ui:Button>
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="confirm-root" class="confirm-root">
@@ -16,7 +50,7 @@
                 <ui:Label text="This will erase your current progress. Are you sure?" class="confirm-message" />
                 <ui:VisualElement class="confirm-buttons">
                     <ui:Button name="confirm-yes-button" text="Erase and Start Over" class="menu-button menu-button-danger" />
-                    <ui:Button name="confirm-no-button" text="Cancel" class="menu-button menu-button-last" />
+                    <ui:Button name="confirm-no-button" text="Cancel" class="menu-button menu-button-secondary menu-button-last" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

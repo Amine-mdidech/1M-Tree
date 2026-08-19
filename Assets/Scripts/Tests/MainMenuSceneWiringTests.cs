@@ -58,6 +58,22 @@ public class MainMenuSceneWiringTests
     }
 
     [Test]
+    public void MainMenuUI_BackgroundSprite_IsWired()
+    {
+        MainMenuUI menu = FindComponent<MainMenuUI>();
+        Assert.IsNotNull(menu);
+        Assert.IsNotNull(GetPrivateField(menu, "backgroundSprite"));
+    }
+
+    [Test]
+    public void MainMenuUI_LevelIconSprite_IsWired()
+    {
+        MainMenuUI menu = FindComponent<MainMenuUI>();
+        Assert.IsNotNull(menu);
+        Assert.IsNotNull(GetPrivateField(menu, "levelIconSprite"));
+    }
+
+    [Test]
     public void SettingsUI_Exists()
     {
         Assert.IsNotNull(FindComponent<SettingsUI>());
