@@ -25,7 +25,7 @@
                 <ui:Label name="menu-title" text="1M Trees" class="menu-title" />
                 <ui:Label text="Government funding meets a dying ecosystem" class="menu-subtitle" />
             </ui:VisualElement>
-            <ui:VisualElement class="menu-spacer" picking-mode="Ignore" />
+            <ui:VisualElement class="menu-gap" picking-mode="Ignore" />
             <ui:VisualElement name="menu-button-row" class="menu-button-row">
                 <ui:Button name="play-button" class="menu-button menu-button-primary">
                     <ui:VisualElement name="play-button-icon" class="menu-button-icon" />
@@ -44,6 +44,7 @@
                     <ui:Label text="Quit" class="menu-button-label" />
                 </ui:Button>
             </ui:VisualElement>
+            <ui:VisualElement name="menu-scenic-footer" class="menu-scenic-footer" picking-mode="Ignore" />
         </ui:VisualElement>
         <ui:VisualElement name="confirm-root" class="confirm-root">
             <ui:VisualElement name="confirm-frame" class="confirm-frame">
