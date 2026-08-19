@@ -52,23 +52,26 @@
 .menu-pill {
     flex-direction: row;
     align-items: center;
-    height: 68px;
-    padding: 0 24px;
-    border-radius: var(--radius-pill);
+    height: 136px;
+    padding: 0 48px;
+    /* Less rounded than the prior full pill shape, per request - a fixed
+       radius (proportional to the new height, same ~0.267 ratio used on
+       the button row) instead of var(--radius-pill). */
+    border-radius: 36px;
     background-color: rgba(20, 18, 14, 0.75);
     border-width: 2px;
     border-color: rgba(255, 255, 255, 0.5);
 }
 
 .menu-pill-icon {
-    width: 30px;
-    height: 30px;
-    margin-right: 8px;
+    width: 60px;
+    height: 60px;
+    margin-right: 16px;
 }
 
 .menu-pill-label {
     color: var(--text-on-dark);
-    font-size: 25px;
+    font-size: 50px;
     -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
 }
 
@@ -82,11 +85,11 @@
 }
 
 .menu-icon-button {
-    width: 68px;
-    height: 68px;
+    width: 136px;
+    height: 136px;
     padding: 0;
     margin: 0;
-    border-radius: var(--radius-pill);
+    border-radius: 36px;
     background-color: rgba(20, 18, 14, 0.75);
     border-width: 2px;
     border-color: rgba(255, 255, 255, 0.5);
@@ -99,8 +102,8 @@
 }
 
 .menu-icon-button-glyph {
-    width: 32px;
-    height: 32px;
+    width: 64px;
+    height: 64px;
 }
 
 .menu-title-area {
