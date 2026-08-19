@@ -9,7 +9,6 @@
 
 .menu-frame {
     width: 100%;
-    height: 100%;
     max-width: 960px;
     border-radius: 32px;
     overflow: hidden;
@@ -127,12 +126,13 @@
 }
 
 .menu-spacer {
-    flex-grow: 1;
+    height: var(--space-xl);
 }
 
 .menu-button-row {
     flex-direction: row;
     align-items: center;
+    margin-top: var(--space-lg);
 }
 
 .menu-button {
