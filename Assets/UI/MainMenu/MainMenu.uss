@@ -69,7 +69,7 @@
 .menu-pill-label {
     color: var(--text-on-dark);
     font-size: 20px;
-    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
 }
 
 .menu-header-right {
@@ -111,7 +111,7 @@
 .menu-title {
     font-size: 44px;
     color: rgb(250, 240, 230);
-    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
     -unity-text-align: middle-center;
     -unity-text-outline-width: 1;
     -unity-text-outline-color: var(--color-ink);
@@ -120,6 +120,7 @@
 .menu-subtitle {
     font-size: var(--font-size-md);
     color: rgb(212, 206, 196);
+    -unity-font-definition: url("project://database/Assets/Fonts/Figtree-Regular.ttf");
     -unity-text-align: middle-center;
     margin-top: var(--space-xs);
 }
@@ -140,13 +141,13 @@
     min-height: 60px;
     padding: 0 var(--space-xl);
     margin-right: var(--space-sm);
-    border-radius: var(--radius-pill);
+    border-radius: 16px;
     border-width: 1px;
     border-color: rgba(255, 255, 255, 0.2);
     background-color: rgba(0, 0, 0, 0);
     color: var(--text-on-dark);
     font-size: var(--font-size-lg);
-    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
 }
 
 .menu-button:active {
@@ -219,6 +220,7 @@
     color: var(--text-on-dark);
     font-size: var(--font-size-md);
     white-space: normal;
+    -unity-font-definition: url("project://database/Assets/Fonts/Figtree-Regular.ttf");
     -unity-text-align: middle-center;
     margin-bottom: var(--space-lg);
 }
