@@ -27,6 +27,9 @@ public class MainMenuUI : MonoBehaviour
     {
         VisualElement root = uiDocument.rootVisualElement;
 
+        ScrollView menuFrame = root.Q<ScrollView>("menu-frame");
+        menuFrame.horizontalScrollerVisibility = ScrollerVisibility.Hidden;
+
         confirmRoot = root.Q<VisualElement>("confirm-root");
         confirmFrame = root.Q<VisualElement>("confirm-frame");
         // Direct hide (not PanelAnimator): this is the initial startup state, not a
