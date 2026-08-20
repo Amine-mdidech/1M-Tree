@@ -231,6 +231,14 @@
     scale: 0.9 0.9;
 }
 
+/* Matches the mockup's one solid-filled button (accent-2 sage fill + white icon, like the
+   design system's .btn-primary) - applied to lab-button, the first icon in the row in both the
+   mockup and this game's action-cluster. */
+.hud-nav-button-primary {
+    background-color: rgb(122, 138, 94);
+    border-color: rgb(122, 138, 94);
+}
+
 .demo-icon-button {
     position: absolute;
     top: var(--space-xl);

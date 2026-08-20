@@ -45,12 +45,16 @@ public class HudUI : MonoBehaviour
     // Same real-Lucide-artwork pipeline, for the six action-cluster nav buttons (flask-conical,
     // book, user, paw-print, save, volume-2 - matching the Claude Design mockup 1:1), pre-colored
     // to --color-text (dark ink) rather than a per-button accent.
-    [SerializeField] private Sprite labGlyphSprite;
     [SerializeField] private Sprite codexGlyphSprite;
     [SerializeField] private Sprite profileGlyphSprite;
     [SerializeField] private Sprite speciesGlyphSprite;
     [SerializeField] private Sprite storeGlyphSprite;
     [SerializeField] private Sprite settingsGlyphSprite;
+    // Same flask-conical shape but recolored white (kept as a separate asset rather than tinted
+    // at runtime, since -unity-background-image-tint-color multiplies and can't lighten a dark
+    // source) - lab-button is the mockup's one solid-sage-fill button, so it needs a light icon
+    // instead of the dark ink the other five sit on their light fill.
+    [SerializeField] private Sprite labGlyphWhiteSprite;
 
     private const int MinimapSize = 42;
     private const float MinimapRefreshInterval = 0.5f;
@@ -118,15 +122,17 @@ public class HudUI : MonoBehaviour
 
         // Organic-design-system nav buttons (real Lucide icon artwork, same pipeline as the
         // gem/coins/leaf badges) - a flat --color-surface circle (set via .hud-nav-button in
-        // Hud.uss) with the dark-ink glyph sprite on top, replacing the old runtime-painted
-        // CreateBadgedGlyphSprite badges these six used to share with demo-button below.
+        // Hud.uss) with the dark-ink glyph sprite on top (lab-button is the one solid-sage-fill
+        // exception, via .hud-nav-button-primary + labGlyphWhiteSprite), replacing the old
+        // runtime-painted CreateBadgedGlyphSprite badges these six used to share with demo-button
+        // below.
         Button codexButton = root.Q<Button>("codex-button");
         codexButton.clicked += OnCodexButtonClicked;
         codexButton.style.backgroundImage = new StyleBackground(codexGlyphSprite);
 
         Button labButton = root.Q<Button>("lab-button");
         labButton.clicked += OnLabButtonClicked;
-        labButton.style.backgroundImage = new StyleBackground(labGlyphSprite);
+        labButton.style.backgroundImage = new StyleBackground(labGlyphWhiteSprite);
 
         pickerButton = root.Q<Button>("picker-button");
         pickerButton.clicked += OnPickerButtonClicked;
