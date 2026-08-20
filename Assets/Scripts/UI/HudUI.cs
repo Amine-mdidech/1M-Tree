@@ -31,8 +31,6 @@ public class HudUI : MonoBehaviour
 
     // fal.ai-rendered token icons (see docs/art-design-document.md's "HUD token icon" exception) -
     // static single-purpose glyphs that never need runtime recoloring, unlike most HUD chrome.
-    [SerializeField] private Sprite currencyIconSprite;
-    [SerializeField] private Sprite xpIconSprite;
     [SerializeField] private Sprite plantIconSprite;
     [SerializeField] private Sprite herbivoreIconSprite;
     [SerializeField] private Sprite predatorIconSprite;
@@ -144,30 +142,39 @@ public class HudUI : MonoBehaviour
         pickerLabel.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateTexturedPillBackground(96, 24, new Color(0.08f, 0.08f, 0.08f, 0.2f)));
 
         // Warm brass base (not the plain dark ink used elsewhere) - the badge frame's material,
-        // per the "AAA" pass: see docs/art-design-document.md's HUD token icon note.
+        // per the "AAA" pass: see docs/art-design-document.md's HUD token icon note. Still used by
+        // the picker-label pill below (unchanged), just no longer by the 3 badges redesigned to the
+        // Organic look further down.
         Color brassBase = new Color(0.24f, 0.16f, 0.07f, 0.88f);
 
+        // Organic design-system pastel-circle tokens (see the Claude Design "Organic" project's
+        // theme.json/styles.css) - accent-2-100/accent-2-700 for the gem+XP badges, accent-100 for
+        // the coin badge's circle (DrawCoinFlatGlyph carries its own accent-700/accent-100 pairing).
+        Color mintCircle = new Color(240f / 255f, 250f / 255f, 225f / 255f);
+        Color peachCircle = new Color(1f, 242f / 255f, 235f / 255f);
+
         VisualElement gemIcon = root.Q<VisualElement>("gem-icon");
-        gemIcon.style.backgroundImage = new StyleBackground(currencyIconSprite);
+        gemIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateFlatCircleGlyphSprite(48, mintCircle, PixelArtUtility.DrawGemFlatGlyph));
         gemCountLabel = root.Q<Label>("gem-count-label");
 
         VisualElement fundsIcon = root.Q<VisualElement>("funds-icon");
-        fundsIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(16, new Color(0.85f, 0.65f, 0.2f), PixelArtUtility.DrawCoinGlyph));
+        fundsIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateFlatCircleGlyphSprite(48, peachCircle, PixelArtUtility.DrawCoinFlatGlyph));
         fundsCountLabel = root.Q<Label>("funds-count-label");
 
-        VisualElement xpBadge = root.Q<VisualElement>("xp-badge");
-        xpBadge.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBrassMossTexture(140, 32, brassBase));
-
         VisualElement xpIcon = root.Q<VisualElement>("xp-icon");
-        xpIcon.style.backgroundImage = new StyleBackground(xpIconSprite);
+        xpIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateFlatCircleGlyphSprite(48, mintCircle, PixelArtUtility.DrawLeafFlatGlyph));
 
         xpLevelLabel = root.Q<Label>("xp-level-label");
         xpBarFill = root.Q<VisualElement>("xp-bar-fill");
-        xpBarFill.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateGlowBarTexture(60, 6, new Color(0.55f, 0.35f, 0.85f), new Color(0.85f, 0.35f, 0.75f)));
+        // Flat accent-2 sage fill (was a purple/pink glow-bar gradient) - kept as a small texture
+        // rather than a plain backgroundColor so the existing tint-color level-up flash still works
+        // (tint only multiplies background images, not solid background-color fills).
+        PixelArtUtility.PixelBuffer xpFillBuffer = new PixelArtUtility.PixelBuffer(8, 8);
+        PixelArtUtility.FillRect(xpFillBuffer, new RectInt(0, 0, 8, 8), new Color(122f / 255f, 138f / 255f, 94f / 255f));
+        xpBarFill.style.backgroundImage = new StyleBackground(xpFillBuffer.ToTexture());
 
         topLeftCluster = root.Q<VisualElement>("top-left-cluster");
         currencyBadge = root.Q<VisualElement>("currency-badge");
-        currencyBadge.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBrassMossTexture(140, 32, brassBase));
         currencyBadge.AddToClassList("currency-badge--enter");
         currencyBadge.schedule.Execute(() => currencyBadge.RemoveFromClassList("currency-badge--enter")).ExecuteLater(50);
 

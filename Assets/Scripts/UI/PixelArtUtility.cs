@@ -471,6 +471,17 @@ public static class PixelArtUtility
         return ToSprite(buffer.ToTexture());
     }
 
+    // Flat single-tone circular badge (no shade/highlight/grain) - distinct from
+    // CreateBadgedGlyphSprite's painted-metal look, for HUD chrome that wants a soft pastel-tinted
+    // circle instead (see Hud.uss's currency-badge/xp-badge "Organic" redesign).
+    public static Sprite CreateFlatCircleGlyphSprite(int size, Color circleColor, System.Action<PixelBuffer> drawGlyph)
+    {
+        PixelBuffer buffer = new PixelBuffer(size, size);
+        FillCircle(buffer, new Vector2(size * 0.5f, size * 0.5f), size * 0.5f, circleColor, Color.clear, 0);
+        drawGlyph?.Invoke(buffer);
+        return ToSprite(buffer.ToTexture());
+    }
+
     public static Sprite CreateBadgedGlyphSprite(int size, Color badgeColor, System.Action<PixelBuffer> drawGlyph)
     {
         PixelBuffer buffer = new PixelBuffer(size, size);
@@ -601,6 +612,34 @@ public static class PixelArtUtility
 
         FillDiamond(canvas, new Vector2(size * 0.5f, size * 0.5f), size * 0.34f, gem, gem, 0);
         FillDiamond(canvas, new Vector2(size * 0.42f, size * 0.42f), size * 0.12f, gemLight, gemLight, 0);
+    }
+
+    // Flat single-tone glyphs for the Organic-design-system HUD badges (Hud.uss's currency-badge/
+    // xp-badge redesign) - a solid icon color instead of the two-tone gem/coin/leaf treatment above,
+    // meant to sit on the badges' own pastel circle background rather than carry its own shading.
+
+    public static void DrawGemFlatGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color sage = new Color(86f / 255f, 99f / 255f, 63f / 255f);
+        FillDiamond(canvas, new Vector2(size * 0.5f, size * 0.5f), size * 0.32f, sage, sage, 0);
+    }
+
+    public static void DrawCoinFlatGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color terracotta = new Color(140f / 255f, 73f / 255f, 26f / 255f);
+        FillCircle(canvas, new Vector2(size * 0.5f, size * 0.5f), size * 0.32f, terracotta, terracotta, 0);
+        FillCircle(canvas, new Vector2(size * 0.5f, size * 0.5f), size * 0.19f, new Color(1f, 242f / 255f, 235f / 255f), new Color(1f, 242f / 255f, 235f / 255f), 0);
+    }
+
+    public static void DrawLeafFlatGlyph(PixelBuffer canvas)
+    {
+        int size = canvas.Width;
+        Color sage = new Color(86f / 255f, 99f / 255f, 63f / 255f);
+        FillRect(canvas, new RectInt((int)(size * 0.46f), (int)(size * 0.16f), Mathf.Max(2, size / 16), (int)(size * 0.34f)), sage);
+        FillCircle(canvas, new Vector2(size * 0.35f, size * 0.44f), size * 0.17f, sage, sage, 0);
+        FillCircle(canvas, new Vector2(size * 0.63f, size * 0.52f), size * 0.15f, sage, sage, 0);
     }
 
     public static void DrawCoinGlyph(PixelBuffer canvas)

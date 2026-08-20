@@ -14,16 +14,17 @@
     align-items: center;
 }
 
+/* Organic-design-system pill (see docs' Claude Design "Organic" project): a flat --color-surface
+   pill instead of the dark brass-textured chrome the rest of the HUD uses - just these two
+   currency badges plus .xp-badge below, per the requested 3-element redesign. */
 .currency-badge {
-    height: 26px;
+    height: 32px;
     flex-direction: row;
     align-items: center;
-    background-color: rgba(24, 20, 18, 0.82);
-    -unity-background-scale-mode: stretch-to-fill;
-    border-radius: var(--radius-sm);
-    border-width: var(--border-thin);
-    border-color: var(--color-gold-light);
-    padding: 0 var(--space-sm) 0 var(--space-xs);
+    background-color: rgb(235, 221, 197);
+    border-radius: var(--radius-pill);
+    border-width: 0;
+    padding: 0 var(--space-sm) 0 3px;
     opacity: 1;
     translate: 0 0;
     scale: 1 1;
@@ -91,40 +92,38 @@
 }
 
 .gem-icon {
-    width: 13px;
-    height: 13px;
+    width: 24px;
+    height: 24px;
     margin-right: var(--space-xs);
 }
 
 .gem-count-label {
-    font-size: var(--font-size-xs);
-    color: var(--text-on-dark);
-    -unity-font-style: bold;
+    font-size: var(--font-size-sm);
+    color: rgb(32, 30, 29);
+    -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
 }
 
 .xp-badge {
-    height: 26px;
+    height: 32px;
     flex-direction: row;
     align-items: center;
-    background-color: rgba(24, 20, 18, 0.82);
-    -unity-background-scale-mode: stretch-to-fill;
-    border-radius: var(--radius-sm);
-    border-width: var(--border-thin);
-    border-color: var(--color-gold-light);
-    padding: 0 var(--space-sm) 0 var(--space-xs);
+    background-color: rgb(235, 221, 197);
+    border-radius: var(--radius-pill);
+    border-width: 0;
+    padding: 0 var(--space-sm) 0 3px;
     margin-left: var(--space-xs);
 }
 
 .xp-icon {
-    width: 13px;
-    height: 13px;
+    width: 24px;
+    height: 24px;
     margin-right: var(--space-xs);
 }
 
 .xp-level-label {
-    font-size: var(--font-size-xs);
-    color: var(--text-on-dark);
-    -unity-font-style: bold;
+    font-size: var(--font-size-sm);
+    color: rgb(32, 30, 29);
+    -unity-font-definition: url("project://database/Assets/Fonts/Caprasimo-Regular.ttf");
     margin-right: var(--space-xs);
     scale: 1 1;
     transition-property: scale;
@@ -137,18 +136,11 @@
 }
 
 .xp-bar-track {
-    width: 44px;
-    height: 6px;
-    border-radius: 2px;
-    /* Inset "carved groove" bevel - the inverse of the raised convention (dark top/left, light
-       bottom/right) used everywhere else, since a track is a hollow the fill sits inside rather
-       than a raised object. */
-    border-width: 1px;
-    border-top-color: rgba(0, 0, 0, 0.55);
-    border-left-color: rgba(0, 0, 0, 0.55);
-    border-right-color: rgba(255, 220, 160, 0.25);
-    border-bottom-color: rgba(255, 220, 160, 0.25);
-    background-color: rgba(40, 24, 10, 0.6);
+    width: 56px;
+    height: 8px;
+    border-radius: var(--radius-pill);
+    border-width: 0;
+    background-color: rgb(220, 211, 196);
     overflow: hidden;
 }
 
@@ -160,7 +152,7 @@
        genuine brightening pop - a multiply-tint can only go as bright as the source texture
        itself (white = identity), so the "flash" has to start from a dimmed baseline. */
     -unity-background-image-tint-color: rgb(210, 200, 220);
-    border-radius: 2px;
+    border-radius: var(--radius-pill);
     transition-property: width, -unity-background-image-tint-color;
     transition-duration: 0.35s, 0.15s;
     transition-timing-function: ease-out, ease-out;
