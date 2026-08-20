@@ -42,6 +42,16 @@ public class HudUI : MonoBehaviour
     [SerializeField] private Sprite coinsGlyphSprite;
     [SerializeField] private Sprite leafGlyphSprite;
 
+    // Same real-Lucide-artwork pipeline, for the six action-cluster nav buttons (flask-conical,
+    // book, user, paw-print, save, volume-2 - matching the Claude Design mockup 1:1), pre-colored
+    // to --color-text (dark ink) rather than a per-button accent.
+    [SerializeField] private Sprite labGlyphSprite;
+    [SerializeField] private Sprite codexGlyphSprite;
+    [SerializeField] private Sprite profileGlyphSprite;
+    [SerializeField] private Sprite speciesGlyphSprite;
+    [SerializeField] private Sprite storeGlyphSprite;
+    [SerializeField] private Sprite settingsGlyphSprite;
+
     private const int MinimapSize = 42;
     private const float MinimapRefreshInterval = 0.5f;
     private const float MinimapTapMaxDragDistance = 5f;
@@ -106,35 +116,36 @@ public class HudUI : MonoBehaviour
         actionCluster = root.Q<VisualElement>("action-cluster");
         demoButtonElement = root.Q<Button>("demo-button");
 
-        // Icon buttons render their whole circular fill (shade/highlight/grain) as part of the
-        // sprite itself via CreateBadgedGlyphSprite, instead of a flat CSS backgroundColor behind a
-        // transparent glyph sprite — a flat single-color fill read as "1-dimensional"/plasticky.
+        // Organic-design-system nav buttons (real Lucide icon artwork, same pipeline as the
+        // gem/coins/leaf badges) - a flat --color-surface circle (set via .hud-nav-button in
+        // Hud.uss) with the dark-ink glyph sprite on top, replacing the old runtime-painted
+        // CreateBadgedGlyphSprite badges these six used to share with demo-button below.
         Button codexButton = root.Q<Button>("codex-button");
         codexButton.clicked += OnCodexButtonClicked;
-        codexButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.25f, 0.3f, 0.55f), PixelArtUtility.DrawBookGlyph));
+        codexButton.style.backgroundImage = new StyleBackground(codexGlyphSprite);
 
         Button labButton = root.Q<Button>("lab-button");
         labButton.clicked += OnLabButtonClicked;
-        labButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.12f, 0.64f, 0.68f), PixelArtUtility.DrawFlaskGlyph));
+        labButton.style.backgroundImage = new StyleBackground(labGlyphSprite);
 
         pickerButton = root.Q<Button>("picker-button");
         pickerButton.clicked += OnPickerButtonClicked;
 
         Button profileButton = root.Q<Button>("profile-button");
         profileButton.clicked += OnProfileButtonClicked;
-        profileButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.73f, 0.54f, 0.24f), PixelArtUtility.DrawPersonGlyph));
+        profileButton.style.backgroundImage = new StyleBackground(profileGlyphSprite);
 
         Button speciesSummaryButton = root.Q<Button>("species-summary-button");
         speciesSummaryButton.clicked += OnSpeciesSummaryButtonClicked;
-        speciesSummaryButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.45f, 0.58f, 0.32f), PixelArtUtility.DrawPawGlyph));
+        speciesSummaryButton.style.backgroundImage = new StyleBackground(speciesGlyphSprite);
 
         Button storeButton = root.Q<Button>("store-button");
         storeButton.clicked += OnStoreButtonClicked;
-        storeButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.8f, 0.6f, 0.15f), PixelArtUtility.DrawCoinGlyph));
+        storeButton.style.backgroundImage = new StyleBackground(storeGlyphSprite);
 
         Button settingsButton = root.Q<Button>("settings-button");
         settingsButton.clicked += OnSettingsButtonClicked;
-        settingsButton.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateBadgedGlyphSprite(IconSize, new Color(0.3f, 0.45f, 0.6f), PixelArtUtility.DrawSpeakerGlyph));
+        settingsButton.style.backgroundImage = new StyleBackground(settingsGlyphSprite);
 
         Button demoButton = root.Q<Button>("demo-button");
         demoButton.clicked += OnDemoButtonClicked;

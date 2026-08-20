@@ -543,29 +543,6 @@ public static class PixelArtUtility
         return buffer.ToTexture();
     }
 
-    public static void DrawBookGlyph(PixelBuffer canvas)
-    {
-        int size = canvas.Width;
-        Color cover = new Color(0.55f, 0.35f, 0.18f);
-        Color page = new Color(0.96f, 0.92f, 0.78f);
-
-        FillRect(canvas, new RectInt((int)(size * 0.22f), (int)(size * 0.2f), (int)(size * 0.56f), (int)(size * 0.6f)), cover);
-        FillRect(canvas, new RectInt((int)(size * 0.27f), (int)(size * 0.25f), (int)(size * 0.2f), (int)(size * 0.5f)), page);
-        FillRect(canvas, new RectInt((int)(size * 0.53f), (int)(size * 0.25f), (int)(size * 0.2f), (int)(size * 0.5f)), page);
-        FillRect(canvas, new RectInt((int)(size * 0.47f), (int)(size * 0.2f), (int)(size * 0.06f), (int)(size * 0.6f)), cover);
-    }
-
-    public static void DrawFlaskGlyph(PixelBuffer canvas)
-    {
-        int size = canvas.Width;
-        Color glass = new Color(0.85f, 0.93f, 0.95f);
-        Color liquid = new Color(0.35f, 0.75f, 0.55f);
-
-        FillRect(canvas, new RectInt((int)(size * 0.42f), (int)(size * 0.12f), (int)(size * 0.16f), (int)(size * 0.28f)), glass);
-        FillCircle(canvas, new Vector2(size * 0.5f, size * 0.62f), size * 0.28f, glass, glass, 0);
-        FillCircle(canvas, new Vector2(size * 0.5f, size * 0.72f), size * 0.24f, liquid, liquid, 0);
-    }
-
     public static void DrawLeafGlyph(PixelBuffer canvas)
     {
         int size = canvas.Width;
@@ -611,15 +588,6 @@ public static class PixelArtUtility
 
         FillCircle(canvas, new Vector2(size * 0.5f, size * 0.5f), size * 0.34f, coin, coin, 0);
         FillCircle(canvas, new Vector2(size * 0.4f, size * 0.4f), size * 0.1f, coinLight, coinLight, 0);
-    }
-
-    public static void DrawPersonGlyph(PixelBuffer canvas)
-    {
-        int size = canvas.Width;
-        Color body = new Color(0.9f, 0.9f, 0.95f);
-
-        FillCircle(canvas, new Vector2(size * 0.5f, size * 0.15f), size * 0.34f, body, body, 0);
-        FillCircle(canvas, new Vector2(size * 0.5f, size * 0.64f), size * 0.17f, body, body, 0);
     }
 
     public static void DrawPawGlyph(PixelBuffer canvas)

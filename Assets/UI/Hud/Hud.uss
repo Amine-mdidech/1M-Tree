@@ -208,6 +208,29 @@
     scale: 0.9 0.9;
 }
 
+/* Organic-design-system nav button (lab/codex/profile/species-summary/store/settings) - a flat
+   --color-surface circle with a dark-ink Lucide icon inset inside, matching the currency-badge/
+   xp-badge redesign above, replacing .icon-button's runtime-painted badge sprite for these six. */
+.hud-nav-button {
+    width: 32px;
+    height: 32px;
+    margin-left: var(--space-xs);
+    padding: 6px;
+    border-radius: 50%;
+    background-color: rgb(235, 221, 197);
+    border-width: 1px;
+    border-color: rgba(32, 30, 29, 0.16);
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+.hud-nav-button:hover {
+    opacity: 0.9;
+}
+
+.hud-nav-button:active {
+    scale: 0.9 0.9;
+}
+
 .demo-icon-button {
     position: absolute;
     top: var(--space-xl);

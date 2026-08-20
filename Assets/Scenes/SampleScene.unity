@@ -1404,6 +1404,12 @@ MonoBehaviour:
   gemGlyphSprite: {fileID: 21300000, guid: 3433d33ed4bb434aa4bcac9a42f29bb4, type: 3}
   coinsGlyphSprite: {fileID: 21300000, guid: ef1c423789654fceb8fdb74015df3a5b, type: 3}
   leafGlyphSprite: {fileID: 21300000, guid: 977e0de33fbb4e9ea39809fac6c811ec, type: 3}
+  labGlyphSprite: {fileID: 21300000, guid: 43214bcb292845548326c149cf779713, type: 3}
+  codexGlyphSprite: {fileID: 21300000, guid: f5a0f33395e2406ab3efc40030cdf4c4, type: 3}
+  profileGlyphSprite: {fileID: 21300000, guid: b6ee3d27fdeb4e4d998c32ecd67ebcdf, type: 3}
+  speciesGlyphSprite: {fileID: 21300000, guid: 1e065f35b4f04fbebe9c3b6add1ae9d7, type: 3}
+  storeGlyphSprite: {fileID: 21300000, guid: 3c2d4ca4967a4b99bd17fb64d674dea1, type: 3}
+  settingsGlyphSprite: {fileID: 21300000, guid: b70afe3804a744aeaf138dc4cf090f72, type: 3}
 --- !u!114 &853456667
 MonoBehaviour:
   m_ObjectHideFlags: 0
