@@ -41,7 +41,7 @@
 }
 
 .picker-cluster {
-    height: 26px;
+    height: 32px;
     margin-left: var(--space-xs);
     flex-direction: row;
     align-items: center;
@@ -336,15 +336,16 @@
 }
 
 .picker-label {
+    height: 32px;
     margin-right: var(--space-xs);
-    padding: 2px var(--space-xs);
+    padding: 0 var(--space-sm);
     background-color: rgba(0, 0, 0, 0.2);
     -unity-background-scale-mode: stretch-to-fill;
     border-radius: var(--radius-sm);
     border-width: 1px;
     border-color: var(--color-gold-light);
     color: var(--text-on-dark);
-    font-size: var(--font-size-xs);
+    font-size: var(--font-size-sm);
     -unity-font-style: bold;
 }
 
@@ -353,8 +354,8 @@
    picker) for this one icon. The other buttons sharing the base class (lab/codex/profile/settings/
    demo) are unaffected, since neither this radius nor this size change touches `.icon-button` itself. */
 .picker-icon-button {
-    width: 22px;
-    height: 22px;
+    width: 32px;
+    height: 32px;
     border-radius: var(--radius-sm);
     border-width: var(--border-thin);
     border-color: var(--color-gold-light);
