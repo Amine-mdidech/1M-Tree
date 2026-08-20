@@ -614,43 +614,35 @@ public static class PixelArtUtility
         FillDiamond(canvas, new Vector2(size * 0.42f, size * 0.42f), size * 0.12f, gemLight, gemLight, 0);
     }
 
-    // Flat single-tone glyphs for the Organic-design-system HUD badges (Hud.uss's currency-badge/
-    // xp-badge redesign) - a solid icon color instead of the two-tone gem/coin/leaf treatment above,
-    // meant to sit on the badges' own pastel circle background rather than carry its own shading.
+    // Outlined (stroke, not solid-fill) glyphs for the Organic-design-system HUD badges (Hud.uss's
+    // currency-badge/xp-badge redesign). The Claude Design mockup these badges match draws its
+    // icons as Lucide SVGs - fill:none, stroke-width 2.75, round caps/joins (see the design
+    // system's foundations/icons.html) - not solid silhouettes, so these mirror that technique
+    // (fill = Color.clear, a colored border ring/band) with the closest shapes this project's
+    // fill-primitive-only renderer (no bezier/line rasterizer) can produce, rather than the earlier
+    // solid-fill glyphs above.
+    private const int GlyphStrokeWidth = 4;
 
-    // Faceted "cut gem" silhouette (flat top table facet + tapering lower point) rather than a
-    // plain symmetric diamond - closer to how gem/jewel icons (e.g. Lucide's) actually read.
     public static void DrawGemFlatGlyph(PixelBuffer canvas)
     {
         int size = canvas.Width;
         Color sage = new Color(86f / 255f, 99f / 255f, 63f / 255f);
-
-        int left = (int)(size * 0.24f);
-        int right = (int)(size * 0.76f);
-        int tableTop = (int)(size * 0.28f);
-        int tableBottom = (int)(size * 0.4f);
-        int tip = (int)(size * 0.78f);
-
-        FillRect(canvas, new RectInt(left, tableTop, right - left, tableBottom - tableTop), sage);
-        FillTriangleDown(canvas, new RectInt(left, tableBottom, right - left, tip - tableBottom), sage);
+        FillDiamond(canvas, new Vector2(size * 0.5f, size * 0.5f), size * 0.34f, Color.clear, sage, GlyphStrokeWidth);
     }
 
-    // A rimmed disc with a horizontal embossed ridge, reading as a coin's face rather than a
-    // plain ring.
+    // Two overlapping ring outlines - the closest fill-primitive approximation of Lucide's "coins"
+    // icon (two stacked coin discs).
     public static void DrawCoinFlatGlyph(PixelBuffer canvas)
     {
         int size = canvas.Width;
         Color terracotta = new Color(140f / 255f, 73f / 255f, 26f / 255f);
-        Color peach = new Color(1f, 242f / 255f, 235f / 255f);
-        Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
 
-        FillCircle(canvas, center, size * 0.32f, terracotta, terracotta, 0);
-        FillCircle(canvas, center, size * 0.22f, peach, peach, 0);
-        FillRect(canvas, new RectInt((int)(size * 0.34f), (int)(size * 0.47f), (int)(size * 0.32f), Mathf.Max(2, size / 20)), terracotta);
+        FillCircle(canvas, new Vector2(size * 0.42f, size * 0.42f), size * 0.24f, Color.clear, terracotta, GlyphStrokeWidth);
+        FillCircle(canvas, new Vector2(size * 0.6f, size * 0.6f), size * 0.24f, Color.clear, terracotta, GlyphStrokeWidth);
     }
 
-    // Single pointed-leaf silhouette (an elongated rhombus, taller than wide, plus a center vein)
-    // instead of a two-lobe sprout - a closer match to a standard leaf icon.
+    // Single pointed-leaf outline (an elongated rhombus ring, taller than wide) with a center vein
+    // stroke - the closest fill-primitive approximation of Lucide's curved "leaf" icon.
     public static void DrawLeafFlatGlyph(PixelBuffer canvas)
     {
         int size = canvas.Width;
@@ -658,6 +650,7 @@ public static class PixelArtUtility
         Vector2 center = new Vector2(size * 0.5f, size * 0.5f);
         float radiusX = size * 0.22f;
         float radiusY = size * 0.36f;
+        float strokeBand = GlyphStrokeWidth / ((radiusX + radiusY) * 0.5f);
 
         int xMin = Mathf.Max(0, Mathf.FloorToInt(center.x - radiusX));
         int xMax = Mathf.Min(size - 1, Mathf.CeilToInt(center.x + radiusX));
@@ -669,14 +662,15 @@ public static class PixelArtUtility
             {
                 float dx = Mathf.Abs(x + 0.5f - center.x) / radiusX;
                 float dy = Mathf.Abs(y + 0.5f - center.y) / radiusY;
-                if (dx + dy <= 1f)
+                float d = dx + dy;
+                if (d <= 1f && d >= 1f - strokeBand)
                 {
                     canvas.Blend(x, y, sage);
                 }
             }
         }
 
-        FillRect(canvas, new RectInt((int)(center.x - Mathf.Max(1, size / 32)), (int)(center.y - radiusY * 0.75f), Mathf.Max(2, size / 16), (int)(radiusY * 1.5f)), new Color(1f, 1f, 1f, 0.35f));
+        FillRect(canvas, new RectInt((int)(center.x - GlyphStrokeWidth * 0.5f), (int)(center.y - radiusY * 0.7f), GlyphStrokeWidth, (int)(radiusY * 1.4f)), sage);
     }
 
     public static void DrawCoinGlyph(PixelBuffer canvas)
