@@ -22,7 +22,10 @@
     flex-direction: row;
     align-items: center;
     background-color: rgb(235, 221, 197);
-    border-radius: var(--radius-pill);
+    /* Rounded rectangle, not a full pill/oval - matches the "rectangular with a rounded corner"
+       correction already established for the main menu buttons, over the design system's own
+       generic .tag/.btn pill override. */
+    border-radius: var(--radius-md);
     border-width: 0;
     padding: 0 var(--space-sm) 0 3px;
     opacity: 1;
@@ -108,7 +111,7 @@
     flex-direction: row;
     align-items: center;
     background-color: rgb(235, 221, 197);
-    border-radius: var(--radius-pill);
+    border-radius: var(--radius-md);
     border-width: 0;
     padding: 0 var(--space-sm) 0 3px;
     margin-left: var(--space-xs);
