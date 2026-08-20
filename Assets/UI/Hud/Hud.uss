@@ -98,6 +98,17 @@
     width: 24px;
     height: 24px;
     margin-right: var(--space-xs);
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Inner icon image sized to sit inside the pastel circle above - the actual glyph texture
+   (assigned in HudUI.cs) carries its own color, so no CSS color/tint here. */
+.hud-icon-glyph {
+    width: 70%;
+    height: 70%;
+    -unity-background-scale-mode: scale-to-fit;
 }
 
 .gem-count-label {
@@ -121,6 +132,9 @@
     width: 24px;
     height: 24px;
     margin-right: var(--space-xs);
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
 .xp-level-label {

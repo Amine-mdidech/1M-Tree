@@ -35,6 +35,13 @@ public class HudUI : MonoBehaviour
     [SerializeField] private Sprite herbivoreIconSprite;
     [SerializeField] private Sprite predatorIconSprite;
 
+    // Actual Lucide icon artwork (gem/coins/leaf, rasterized from lucide-icons/lucide and
+    // pre-colored to the Organic design system's accent ramps) for the currency-badge/xp-badge
+    // redesign - reusing the real mockup icons instead of a procedural approximation.
+    [SerializeField] private Sprite gemGlyphSprite;
+    [SerializeField] private Sprite coinsGlyphSprite;
+    [SerializeField] private Sprite leafGlyphSprite;
+
     private const int MinimapSize = 42;
     private const float MinimapRefreshInterval = 0.5f;
     private const float MinimapTapMaxDragDistance = 5f;
@@ -148,21 +155,24 @@ public class HudUI : MonoBehaviour
         Color brassBase = new Color(0.24f, 0.16f, 0.07f, 0.88f);
 
         // Organic design-system pastel-circle tokens (see the Claude Design "Organic" project's
-        // theme.json/styles.css) - accent-2-100/accent-2-700 for the gem+XP badges, accent-100 for
-        // the coin badge's circle (DrawCoinFlatGlyph carries its own accent-700/accent-100 pairing).
+        // theme.json/styles.css) - accent-2-100 for the gem+XP badges, accent-100 for the coin
+        // badge's circle.
         Color mintCircle = new Color(240f / 255f, 250f / 255f, 225f / 255f);
         Color peachCircle = new Color(1f, 242f / 255f, 235f / 255f);
 
         VisualElement gemIcon = root.Q<VisualElement>("gem-icon");
-        gemIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateFlatCircleGlyphSprite(48, mintCircle, PixelArtUtility.DrawGemFlatGlyph));
+        gemIcon.style.backgroundColor = mintCircle;
+        root.Q<VisualElement>("gem-icon-glyph").style.backgroundImage = new StyleBackground(gemGlyphSprite);
         gemCountLabel = root.Q<Label>("gem-count-label");
 
         VisualElement fundsIcon = root.Q<VisualElement>("funds-icon");
-        fundsIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateFlatCircleGlyphSprite(48, peachCircle, PixelArtUtility.DrawCoinFlatGlyph));
+        fundsIcon.style.backgroundColor = peachCircle;
+        root.Q<VisualElement>("funds-icon-glyph").style.backgroundImage = new StyleBackground(coinsGlyphSprite);
         fundsCountLabel = root.Q<Label>("funds-count-label");
 
         VisualElement xpIcon = root.Q<VisualElement>("xp-icon");
-        xpIcon.style.backgroundImage = new StyleBackground(PixelArtUtility.CreateFlatCircleGlyphSprite(48, mintCircle, PixelArtUtility.DrawLeafFlatGlyph));
+        xpIcon.style.backgroundColor = mintCircle;
+        root.Q<VisualElement>("xp-icon-glyph").style.backgroundImage = new StyleBackground(leafGlyphSprite);
 
         xpLevelLabel = root.Q<Label>("xp-level-label");
         xpBarFill = root.Q<VisualElement>("xp-bar-fill");
