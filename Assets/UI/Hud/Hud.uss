@@ -215,7 +215,9 @@
     width: 32px;
     height: 32px;
     margin-left: var(--space-xs);
-    padding: 6px;
+    /* Was 6px (icon filled ~63% of the circle) - the mockup leaves noticeably more cream margin
+       around each glyph. */
+    padding: 9px;
     border-radius: 50%;
     background-color: rgb(235, 221, 197);
     border-width: 1px;
