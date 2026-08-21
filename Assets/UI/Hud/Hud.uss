@@ -215,9 +215,10 @@
     width: 32px;
     height: 32px;
     margin-left: var(--space-xs);
-    /* Was 6px (icon filled ~63% of the circle) - the mockup leaves noticeably more cream margin
-       around each glyph. */
-    padding: 9px;
+    /* Circle stays 32px; padding controls icon size independently. Was 9px (14px icon content
+       box) - bumped to 12.5px to halve the icon's rendered size (7px content box) while the
+       circle itself is untouched. */
+    padding: 12.5px;
     border-radius: 50%;
     background-color: rgb(235, 221, 197);
     border-width: 1px;
