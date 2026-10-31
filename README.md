@@ -20,10 +20,11 @@ You plant forests, grow a working food chain and research new species.
 
 ## About
 
-You start on a bare, lifeless plot with a small laboratory and a grant of **30 trees per day**.
-Each tree you plant raises the chance that wildlife shows up. Herbivores arrive first. Predators
-come only once there is enough prey to feed them. As you prove results, your funding grows,
-your land expands, and the plot slowly turns into a dense, biodiverse jungle.
+You start on a bare, lifeless plot with a small laboratory and a government budget of **Funds**.
+You spend Funds to plant trees and release animals. Herbivores need enough trees to live on,
+and predators need enough prey to hunt. The bigger your ecosystem grows, the more the
+government gives you each day. Your land expands, and the plot slowly turns into a dense,
+biodiverse forest.
 
 ### Design pillars
 
@@ -47,14 +48,55 @@ your land expands, and the plot slowly turns into a dense, biodiverse jungle.
   <b>The Laboratory, your research hub</b>
 </p>
 
+## Trees & animals
+
+The world has two trees and four animals. Each habitat type has one species you start with
+and one you unlock through research at the Laboratory.
+
+### 🌳 Trees
+
+| | Tree | How you get it | Cost | Growth (seedling → sapling → mature) |
+|:---:|---|---|:---:|---|
+| <img src="docs/screenshots/species/oak.png" width="96" alt="Oak"> | **Oak** | Unlocked from the start | 10 Funds | 1 min → 5 min → 15 min |
+| <img src="docs/screenshots/species/pine.png" width="96" alt="Pine"> | **Pine** | Lab research (3 min) | 10 Funds | 45 s → 4 min → 12 min |
+
+Trees grow through three stages and green the soil around them as they mature. Tap a tree that
+is still growing to finish it instantly for gems. Trees can't be planted in the river or right
+next to the Laboratory.
+
+### 🦌 Herbivores
+
+| | Animal | How you get it | Release cost | Needs | Behaviour |
+|:---:|---|---|:---:|---|---|
+| <img src="docs/screenshots/species/gazelle.png" width="96" alt="Gazelle"> | **Gazelle** | Unlocked from the start | 50 Funds | 1 gazelle per 20 trees | Roams freely around the spot where it was released. It's the wolf's prey. |
+| <img src="docs/screenshots/species/squirrel.png" width="96" alt="Squirrel"> | **Squirrel** | Lab research (3 min) | 50 Funds | 1 squirrel per 2 trees | Stays close to the nearest tree. About once a minute it heads off on a longer trip before settling at a tree again. It's the fox's prey. |
+
+### 🐺 Predators
+
+| | Animal | How you get it | Release cost | Needs | Behaviour |
+|:---:|---|---|:---:|---|---|
+| <img src="docs/screenshots/species/wolf.png" width="96" alt="Wolf"> | **Wolf** | Unlocked from the start | 200 Funds | At least 5 gazelles, and 1 wolf per 5 gazelles | Wanders the land and sometimes chases a nearby gazelle. |
+| <img src="docs/screenshots/species/fox.png" width="96" alt="Fox"> | **Fox** | Lab research (6 min) | 200 Funds | At least 5 squirrels, and 1 fox per 5 squirrels | Wanders the land and sometimes chases a nearby squirrel. |
+
+**How animals behave**
+
+- **Releasing:** pick an animal in the HUD, then tap a spot on your land to release it there. The release only works if the ecosystem can support another one (see **Needs**). There's no random chance involved.
+- **Moving around:** animals wander in a small area and play a 2-frame walk cycle. They avoid walking across the river.
+- **Hunting:** each time a predator picks somewhere new to go, it has a 10% chance to chase a prey animal within range instead. The chase is for show only, so prey numbers don't drop.
+- **Tap to identify:** tapping an animal shows its name above it for about a second and a half. While the name is showing, the animal glows green if it's a herbivore or red if it's a predator.
+
+> The tree pictures are the game's own textures. Animals in the game are drawn by code at
+> runtime, and the pictures above were made by running a Python copy of that code with each
+> species' colours and features.
+
 ## Features
 
-- 🌱 **Daily grant:** a real-time daily tree allowance, framed as grant funding rather than an energy bar. Hitting milestones raises it.
-- 🦌 **Food-chain emergence:** species appear on their own, based on tree count and vegetation diversity. Predators are gated by prey population (for example, 1 wolf per 8 gazelles once there are 15 or more).
-- 🔬 **Laboratory tech tree:** 24 research projects (10 plants and 14 animals) across 5 tiers, linked by prerequisites.
-- 📖 **The Codex:** a book-style catalogue of every species, with real facts, conservation status and the exact conditions it needs to appear.
+- 💰 **Government Funds:** you start with 300 Funds. Each day the government adds a budget of 300, plus 1 for every tree you have, plus 50 for every species you've unlocked, plus any milestone bonuses. Planting and releasing cost Funds, and a Store panel lists every price.
+- 🦌 **Food-chain release:** you release animals by hand, but only when the ecosystem can support them. Herbivores need enough trees, and predators need enough prey.
+- 🔬 **Laboratory:** a research panel split into Plants, Herbivores and Predators tabs. Research one project at a time, and skip the wait with gems.
+- 📖 **The Codex:** a book-style catalogue of every species, showing what each one needs before you can release it.
 - 🗺️ **Territory & minimap:** grow from a 20×20 plot to the full 60×60 map. You find the edge of your land by bumping into it, and you can drag the minimap to move around.
-- ⭐ **Levels, XP & milestones:** planting, research and achievements earn XP and gems.
+- ⭐ **Levels, XP & milestones:** planting a tree or releasing an animal earns 5 XP, a research unlock 20 and a milestone 50. Milestones also give gems and raise your daily Funds.
 - ⚡ **Growth boost:** tap a growing tree to finish it instantly with gems.
 - 🎨 **Art & UI:** painted textures for the trees, ground, river and Laboratory, plus a UI built on a shared design-token system. Plants and creatures that don't have their own art yet are drawn procedurally.
 - 🔊 **Sound settings:** separate music and SFX volume and mute controls that persist between sessions.
